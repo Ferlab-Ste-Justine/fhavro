@@ -1,0 +1,1 @@
+{"type":"record","name":"StructureMap_Dependent","doc":"A Map of relationships between 2 structures that can be used to transform data.","namespace":"bio.ferlab.fhir","fields":[{"name":"name","type":["null","string"],"default":null},{"name":"variable","type":{"type":"array","items":{"name":"variable","type":"string"},"default":[]},"default":[]}],"default":null}

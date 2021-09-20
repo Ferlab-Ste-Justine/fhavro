@@ -1,0 +1,1 @@
+{"type":"record","name":"TestScript_RequestHeader","doc":"A structured set of tests against a FHIR server or client implementation to determine compliance against the FHIR specification.","namespace":"bio.ferlab.fhir","fields":[{"name":"field","type":["null","string"],"default":null},{"name":"value","type":["null","string"],"default":null}],"default":null}
