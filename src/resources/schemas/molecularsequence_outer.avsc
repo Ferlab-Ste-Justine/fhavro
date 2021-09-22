@@ -1,0 +1,1 @@
+{"type":"record","name":"MolecularSequence_Outer","doc":"Raw data describing a biological sequence.","namespace":"bio.ferlab.fhir","fields":[{"name":"start","type":["null","int"],"default":null},{"name":"end","type":["null","int"],"default":null}],"default":null}

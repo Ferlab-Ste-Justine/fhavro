@@ -1,0 +1,1 @@
+{"type":"record","name":"ExampleScenario_Version","doc":"Example of workflow instance.","namespace":"bio.ferlab.fhir","fields":[{"name":"versionId","type":["null","string"],"default":null},{"name":"description","type":["null","string"],"default":null}],"default":null}

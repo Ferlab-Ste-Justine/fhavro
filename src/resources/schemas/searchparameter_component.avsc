@@ -1,0 +1,1 @@
+{"type":"record","name":"SearchParameter_Component","doc":"A search parameter that defines a named search item that can be used to search/filter on a resource.","namespace":"bio.ferlab.fhir","fields":[{"name":"expression","type":["null","string"],"default":null},{"name":"definition","type":"string"}],"default":null}

@@ -1,0 +1,1 @@
+{"type":"record","name":"OperationDefinition_ReferencedFrom","doc":"A formal computable definition of an operation (on the RESTful interface) or a named query (using the search interaction).","namespace":"bio.ferlab.fhir","fields":[{"name":"sourceId","type":["null","string"],"default":null},{"name":"source","type":["null","string"],"default":null}],"default":null}
