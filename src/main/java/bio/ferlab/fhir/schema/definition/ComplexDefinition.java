@@ -5,6 +5,7 @@ import bio.ferlab.fhir.schema.parser.ParserServant;
 import bio.ferlab.fhir.schema.repository.DefinitionRepository;
 import bio.ferlab.fhir.schema.utils.Constant;
 import bio.ferlab.fhir.schema.utils.JsonObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -59,7 +60,7 @@ public class ComplexDefinition extends BaseDefinition {
 
         // If its an inner field, capitalize the first letter.
         if (getIdentifier().equalsIgnoreCase(name)) {
-            name = name.substring(0, 1).toUpperCase() + name.substring(1);
+            name = StringUtils.capitalize(name);
         }
 
         if (root.equalsIgnoreCase(getName())) {

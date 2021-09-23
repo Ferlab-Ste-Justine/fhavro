@@ -9,7 +9,7 @@ import bio.ferlab.fhir.schema.definition.exception.UnknownReferenceException;
 import bio.ferlab.fhir.schema.definition.specificity.SpecificDefinition;
 import bio.ferlab.fhir.schema.definition.specificity.SpecificDefinitionFactory;
 import bio.ferlab.fhir.schema.utils.Constant;
-import bio.ferlab.fhir.schema.utils.ConverterUtils;
+import bio.ferlab.fhir.schema.utils.SchemaUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import javax.json.JsonObject;
@@ -76,7 +76,7 @@ public class DefinitionRepository {
     }
 
     public static JsonObject getReferenceObject(String root, JsonNode node, String name, boolean required) {
-        String reference = ConverterUtils.parseReference(node);
+        String reference = SchemaUtils.parseReference(node);
         if (primitiveDefinitions.containsKey(reference)) {
             return primitiveDefinitions.get(reference).convertToJson(root, name, required);
         } else if (complexDefinitions.containsKey(reference)) {

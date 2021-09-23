@@ -9,6 +9,7 @@ public class AccountFixture {
                 .setServicePeriod(PeriodFixture.createOngoingPeriod())
                 .addIdentifier(IdentifierFixture.createIdentifier())
                 .addSubject(ReferenceFixture.createAbsoluteReference())
+                .setStatus(Account.AccountStatus.ENTEREDINERROR)
                 .setName("Name")
                 .setType(CodeableConceptFixture.createCodeableConcept());
     }

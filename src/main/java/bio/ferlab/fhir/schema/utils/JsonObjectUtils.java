@@ -1,9 +1,9 @@
 package bio.ferlab.fhir.schema.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.apache.commons.text.WordUtils;
 
 import javax.json.*;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,7 +44,7 @@ public class JsonObjectUtils {
     public static JsonObject createEnum(String parentIdentifier, JsonNode root) {
         JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder()
                 .add(Constant.TYPE, Constant.ENUM)
-                .add(Constant.NAME, ConverterUtils.capitalizeWord(parentIdentifier));
+                .add(Constant.NAME, WordUtils.capitalize(parentIdentifier));
         if (root.has(Constant.DESCRIPTION)) {
             jsonObjectBuilder.add(Constant.DOC, formatDoc(root.get(Constant.DESCRIPTION).asText()));
         }
@@ -58,7 +58,8 @@ public class JsonObjectUtils {
         if (jsonObject.containsKey("type")) {
             try {
                 jsonObject = jsonObject.getJsonObject("type");
-            } catch (ClassCastException ignored) {}
+            } catch (ClassCastException ignored) {
+            }
         }
 
         JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder()
@@ -112,7 +113,7 @@ public class JsonObjectUtils {
 
     public static JsonObject createRedefinedRecord(String name, String type, JsonObject defaultObject) {
         JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder()
-                .add(Constant.TYPE, Constant.NAMESPACE_VALUE + "." + ConverterUtils.capitalizeWord(type))
+                .add(Constant.TYPE, Constant.NAMESPACE_VALUE + "." + WordUtils.capitalize(type))
                 .add(Constant.NAME, name);
         if (defaultObject != null) {
             jsonObjectBuilder.add(Constant.DEFAULT, defaultObject);
@@ -126,29 +127,14 @@ public class JsonObjectUtils {
                 .add(Constant.LOGICAL_TYPE, logicalType);
     }
 
-    public static JsonObject createLogicalTypeExterior(String name, JsonObject type, boolean required) {
-        JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder()
-                .add(Constant.NAME, name)
-                .add(Constant.TYPE, type);
-        if (!required) {
-            jsonObjectBuilder.add(Constant.DEFAULT, Json.createObjectBuilder().build());
-        }
-        return jsonObjectBuilder.build();
-    }
-
-    // symbols: a JSON array, listing symbols, as JSON strings (required).
-    // All symbols in an enum must be unique; duplicates are prohibited.
-    // Every symbol must match the regular expression [A-Za-z_][A-Za-z0-9_]* (the same requirement as for names).
     private static JsonArray formatSymbols(JsonNode root) {
         JsonArrayBuilder formattedSymbols = Json.createArrayBuilder();
-        Set<String> symbols = new HashSet<>();
+        Set<String> uniqueSymbols = new HashSet<>();
         root.get(Constant.ENUM).forEach(symbol -> {
-            String txt = symbol.asText();
-            txt = ConverterUtils.capitalizeWord(txt.replace("-", ""));
-            txt = txt.substring(0, 1).toLowerCase() + txt.substring(1);
-            if (!symbols.contains(txt)) {
-                formattedSymbols.add(txt);
-                symbols.add(txt);
+            String encodedSymbol = SymbolUtils.encodeSymbol(symbol.asText());
+            if (!uniqueSymbols.contains(encodedSymbol)) {
+                formattedSymbols.add(encodedSymbol);
+                uniqueSymbols.add(encodedSymbol);
             }
         });
         return formattedSymbols.build();
