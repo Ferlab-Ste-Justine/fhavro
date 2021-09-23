@@ -13,6 +13,8 @@ import org.hl7.fhir.r4.model.Base;
 import org.hl7.fhir.r4.model.BaseResource;
 import org.hl7.fhir.r4.model.Property;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
@@ -44,7 +46,6 @@ public class AvroFhirConverter {
             case ENUM:
                 readType(helper, SymbolUtils.decodeSymbol(value.toString()), path);
                 break;
-            case BYTES:
             case STRING:
             case FIXED:
             case BOOLEAN:
@@ -54,6 +55,7 @@ public class AvroFhirConverter {
             case LONG:
             case FLOAT:
             case DOUBLE:
+            case BYTES:
                 readNumber(helper, schema, value, path);
                 break;
             case NULL:
@@ -75,7 +77,7 @@ public class AvroFhirConverter {
 
             Object object = genericRecord.get(innerField.name());
             if (object != null) {
-                path.addLast(innerField.name());
+                addLast(path, innerField.name());
                 read(helper, innerField, innerField.schema(), object, path);
             }
         }
@@ -96,7 +98,7 @@ public class AvroFhirConverter {
                 helper.getTerser().addElement(helper.getResource(), navigatePath(path), element.toString());
             }
             read(helper, field, schema.getElementType(), element, path);
-            path.addLast(field.name());
+            addLast(path, field.name());
         }
 
         path.removeLast();
@@ -118,6 +120,9 @@ public class AvroFhirConverter {
                 return;
             case Constant.DATE:
                 readType(helper, DateUtils.formatDate((Integer) value), path);
+                return;
+            case Constant.DECIMAL:
+                readType(helper, StandardCharsets.UTF_8.decode((ByteBuffer) value).toString(), path);
                 return;
             default:
                 readType(helper, value.toString(), path);
@@ -144,5 +149,13 @@ public class AvroFhirConverter {
             }
         }
         path.removeLast();
+    }
+
+    protected static void addLast(Deque<String> path, String value) {
+        // Format value[x] in camelCase
+        if (value.contains(Constant.VALUE) && value.length() >= 6) {
+            value = value.substring(0, 5) + String.valueOf(value.charAt(5)).toUpperCase() + value.substring(6);
+        }
+        path.addLast(value);
     }
 }

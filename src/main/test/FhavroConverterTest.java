@@ -46,12 +46,11 @@ public class FhavroConverterTest {
     public void test_serialize_eventDefinition() {
         assertBaseResource("EventDefinition", EventDefinitionFixture.createEventDefinition(), EventDefinition.class);
     }
-
-    // Not working because value[x] are not serialized yet.
-//    @Test
-//    public void test_serialize_effectEvidenceSynthesis() {
-//        assertBaseResource("EffectEvidenceSynthesis", EffectEvidenceSynthesisFixture.createEffectEvidenceSynthesis(), EffectEvidenceSynthesis.class);
-//    }
+    
+    @Test
+    public void test_serialize_effectEvidenceSynthesis() {
+        assertBaseResource("EffectEvidenceSynthesis", EffectEvidenceSynthesisFixture.createEffectEvidenceSynthesis(), EffectEvidenceSynthesis.class);
+    }
 
     @Test
     public void test_serialize_evidenceVariable() {
@@ -76,7 +75,6 @@ public class FhavroConverterTest {
         String inputString = convertDate(FhirContext.forR4().newJsonParser().encodeResourceToString(baseResource));
         String outputString = convertDate(FhirContext.forR4().newJsonParser().encodeResourceToString(result));
 
-        // TODO improve the testing to see if two entities are the same because the encodeResourcetoString does not format Date properly.
         assertEquals(inputString, outputString);
     }
 

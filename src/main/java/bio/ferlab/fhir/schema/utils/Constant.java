@@ -20,6 +20,7 @@ public class Constant {
     public static final String LOGICAL_TYPE = "logicalType";
     public static final String PATTERN = "pattern";
     public static final String RESOURCE_TYPE = "resourceType";
+    public static final String VALUE = "value";
 
     // Avro-specific
     public static final String ENUM = "enum";
