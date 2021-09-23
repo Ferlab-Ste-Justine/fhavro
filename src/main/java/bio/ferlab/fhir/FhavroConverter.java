@@ -9,7 +9,6 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.hl7.fhir.r4.model.BaseResource;
 import org.jetbrains.annotations.NotNull;
-import org.junit.platform.commons.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +17,8 @@ import java.net.URL;
 
 public class FhavroConverter {
 
-    private FhavroConverter() {}
+    private FhavroConverter() {
+    }
 
     @NotNull
     public static GenericData.Record convertResourceToGenericRecord(BaseResource baseResource, Schema schema) {

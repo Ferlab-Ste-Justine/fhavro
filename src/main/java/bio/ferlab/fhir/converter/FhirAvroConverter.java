@@ -5,6 +5,8 @@ import bio.ferlab.fhir.converter.converters.DateTimeConverter;
 import bio.ferlab.fhir.converter.converters.IConverter;
 import bio.ferlab.fhir.converter.exception.AvroConversionException;
 import bio.ferlab.fhir.converter.exception.UnionTypeException;
+import bio.ferlab.fhir.schema.utils.Constant;
+import bio.ferlab.fhir.schema.utils.SymbolUtils;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -33,7 +35,7 @@ public class FhirAvroConverter {
     public static GenericData.Record readResource(BaseResource baseResource, Schema schema) {
         Object object = FhirAvroConverter.read(schema, Arrays.asList(baseResource));
         GenericData.Record genericRecord = (GenericData.Record) object;
-        genericRecord.put("resourceType", schema.getName());
+        genericRecord.put(Constant.RESOURCE_TYPE, schema.getName());
         return genericRecord;
     }
 
@@ -82,7 +84,7 @@ public class FhirAvroConverter {
         }
 
         try {
-            recordBuilder.set("resourceType", schema.getName());
+            recordBuilder.set(Constant.RESOURCE_TYPE, schema.getName());
         } catch (Exception ignored) {
         }
 
@@ -117,8 +119,9 @@ public class FhirAvroConverter {
     protected static Object readEnum(Schema schema, List<Base> bases) {
         Base base = getSingle(bases);
         List<String> symbols = schema.getEnumSymbols();
-        if (symbols.contains(base.primitiveValue())) {
-            return new GenericData.EnumSymbol(schema, base.primitiveValue());
+        String encodedSymbol = SymbolUtils.encodeSymbol(base.primitiveValue());
+        if (symbols.contains(encodedSymbol)) {
+            return new GenericData.EnumSymbol(schema, encodedSymbol);
         } else {
             throw new AvroConversionException(String.format("value: %s was not found within Symbols: %s", base.primitiveValue(), symbols));
         }

@@ -2,24 +2,27 @@ package bio.ferlab.fhir.converter;
 
 import bio.ferlab.fhir.converter.exception.AvroConversionException;
 import bio.ferlab.fhir.converter.exception.UnionTypeException;
+import bio.ferlab.fhir.schema.utils.Constant;
+import bio.ferlab.fhir.schema.utils.SymbolUtils;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.util.TerserUtilHelper;
 import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericRecord;
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.r4.model.Base;
 import org.hl7.fhir.r4.model.BaseResource;
 import org.hl7.fhir.r4.model.Property;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.List;
 
 import static bio.ferlab.fhir.converter.ConverterUtils.navigatePath;
 
 public class AvroFhirConverter {
 
-    private AvroFhirConverter() {}
+    private AvroFhirConverter() {
+    }
 
     public static <T extends BaseResource> T readGenericRecord(GenericRecord genericRecord, Schema schema, Class<T> type) {
         TerserUtilHelper helper = TerserUtilHelper.newHelper(FhirContext.forR4(), type.getSimpleName());
@@ -39,6 +42,8 @@ public class AvroFhirConverter {
                 readUnion(helper, field, schema, value, path);
                 break;
             case ENUM:
+                readType(helper, SymbolUtils.decodeSymbol(value.toString()), path);
+                break;
             case BYTES:
             case STRING:
             case FIXED:
@@ -64,7 +69,7 @@ public class AvroFhirConverter {
     protected static void readRecord(TerserUtilHelper helper, Schema schema, Object value, Deque<String> path) {
         GenericRecord genericRecord = (GenericRecord) value;
         for (Schema.Field innerField : schema.getFields()) {
-            if ("resourceType".equalsIgnoreCase(innerField.name())) {
+            if (Constant.RESOURCE_TYPE.equalsIgnoreCase(innerField.name())) {
                 continue;
             }
 
@@ -108,13 +113,11 @@ public class AvroFhirConverter {
 
     protected static void readNumber(TerserUtilHelper helper, Schema schema, Object value, Deque<String> path) {
         switch (schema.getLogicalType().getName()) {
-            case "time-micros":
-                readType(helper, new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(new Date((Long) value * 1000)), path);
+            case Constant.TIMESTAMP_MICROS:
+                readType(helper, DateUtils.formatTimestampMicros((Long) value), path);
                 return;
-            case "date":
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-                readType(helper, simpleDateFormat.format(new Date((Integer) value * 86400000L)), path);
+            case Constant.DATE:
+                readType(helper, DateUtils.formatDate((Integer) value), path);
                 return;
             default:
                 readType(helper, value.toString(), path);

@@ -4,8 +4,12 @@ import bio.ferlab.fhir.schema.definition.Property;
 import bio.ferlab.fhir.schema.repository.DefinitionRepository;
 import bio.ferlab.fhir.schema.utils.Constant;
 import bio.ferlab.fhir.schema.utils.JsonObjectUtils;
+import org.apache.commons.text.WordUtils;
 
+import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -21,7 +25,19 @@ public class EnumParser implements IParser {
     public JsonObject parseField(String root, String identifier, Property property) {
         String enumName = generateEnumName(property);
         if (DefinitionRepository.registerInnerRecords(root, enumName)) {
-            return JsonObjectUtils.createRedefinedRecord(enumName, enumName, null);
+            JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder()
+                    .add(Constant.NAME, enumName);
+            String fullName = Constant.NAMESPACE_VALUE + "." + WordUtils.capitalize(enumName);
+            if (!property.isRequired()) {
+                jsonObjectBuilder.add(Constant.TYPE, Json.createArrayBuilder()
+                        .add(Constant.NULL)
+                        .add(fullName)
+                        .build())
+                        .add(Constant.DEFAULT, JsonValue.NULL);
+            } else {
+                jsonObjectBuilder.add(Constant.TYPE, fullName);
+            }
+            return jsonObjectBuilder.build();
         } else {
             return JsonObjectUtils.createField(identifier, JsonObjectUtils.createEnum(enumName, property.getJsonNode()), property.isRequired());
         }

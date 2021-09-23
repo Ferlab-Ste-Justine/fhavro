@@ -6,7 +6,7 @@ import bio.ferlab.fhir.schema.parser.regex.DateTimeParser;
 import bio.ferlab.fhir.schema.parser.regex.DecimalParser;
 import bio.ferlab.fhir.schema.repository.DefinitionRepository;
 import bio.ferlab.fhir.schema.utils.Constant;
-import bio.ferlab.fhir.schema.utils.ConverterUtils;
+import bio.ferlab.fhir.schema.utils.SchemaUtils;
 
 import javax.json.JsonObject;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class TypeParser implements IParser {
             return parser.get().parseField(root, identifier, property);
         }
 
-        String reference = ConverterUtils.parsePrimitiveType(property.getJsonNode().get(Constant.TYPE).toString());
+        String reference = SchemaUtils.parsePrimitiveType(property.getJsonNode().get(Constant.TYPE).toString());
         return DefinitionRepository.getPrimitiveDefinitionByIdentifier(reference).convertToJson(root, identifier, property.isRequired());
     }
 }

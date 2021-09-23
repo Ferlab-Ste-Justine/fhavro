@@ -21,7 +21,6 @@ public class PatientFixture {
         homerSimpson.addGiven("Marge");
         patient.addIdentifier(IdentifierFixture.createIdentifier());
 
-
         patient.addName(homerSimpson);
         patient.addName(margeSimpson);
         patient.setGender(Enumerations.AdministrativeGender.MALE);

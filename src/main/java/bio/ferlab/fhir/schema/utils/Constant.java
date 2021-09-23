@@ -19,6 +19,7 @@ public class Constant {
     public static final String REQUIRED = "required";
     public static final String LOGICAL_TYPE = "logicalType";
     public static final String PATTERN = "pattern";
+    public static final String RESOURCE_TYPE = "resourceType";
 
     // Avro-specific
     public static final String ENUM = "enum";
@@ -30,7 +31,7 @@ public class Constant {
     public static final String INT = "int";
     public static final String LONG = "long";
     public static final String DATE = "date";
-    public static final String TIME_MICROS = "time-micros";
+    public static final String TIMESTAMP_MICROS = "timestamp-micros";
 
     public static final String NULL = "null";
 

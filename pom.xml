@@ -1,17 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>example.qs</groupId>
-    <artifactId>avro-rpc-quickstart</artifactId>
+    <groupId>fhavro.qs</groupId>
+    <artifactId>fhavro</artifactId>
     <packaging>jar</packaging>
-    <version>1.10.0-SNAPSHOT</version>
-    <name>avro-rpc-quickstart</name>
-    <url>http://maven.apache.org</url>
+    <version>0.0.1</version>
+    <name>fhavro</name>
+    <url>https://github.com/Ferlab-Ste-Justine/fhavro</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compiler-plugin.version>3.8.0</compiler-plugin.version>
-        <avro.version>1.10.0</avro.version>
+        <java.version>11.0.12</java.version>
+        <avro.version>1.10.2</avro.version>
         <junit.version>5.4.0</junit.version>
     </properties>
 
@@ -37,7 +38,7 @@
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
-            <version>1.10.2</version>
+            <version>${avro.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.avro</groupId>
@@ -82,7 +83,7 @@
             <plugin>
                 <groupId>org.apache.avro</groupId>
                 <artifactId>avro-maven-plugin</artifactId>
-                <version>1.10.2</version>
+                <version>${avro.version}</version>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>
@@ -100,8 +101,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
         </plugins>

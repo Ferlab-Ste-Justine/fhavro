@@ -9,6 +9,6 @@ public class DateTimeDefinition extends SpecificDefinition {
 
     @Override
     public JsonObject convertToJson(String root, String name, boolean required) {
-        return JsonObjectUtils.createField(name, JsonObjectUtils.createLogicalType(Constant.LONG, Constant.TIME_MICROS).build(), required);
+        return JsonObjectUtils.createField(name, JsonObjectUtils.createLogicalType(Constant.LONG, Constant.TIMESTAMP_MICROS).build(), required);
     }
 }

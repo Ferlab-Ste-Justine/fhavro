@@ -2,10 +2,16 @@ package bio.ferlab.fhir.schema.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.text.WordUtils;
+import org.jetbrains.annotations.NotNull;
 
-public class ConverterUtils {
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-    private ConverterUtils() {}
+public class SchemaUtils {
+
+    private SchemaUtils() {}
 
     public static String parseReference(JsonNode jsonNode) {
         return jsonNode.get(Constant.REF).toString()
@@ -19,9 +25,5 @@ public class ConverterUtils {
             return "integer";
         }
         return type;
-    }
-
-    public static String capitalizeWord(String word) {
-        return WordUtils.capitalize(word);
     }
 }
