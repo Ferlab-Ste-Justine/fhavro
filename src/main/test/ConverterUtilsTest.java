@@ -49,6 +49,16 @@ public class ConverterUtilsTest {
     }
 
     @Test
+    public void test_navigatePath_reverse() {
+        assertEquals("start.period.identifier", navigatePath(getDeque(), false, getDeque().size()));
+    }
+
+    @Test
+    public void test_navigatePath_reverse_get_parent() {
+        assertEquals("start.period", navigatePath(getDeque(), false, 2));
+    }
+
+    @Test
     public void test_formatSchemaName() {
         assertEquals("patient.avsc", formatSchemaName("Patient"));
     }

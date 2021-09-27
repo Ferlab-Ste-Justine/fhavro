@@ -16,8 +16,12 @@ public class CodeableConceptFixture {
     }
 
     public static CodeableConcept createCodeableConcept() {
+        return createCodeableConcept(4);
+    }
+
+    public static CodeableConcept createCodeableConcept(int size) {
         List<Coding> codings = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < size; i++) {
             codings.add(createCoding(String.valueOf(i)));
         }
         return new CodeableConcept()

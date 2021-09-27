@@ -16,10 +16,14 @@ public class ConverterUtils {
             throw new BadRequestException("Please verify the path argument");
         }
 
-        return navigatePath(path, path.size());
+        return navigatePath(path, true, path.size());
     }
 
     public static String navigatePath(Deque<String> path, int depth) {
+        return navigatePath(path, true, depth);
+    }
+
+    public static String navigatePath(Deque<String> path, boolean forward, int depth) {
         if (path == null) {
             throw new BadRequestException("Please verify the path argument");
         }
@@ -29,7 +33,7 @@ public class ConverterUtils {
         }
 
         StringBuilder absolutePath = new StringBuilder();
-        Iterator<String> itr = path.iterator();
+        Iterator<String> itr = (forward) ? path.iterator() : path.descendingIterator();
 
         // Root
         if (itr.hasNext()) {

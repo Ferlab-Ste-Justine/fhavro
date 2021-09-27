@@ -57,6 +57,11 @@ public class FhavroConverterTest {
         assertBaseResource("EvidenceVariable", EvidenceVariableFixture.createEvidenceVariable(), EvidenceVariable.class);
     }
 
+    @Test
+    public void test_serialize_carePlan() {
+        assertBaseResource("CarePlan", CarePlanFixture.createCarePlan(), CarePlan.class);
+    }
+
     private <T extends BaseResource> void assertBaseResource(String name, BaseResource baseResource, Class<T> type) {
         Schema schema = FhavroConverter.loadSchema(name);
 
