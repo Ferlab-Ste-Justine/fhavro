@@ -1,1 +1,0 @@
-{"type":"record","name":"TestScript_Link","doc":"A structured set of tests against a FHIR server or client implementation to determine compliance against the FHIR specification.","namespace":"bio.ferlab.fhir","fields":[{"name":"description","type":["null","string"],"default":null},{"name":"url","type":["null","string"],"default":null}],"default":null}

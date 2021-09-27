@@ -13,6 +13,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 public class GenerateSchemas {
 
@@ -24,6 +25,8 @@ public class GenerateSchemas {
     private static final Options options = new Options();
     private static final HelpFormatter helpFormatter = new HelpFormatter();
     private static final CommandLineParser commandLineParser = new DefaultParser();
+
+    private static List<String> generatedEntities = new ArrayList<>();
 
     public static void main(String[] args) throws URISyntaxException, IOException {
         setupCommandLine();
@@ -70,7 +73,8 @@ public class GenerateSchemas {
     }
 
     public static void generate(String identifier) {
-        if ("all".equalsIgnoreCase(identifier)) {
+        if ("all" .equalsIgnoreCase(identifier)) {
+            generatedEntities = new ArrayList<>(DefinitionRepository.getComplexDefinitions().keySet());
             loadAll();
         } else {
             loadOne(identifier);
@@ -82,13 +86,15 @@ public class GenerateSchemas {
     public static void loadAll() {
         String currentKey = "";
         try {
-            for (String s : DefinitionRepository.getComplexDefinitions().keySet()) {
-                currentKey = s;
+            ListIterator<String> listIterator = generatedEntities.listIterator();
+            while (listIterator.hasNext()) {
+                currentKey = listIterator.next();
                 if (unsupportedEntities.contains(currentKey)) {
                     continue;
                 }
 
                 loadOne(currentKey);
+                listIterator.remove();
             }
         } catch (StackOverflowError stackOverflowError) {
             unsupportedEntities.add(currentKey);
@@ -97,7 +103,9 @@ public class GenerateSchemas {
     }
 
     public static void loadOne(String identifier) {
-        DefinitionRepository.generateDefinition(identifier);
-        supportedEntities.add(identifier);
+        if (DefinitionRepository.generateDefinition(identifier)) {
+            supportedEntities.add(identifier);
+            LOGGER.info("Generated: " + identifier);
+        }
     }
 }

@@ -1,1 +1,0 @@
-{"type":"record","name":"Bundle_Link","doc":"A container for a collection of resources.","namespace":"bio.ferlab.fhir","fields":[{"name":"url","type":["null","string"],"default":null},{"name":"relation","type":["null","string"],"default":null}],"default":null}
