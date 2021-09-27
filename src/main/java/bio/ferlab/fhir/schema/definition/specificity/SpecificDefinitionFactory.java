@@ -9,6 +9,7 @@ public class SpecificDefinitionFactory {
     private static final Map<String, SpecificDefinition> specificDefinitions = new HashMap<String, SpecificDefinition>() {{
         put("date", new DateDefinition());
         put("dateTime", new DateTimeDefinition());
+        put("decimal", new DecimalDefinition());
         put("xhtml", new XHtmlDefinition());
         put("Extension", new ExtensionDefinition());
         put("Reference", new ReferenceDefinition());

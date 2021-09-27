@@ -76,10 +76,7 @@ public class FhirAvroConverter {
 
         for (Base base : bases) {
             for (Schema.Field field : schema.getFields()) {
-                Property property = base.getNamedProperty(WordUtils.uncapitalize(field.name()));
-                if (property != null) {
-                    recordBuilder.set(field.name(), read(field.schema(), property.getValues()));
-                }
+                getProperty(base, field).ifPresent(property -> recordBuilder.set(field.name(), read(field.schema(), property.getValues())));
             }
         }
 
@@ -153,5 +150,27 @@ public class FhirAvroConverter {
     private static Base getSingle(List<Base> bases) {
         return Optional.ofNullable(bases.get(0))
                 .orElseThrow(() -> new RuntimeException("Please verify this, this isn't suppose to occur."));
+    }
+
+    private static Optional<Property> getProperty(Base base, Schema.Field field) {
+        Property property = base.getNamedProperty(WordUtils.uncapitalize(field.name()));
+        if (property != null) {
+            return Optional.of(property);
+        }
+
+        // Support value[x] notation.
+        if (field.name().contains(Constant.VALUE)) {
+            property = base.getNamedProperty(Constant.VALUE);
+            if (property != null) {
+                return Optional.of(property);
+            }
+        }
+
+        for (Property children : base.children()) {
+            if (field.name().equalsIgnoreCase(children.getName())) {
+                return Optional.of(children);
+            }
+        }
+        return Optional.empty();
     }
 }
