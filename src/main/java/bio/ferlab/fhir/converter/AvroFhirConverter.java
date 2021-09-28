@@ -127,6 +127,11 @@ public class AvroFhirConverter {
     }
 
     protected static void readNumber(ResourceContext context, Schema schema, Object value) {
+        if (schema.getLogicalType() == null) {
+            readType(context, value.toString());
+            return;
+        }
+
         switch (schema.getLogicalType().getName()) {
             case Constant.TIMESTAMP_MICROS:
                 readType(context, DateUtils.formatTimestampMicros((Long) value));

@@ -7,9 +7,9 @@ import java.util.regex.Pattern;
 
 public class SymbolUtils {
 
-    public static final String FIRST_CHARACTER_REGEX = "[A-Za-z_]";
-    public static final String SUBSEQUENT_CHARACTER_REGEX = "[A-Za-z0-9_]*";
-    public static final String REGEX_NAMING_CONVENTION = FIRST_CHARACTER_REGEX + SUBSEQUENT_CHARACTER_REGEX;
+    private static final String FIRST_CHARACTER_REGEX = "[A-Za-z_]";
+    private static final String SUBSEQUENT_CHARACTER_REGEX = "[A-Za-z0-9_]*";
+    private static final String REGEX_NAMING_CONVENTION = FIRST_CHARACTER_REGEX + SUBSEQUENT_CHARACTER_REGEX;
     private static final List<Character> INVALID_FIRST_CHARACTERS = Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
     private static final List<String> INVALID_CHARACTERS = Arrays.asList("-", ".", "/", "<=", "<", ">=", ">", "!=", "=");
 

@@ -1,14 +1,19 @@
 package fixture;
 
 import org.hl7.fhir.r4.model.Appointment;
+import org.hl7.fhir.r4.model.DateType;
+
+import java.util.Date;
 
 public class AppointmentFixture {
 
     public static Appointment createAppointment() {
-        return new Appointment()
+        Appointment appointment = new Appointment()
                 .addIdentifier(IdentifierFixture.createIdentifier())
                 .addBasedOn(ReferenceFixture.createAbsoluteReference())
                 .addRequestedPeriod(PeriodFixture.createPlannedPeriod())
                 .addReasonCode(CodeableConceptFixture.createCodeableConcept());
+        appointment.addExtension(ExtensionFixture.createExtension(new DateType(new Date())));
+        return appointment;
     }
 }

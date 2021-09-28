@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ParserServant {
 
-    public static final List<IParser> parsers = Collections.unmodifiableList(new ArrayList<IParser>() {{
+    private static final List<IParser> parsers = Collections.unmodifiableList(new ArrayList<IParser>() {{
         add(new ReferenceParser());
         add(new ArrayParser());
         add(new EnumParser());

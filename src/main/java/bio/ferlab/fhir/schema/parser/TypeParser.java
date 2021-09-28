@@ -9,19 +9,13 @@ import bio.ferlab.fhir.schema.utils.Constant;
 import bio.ferlab.fhir.schema.utils.SchemaUtils;
 
 import javax.json.JsonObject;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 public class TypeParser implements IParser {
 
     // The ordering is important.
-    private static final List<IParser> innerParser = Collections.unmodifiableList(new ArrayList<IParser>() {{
-        add(new DateTimeParser());
-        add(new DateParser());
-        add(new DecimalParser());
-    }});
+    private static final List<IParser> INNER_PARSER = List.of(new DateTimeParser(), new DateParser(), new DecimalParser());
 
     @Override
     public boolean canParse(Property property) {
@@ -30,7 +24,7 @@ public class TypeParser implements IParser {
 
     @Override
     public JsonObject parseField(String root, String identifier, Property property) {
-        Optional<IParser> parser = innerParser.stream()
+        Optional<IParser> parser = INNER_PARSER.stream()
                 .filter(x -> x.canParse(property))
                 .findFirst();
         if (parser.isPresent()) {

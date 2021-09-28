@@ -6,16 +6,11 @@ import bio.ferlab.fhir.schema.utils.Constant;
 import bio.ferlab.fhir.schema.utils.JsonObjectUtils;
 
 import javax.json.JsonObject;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ArrayParser implements IParser {
 
-    private static final List<IParser> innerParser = Collections.unmodifiableList(new ArrayList<IParser>() {{
-        add(new ReferenceParser());
-        add(new EnumParser());
-    }});
+    private static final List<IParser> INNER_PARSER = List.of(new ReferenceParser(), new EnumParser());
 
     @Override
     public boolean canParse(Property property) {
@@ -25,7 +20,7 @@ public class ArrayParser implements IParser {
     @Override
     public JsonObject parseField(String root, String identifier, Property property) {
         Property items = new Property(property.getJsonNode().get(Constant.ITEMS), true);
-        return JsonObjectUtils.createArray(identifier, innerParser.stream()
+        return JsonObjectUtils.createArray(identifier, INNER_PARSER.stream()
                 .filter(parser -> parser.canParse(items))
                 .findFirst()
                 .orElseThrow(() -> new UnknownParserException(identifier))
