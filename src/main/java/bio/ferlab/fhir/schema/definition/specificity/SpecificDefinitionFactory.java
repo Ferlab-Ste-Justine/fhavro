@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public class SpecificDefinitionFactory {
 
-    private static final Map<String, SpecificDefinition> specificDefinitions = new HashMap<String, SpecificDefinition>() {{
+    private static final Map<String, SpecificDefinition> SPECIFIC_DEFINITIONS = new HashMap<>() {{
         put("date", new DateDefinition());
         put("dateTime", new DateTimeDefinition());
         put("decimal", new DecimalDefinition());
@@ -19,11 +19,11 @@ public class SpecificDefinitionFactory {
     private SpecificDefinitionFactory() {}
 
     public static SpecificDefinition getSpecificDefinition(String identifier) {
-        return Optional.ofNullable(specificDefinitions.get(identifier))
+        return Optional.ofNullable(SPECIFIC_DEFINITIONS.get(identifier))
                 .orElseThrow(() -> new RuntimeException("Unknown SpecificDefinition, please verify: " + identifier));
     }
 
     public static boolean isSupported(String identifier) {
-        return specificDefinitions.containsKey(identifier);
+        return SPECIFIC_DEFINITIONS.containsKey(identifier);
     }
 }

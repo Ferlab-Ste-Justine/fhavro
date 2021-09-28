@@ -24,10 +24,10 @@ import java.util.regex.Pattern;
 
 public class FhirAvroConverter {
 
-    private static final List<IConverter<String>> primitiveConverters = new ArrayList<IConverter<String>>() {{
-        add(new DateConverter());
-        add(new DateTimeConverter());
-    }};
+    private static final List<IConverter<String>> PRIMITIVE_CONVERTERS = List.of(
+            new DateConverter(),
+            new DateTimeConverter()
+    );
 
     private FhirAvroConverter() {
     }
@@ -135,7 +135,7 @@ public class FhirAvroConverter {
     }
 
     protected static String formatPrimitiveValue(String value) {
-        for (IConverter<String> converter : primitiveConverters) {
+        for (IConverter<String> converter : PRIMITIVE_CONVERTERS) {
             if (Pattern.compile(converter.getPattern()).matcher(value).matches()) {
                 return converter.convert(value);
             }
@@ -153,17 +153,28 @@ public class FhirAvroConverter {
     }
 
     private static Optional<Property> getProperty(Base base, Schema.Field field) {
-        Property property = base.getNamedProperty(WordUtils.uncapitalize(field.name()));
-        if (property != null) {
-            return Optional.of(property);
-        }
+        Property property;
 
         // Support value[x] notation.
-        if (field.name().contains(Constant.VALUE)) {
+        if (Pattern.compile("value[a-zA-Z].*").matcher(field.name()).matches()) {
             property = base.getNamedProperty(Constant.VALUE);
-            if (property != null) {
-                return Optional.of(property);
+            if (property != null && property.hasValues()) {
+                // Try to find the valid corresponding value[x] by comparing the FhirType and the field name.
+                String fhirType = property.getValues().get(0).fhirType().toLowerCase();
+                String fieldName = field.name().replace("value", "").toLowerCase();
+                if (fieldName.equals(fhirType)) {
+                    return Optional.of(property);
+                } else {
+                    return Optional.empty();
+                }
+            } else {
+                return Optional.empty();
             }
+        }
+
+        property = base.getNamedProperty(WordUtils.uncapitalize(field.name()));
+        if (property != null) {
+            return Optional.of(property);
         }
 
         for (Property children : base.children()) {

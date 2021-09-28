@@ -17,9 +17,8 @@ public class ComplexDefinition extends BaseDefinition {
     private final Map<String, Property> properties = new HashMap<>();
     private final List<String> requiredProperties = new ArrayList<>();
 
-    private static final List<String> unsupportedProperties = new ArrayList<String>() {{
+    private static final List<String> UNSUPPORTED_PROPERTIES = new ArrayList<>() {{
         add("id");
-        add("extension");
         add("modifierExtension");
     }};
 
@@ -40,7 +39,7 @@ public class ComplexDefinition extends BaseDefinition {
         for (Iterator<Map.Entry<String, JsonNode>> it = getDefinition().get(Constant.PROPERTIES).fields(); it.hasNext(); ) {
             Map.Entry<String, JsonNode> node = it.next();
 
-            if (node.getKey().contains("_") || unsupportedProperties.contains(node.getKey())) {
+            if (node.getKey().contains("_") || UNSUPPORTED_PROPERTIES.contains(node.getKey())) {
                 continue;
             }
 

@@ -108,17 +108,24 @@ public class DefinitionRepository {
         return false;
     }
 
-    public static void generateDefinition(String identifier) {
-        DefinitionRepository.getComplexDefinitionByIdentifier(identifier).convertToJson(identifier, identifier, true);
-        saveDefinition(DefinitionRepository.getComplexDefinitionByIdentifier(identifier));
-        definedRecords.clear();
+    public static boolean generateDefinition(String identifier) {
+        BaseDefinition baseDefinition = DefinitionRepository.getComplexDefinitionByIdentifier(identifier);
+        if (baseDefinition.getDefinition().get("properties").has("resourceType")) {
+            baseDefinition.convertToJson(identifier, identifier, true);
+            saveDefinition(baseDefinition);
+            definedRecords.clear();
+            return true;
+        }
+        return false;
     }
 
     private static void saveDefinition(BaseDefinition baseDefinition) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("./src/resources/schemas/" + baseDefinition.getName().toLowerCase() + ".avsc"))) {
-            writer.write(baseDefinition.getJsonObject().toString());
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (baseDefinition.getDefinition().get("properties").has("resourceType")) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("./src/resources/schemas/" + baseDefinition.getName().toLowerCase() + ".avsc"))) {
+                writer.write(baseDefinition.getJsonObject().toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

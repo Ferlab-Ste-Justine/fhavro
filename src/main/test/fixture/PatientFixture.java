@@ -20,7 +20,7 @@ public class PatientFixture {
         homerSimpson.setFamily("Simpson");
         homerSimpson.addGiven("Marge");
         patient.addIdentifier(IdentifierFixture.createIdentifier());
-
+        patient.addExtension(ExtensionFixture.createExtension(new PositiveIntType(45)));
         patient.addName(homerSimpson);
         patient.addName(margeSimpson);
         patient.setGender(Enumerations.AdministrativeGender.MALE);
