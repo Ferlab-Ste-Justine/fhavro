@@ -12,7 +12,7 @@ public class XHtmlDefinition extends SpecificDefinition {
     @Override
     public JsonObject convertToJson(String root, String name, boolean required) {
         JsonArray fields = Json.createArrayBuilder()
-                .add(JsonObjectUtils.createConst("extension", Constant.STRING, false))
+                .add(JsonObjectUtils.createConst(Constant.EXTENSION, Constant.STRING, false))
                 .add(JsonObjectUtils.createConst("url", Constant.STRING, false))
                 .add(JsonObjectUtils.createConst("valueString", Constant.STRING, false))
                 .build();

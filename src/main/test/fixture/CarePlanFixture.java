@@ -24,6 +24,7 @@ public class CarePlanFixture {
         carePlan.setAuthor(ReferenceFixture.createAbsoluteReference());
 
         List<CarePlan.CarePlanActivityComponent> carePlanActivityComponents = new ArrayList<>();
+
         CarePlan.CarePlanActivityComponent carePlanActivityComponent = new CarePlan.CarePlanActivityComponent();
         carePlanActivityComponent.setOutcomeCodeableConcept(List.of(CodeableConceptFixture.createCodeableConcept()));
         carePlanActivityComponent.setProgress(List.of(AnnotationFixture.createAnnotation()));
@@ -39,8 +40,10 @@ public class CarePlanFixture {
         carePlanActivityDetailComponent.setScheduled(new StringType("This is a string!"));
 
         carePlanActivityComponent.setDetail(carePlanActivityDetailComponent);
+        carePlanActivityComponents.add(carePlanActivityComponent);
 
         carePlan.setActivity(carePlanActivityComponents);
+        
         return carePlan;
     }
 }

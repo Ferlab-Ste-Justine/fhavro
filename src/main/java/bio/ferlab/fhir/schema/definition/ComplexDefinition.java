@@ -1,10 +1,10 @@
 package bio.ferlab.fhir.schema.definition;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import bio.ferlab.fhir.schema.parser.ParserServant;
 import bio.ferlab.fhir.schema.repository.DefinitionRepository;
 import bio.ferlab.fhir.schema.utils.Constant;
 import bio.ferlab.fhir.schema.utils.JsonObjectUtils;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.json.Json;
@@ -14,13 +14,10 @@ import java.util.*;
 
 public class ComplexDefinition extends BaseDefinition {
 
-    private final Map<String, Property> properties = new HashMap<>();
-    private final List<String> requiredProperties = new ArrayList<>();
+    private static final List<String> UNSUPPORTED_PROPERTIES = List.of("id", "modifierExtension");
 
-    private static final List<String> UNSUPPORTED_PROPERTIES = new ArrayList<>() {{
-        add("id");
-        add("modifierExtension");
-    }};
+    private final LinkedHashMap<String, Property> properties = new LinkedHashMap<>();
+    private final List<String> requiredProperties = new ArrayList<>();
 
     public ComplexDefinition(Map.Entry<String, JsonNode> entry, JsonNode definition) {
         super(entry.getKey(), entry.getKey(), entry.getValue());
@@ -36,10 +33,15 @@ public class ComplexDefinition extends BaseDefinition {
             setDescription(getDefinition().get(Constant.DESCRIPTION).asText());
         }
 
+        // Ensure that the Extension properties is the first one to be populated.
+        if (getDefinition().get(Constant.PROPERTIES).has(Constant.EXTENSION)) {
+            properties.put(Constant.EXTENSION, new Property(getDefinition().get(Constant.PROPERTIES).get(Constant.EXTENSION), false));
+        }
+
         for (Iterator<Map.Entry<String, JsonNode>> it = getDefinition().get(Constant.PROPERTIES).fields(); it.hasNext(); ) {
             Map.Entry<String, JsonNode> node = it.next();
 
-            if (node.getKey().contains("_") || UNSUPPORTED_PROPERTIES.contains(node.getKey())) {
+            if (node.getKey().contains("_") || node.getKey().equals(Constant.EXTENSION) || UNSUPPORTED_PROPERTIES.contains(node.getKey())) {
                 continue;
             }
 
@@ -51,7 +53,7 @@ public class ComplexDefinition extends BaseDefinition {
         if (properties.isEmpty()) {
             generateProperties();
         }
-
+        ;
         JsonArrayBuilder fields = Json.createArrayBuilder();
         for (Map.Entry<String, Property> node : properties.entrySet()) {
             fields.add(ParserServant.parseField(root, node.getKey(), node.getValue()));

@@ -36,20 +36,53 @@ public class ExtensionDefinition extends SpecificDefinition {
         put("valueDate", new DateDefinition());
         put("valueDateTime", new DateTimeDefinition());
         put("valueDecimal", new DecimalDefinition());
+        put("valueReference", new ReferenceDefinition());
+    }};
+
+    private static final Map<String, String> COMPLEXES = new HashMap<>() {{
+        put("valueAddress", "Address");
+        put("valueAge", "Age");
+        put("valueAnnotation", "Annotation");
+        put("valueAttachment", "Attachment");
+        put("valueContactPoint", "ContactPoint");
+        put("valueCount", "Count");
+        put("valueDistance", "Distance");
+        put("valueDuration", "Duration");
+        put("valueHumanName", "HumanName");
+        put("valueMoney", "Money");
+        put("valuePeriod", "Period");
+        put("valueTriggerDefinition", "TriggerDefinition");
+        put("valueUsageContext", "UsageContext");
+        put("valueDosage", "Dosage");
+        put("valueMeta", "Meta");
+        put("valueCodeableConcept", "CodeableConcept");
+        put("valueCoding", "Coding");
+        put("valueIdentifier", "Identifier");
+        put("valueQuantity", "Quantity");
+        put("valueRange", "Range");
+        put("valueRatio", "Ratio");
+        put("valueSampledData", "SampledData");
+        put("valueSignature", "Signature");
+        put("valueTiming", "Timing");
+        put("valueContactDetail", "ContactDetail");
+        put("valueContributor", "Contributor");
+        put("valueDataRequirement", "DataRequirement");
+        put("valueExpression", "Expression");
+        put("valueParameterDefinition", "ParameterDefinition");
+        put("valueRelatedArtifact", "RelatedArtifact");
     }};
 
     @Override
     public JsonObject convertToJson(String root, String name, boolean required) {
         String formattedName = WordUtils.capitalize(name);
-
         if (DefinitionRepository.registerInnerRecords(root, name)) {
             return JsonObjectUtils.createRedefinedRecord(name, formattedName, Json.createObjectBuilder().build());
         } else {
             JsonArrayBuilder fields = Json.createArrayBuilder();
             fields.add(JsonObjectUtils.createConst("url", "string", false));
 
-            for (Map.Entry<String, String> entry : PRIMITIVES.entrySet()) {
-                BaseDefinition baseDefinition = DefinitionRepository.getPrimitiveDefinitionByIdentifier(entry.getValue());
+            for (Map.Entry<String, String> entry : COMPLEXES.entrySet()) {
+                BaseDefinition baseDefinition = DefinitionRepository.getComplexDefinitionByIdentifier(entry.getValue());
                 fields.add(baseDefinition.convertToJson(root, entry.getKey(), false));
             }
 
@@ -57,43 +90,12 @@ public class ExtensionDefinition extends SpecificDefinition {
                 fields.add(entry.getValue().convertToJson(root, entry.getKey(), false));
             }
 
+            for (Map.Entry<String, String> entry : PRIMITIVES.entrySet()) {
+                BaseDefinition baseDefinition = DefinitionRepository.getPrimitiveDefinitionByIdentifier(entry.getValue());
+                fields.add(baseDefinition.convertToJson(root, entry.getKey(), false));
+            }
+
             return JsonObjectUtils.createInnerRecord(name, formattedName, "An Extension", fields.build(), required);
         }
-
-        // TODO support all these potential values of all these potential types.
-        /*
-          "url" : "<uri>", // R!  identifies the meaning of the extension
-          "valueAddress" : { Address }
-          "valueAge" : { Age }
-          "valueAnnotation" : { Annotation }
-          "valueAttachment" : { Attachment }
-          "valueCodeableConcept" : { CodeableConcept }
-          "valueCoding" : { Coding }
-          "valueContactPoint" : { ContactPoint }
-          "valueCount" : { Count }
-          "valueDistance" : { Distance }
-          "valueDuration" : { Duration }
-          "valueHumanName" : { HumanName }
-          "valueIdentifier" : { Identifier }
-          "valueMoney" : { Money }
-          "valuePeriod" : { Period }
-          "valueQuantity" : { Quantity }
-          "valueRange" : { Range }
-          "valueRatio" : { Ratio }
-          "valueReference" : { Reference }
-          "valueSampledData" : { SampledData }
-          "valueSignature" : { Signature }
-          "valueTiming" : { Timing }
-          "valueContactDetail" : { ContactDetail }
-          "valueContributor" : { Contributor }
-          "valueDataRequirement" : { DataRequirement }
-          "valueExpression" : { Expression }
-          "valueParameterDefinition" : { ParameterDefinition }
-          "valueRelatedArtifact" : { RelatedArtifact }
-          "valueTriggerDefinition" : { TriggerDefinition }
-          "valueUsageContext" : { UsageContext }
-          "valueDosage" : { Dosage }
-          "valueMeta" : { Meta }
-         */
     }
 }

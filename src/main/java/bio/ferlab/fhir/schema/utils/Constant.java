@@ -11,7 +11,6 @@ public class Constant {
     public static final String ITEMS = "items";
     public static final String NAME = "name";
     public static final String FIELDS = "fields";
-    public static final String SYMBOLS = "symbols";
     public static final String DESCRIPTION = "description";
     public static final String DEFINITIONS = "definitions";
     public static final String REF = "$ref";
@@ -21,6 +20,8 @@ public class Constant {
     public static final String PATTERN = "pattern";
     public static final String RESOURCE_TYPE = "resourceType";
     public static final String VALUE = "value";
+    public static final String EXTENSION = "extension";
+    public static final String REFERENCE = "reference";
 
     // Avro-specific
     public static final String ENUM = "enum";

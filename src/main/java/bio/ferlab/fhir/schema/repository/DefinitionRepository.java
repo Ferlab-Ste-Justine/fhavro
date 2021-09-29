@@ -41,9 +41,9 @@ public class DefinitionRepository {
             Map.Entry<String, JsonNode> entry = it.next();
 
             if (SpecificDefinitionFactory.isSupported(entry.getKey())) {
-                SpecificDefinition specialDefinition = SpecificDefinitionFactory.getSpecificDefinition(entry.getKey());
-                specialDefinition.initialize(entry.getKey(), entry.getKey(), entry.getValue());
-                specificDefinitions.put(specialDefinition.getIdentifier(), specialDefinition);
+                SpecificDefinition specificDefinition = SpecificDefinitionFactory.getSpecificDefinition(entry.getKey());
+                specificDefinition.initialize(entry.getKey(), entry.getKey(), entry.getValue());
+                specificDefinitions.put(specificDefinition.getIdentifier(), specificDefinition);
                 continue;
             }
 

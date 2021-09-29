@@ -3,6 +3,8 @@ import bio.ferlab.fhir.converter.AvroFhirConverter;
 import bio.ferlab.fhir.converter.DateUtils;
 import bio.ferlab.fhir.converter.FhirAvroConverter;
 import ca.uhn.fhir.context.FhirContext;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fixture.*;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileReader;
@@ -81,6 +83,15 @@ public class FhavroConverterTest {
         String outputString = convertDate(FhirContext.forR4().newJsonParser().encodeResourceToString(result));
 
         assertEquals(inputString, outputString);
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Object jsonObject = mapper.readValue(outputString, Object.class);
+            String prettyJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
+            System.out.println(prettyJson);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     public static File serializeGenericRecord(Schema schema, String name, GenericRecord genericRecord) {

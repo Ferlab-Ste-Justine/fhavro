@@ -35,21 +35,9 @@ public class JsonObjectUtils {
                 .add(Constant.DEFAULT, Json.createObjectBuilder().build())
                 .build();
         return Json.createObjectBuilder()
-                .add(Constant.NAME, name.toLowerCase())
+                .add(Constant.NAME, WordUtils.uncapitalize(name))
                 .add(Constant.TYPE, innerRecord)
                 .add(Constant.DEFAULT, Json.createObjectBuilder().build())
-                .build();
-    }
-
-    public static JsonObject createEnum(String parentIdentifier, JsonNode root) {
-        JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder()
-                .add(Constant.TYPE, Constant.ENUM)
-                .add(Constant.NAME, WordUtils.capitalize(parentIdentifier));
-        if (root.has(Constant.DESCRIPTION)) {
-            jsonObjectBuilder.add(Constant.DOC, formatDoc(root.get(Constant.DESCRIPTION).asText()));
-        }
-        return jsonObjectBuilder
-                .add(Constant.SYMBOLS, formatSymbols(root))
                 .build();
     }
 
@@ -125,19 +113,6 @@ public class JsonObjectUtils {
         return Json.createObjectBuilder()
                 .add(Constant.TYPE, type)
                 .add(Constant.LOGICAL_TYPE, logicalType);
-    }
-
-    private static JsonArray formatSymbols(JsonNode root) {
-        JsonArrayBuilder formattedSymbols = Json.createArrayBuilder();
-        Set<String> uniqueSymbols = new HashSet<>();
-        root.get(Constant.ENUM).forEach(symbol -> {
-            String encodedSymbol = SymbolUtils.encodeSymbol(symbol.asText());
-            if (!uniqueSymbols.contains(encodedSymbol)) {
-                formattedSymbols.add(encodedSymbol);
-                uniqueSymbols.add(encodedSymbol);
-            }
-        });
-        return formattedSymbols.build();
     }
 
     private static String formatDoc(String doc) {

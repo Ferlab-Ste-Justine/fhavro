@@ -13,13 +13,13 @@ public class ReferenceDefinition extends SpecificDefinition {
 
     @Override
     public JsonObject convertToJson(String root, String name, boolean required) {
-        String formattedName = WordUtils.capitalize(name);
-        if (DefinitionRepository.registerInnerRecords(root, name)) {
+        String formattedName = WordUtils.capitalize(Constant.REFERENCE);
+        if (DefinitionRepository.registerInnerRecords(root, Constant.REFERENCE)) {
             return JsonObjectUtils.createRedefinedRecord(name, formattedName, Json.createObjectBuilder().build());
         } else {
             JsonArray fields = Json.createArrayBuilder()
-                    .add(JsonObjectUtils.createConst("reference", Constant.STRING, false))
-                    .add(JsonObjectUtils.createConst("type", Constant.STRING, false))
+                    .add(JsonObjectUtils.createConst(Constant.REFERENCE, Constant.STRING, false))
+                    .add(JsonObjectUtils.createConst(Constant.TYPE, Constant.STRING, false))
                     .add(JsonObjectUtils.createConst("identifier", Constant.STRING, false))
                     .add(JsonObjectUtils.createConst("display", Constant.STRING, false))
                     .build();

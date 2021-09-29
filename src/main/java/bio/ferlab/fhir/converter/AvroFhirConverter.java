@@ -3,8 +3,8 @@ package bio.ferlab.fhir.converter;
 import bio.ferlab.fhir.converter.exception.AvroConversionException;
 import bio.ferlab.fhir.converter.exception.UnionTypeException;
 import bio.ferlab.fhir.schema.utils.Constant;
-import bio.ferlab.fhir.schema.utils.SymbolUtils;
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.util.TerserUtilHelper;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
@@ -42,8 +42,6 @@ public class AvroFhirConverter {
                 readUnion(context, field, schema, value);
                 break;
             case ENUM:
-                readType(context, SymbolUtils.decodeSymbol(value.toString()));
-                break;
             case STRING:
             case FIXED:
             case BOOLEAN:
@@ -101,7 +99,7 @@ public class AvroFhirConverter {
         for (Object element : (List<?>) value) {
             if (element instanceof GenericRecord) {
                 if (context.getArrayContext().hasNode(absolutePath)) {
-                    String relativePath = navigatePath(context.getPath(), false, context.getPath().size() - 1);
+                    String relativePath = navigatePath(context.getPath(), false, 1);
                     context.getTerser().addElement(context.getArrayContext().getCurrentBase(absolutePath), relativePath);
                 } else {
                     context.getTerser().addElement(context.getResource(), absolutePath);

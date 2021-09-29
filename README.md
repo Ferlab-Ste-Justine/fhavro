@@ -56,15 +56,4 @@ The resulting Schema file (.avsc) are located under /src/resources/schemas/ of t
 
 ## Known issues
 
- - Extensions are not included in the schema and therefore are not serialized.
  - Identifier property in the Reference type is saved as a String in order to avoid Cyclical definition.
- - Only 616 schemas are supported at the moment, some entities causes issues (only 43 out of 14348).
- - ...[x] notation from Fhir is not supported as of this moment. (e.g: valueRange of UsageContext cannot be serialized). 
-
-### Specification
-
-In Avro, Enum symbols need to conform to the same naming convention than Names. Therefore, it must start with [A-Za-z_] and subsequent character must contain only [A-Za-z0-9_].
-Since, some enum symbol in FHIR contains illegal character (e.g. /, <, >, etc.). We need to encode symbols in a format that respect the Avro naming convention.
-To do so, we convert all illegals characters into their hexadecimal notation and append a 'H' in order to find them back and decode them afterwards.
-
-As an example, the character '-' gives 'H002D'.
