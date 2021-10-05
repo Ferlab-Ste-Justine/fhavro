@@ -4,6 +4,7 @@ import bio.ferlab.fhir.schema.utils.Constant;
 import ca.uhn.fhir.util.FhirTerser;
 import ca.uhn.fhir.util.TerserUtilHelper;
 import org.hl7.fhir.instance.model.api.IBase;
+import org.hl7.fhir.r4.model.Base;
 import org.hl7.fhir.r4.model.BaseResource;
 
 import java.util.*;
@@ -31,8 +32,21 @@ public class ResourceContext {
         path.addLast(value);
     }
 
-    public void detectPathConflict(String absolutePath) {
-        List<IBase> parents = getTerser().getValues(getResource(), navigatePath(getPath(), getPath().size() - 1));
+    public void detectPathConflict(Deque<String> path) {
+        Iterator<String> iterator = path.iterator();
+        String absolutePath = navigatePath(path);
+
+        while (iterator.hasNext()) {
+            String currentNode = iterator.next();
+            if (getArrayContext().hasNode(currentNode)) {
+                Base parent = (Base) getArrayContext().getCurrentBase(currentNode);
+                List<IBase> children = getTerser().getValues(parent, navigatePath(path, true, path.size(), 1));
+                getArrayContext().addNode(absolutePath, children);
+                return;
+            }
+        }
+
+        List<IBase> parents = getTerser().getValues(getResource(), absolutePath);
         if (!parents.isEmpty()) {
             getArrayContext().addNode(absolutePath, parents);
         }
@@ -73,7 +87,7 @@ public class ResourceContext {
             if (!hasNode(path)) {
                 nodes.put(path, new Node(bases));
             } else {
-                nodes.get(path).updateBases(bases);
+                nodes.get(path).append(bases);
             }
         }
 
@@ -88,7 +102,7 @@ public class ResourceContext {
         }
 
         private static class Node {
-            private List<IBase> bases;
+            private final List<IBase> bases;
             private int index;
 
             protected Node(List<IBase> bases) {
@@ -104,8 +118,8 @@ public class ResourceContext {
                 return bases.get(index);
             }
 
-            protected void updateBases(List<IBase> bases) {
-                this.bases = bases;
+            protected void append(List<IBase> bases) {
+                this.bases.addAll(bases);
             }
         }
     }

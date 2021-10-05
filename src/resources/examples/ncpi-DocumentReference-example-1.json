@@ -1,0 +1,21 @@
+{
+  "resourceType" : "DocumentReference",
+  "id" : "drs-document-reference-example-1",
+  "meta" : {
+    "profile" : [
+      "https://ncpi-fhir.github.io/ncpi-fhir-ig/StructureDefinition/ncpi-drs-document-reference"
+    ]
+  },
+  "text" : {
+    "status" : "generated",
+    "div" : "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative</b></p><p><b>status</b>: current</p><blockquote><p><b>content</b></p></blockquote></div>"
+  },
+  "status" : "current",
+  "content" : [
+    {
+      "attachment" : {
+        "url" : "drs://example.com/ga4gh/drs/v1/objects/0f8c27b9-3300-4249-bb28-f49ffb80e277"
+      }
+    }
+  ]
+}

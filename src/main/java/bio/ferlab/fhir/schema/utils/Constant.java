@@ -22,6 +22,7 @@ public class Constant {
     public static final String VALUE = "value";
     public static final String EXTENSION = "extension";
     public static final String REFERENCE = "reference";
+    public static final String CODE = "code";
 
     // Avro-specific
     public static final String ENUM = "enum";

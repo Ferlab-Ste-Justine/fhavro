@@ -11,6 +11,7 @@ import bio.ferlab.fhir.schema.definition.specificity.SpecificDefinitionFactory;
 import bio.ferlab.fhir.schema.utils.Constant;
 import bio.ferlab.fhir.schema.utils.SchemaUtils;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.hl7.fhir.r4.model.StructureDefinition;
 
 import javax.json.JsonObject;
 import java.io.BufferedWriter;
@@ -75,6 +76,10 @@ public class DefinitionRepository {
         return Optional.ofNullable(primitiveDefinitions.get(identifier)).orElseThrow(() -> new UnknownDefinitionException(identifier));
     }
 
+    public static IDefinition getSpecificDefinitionByIdentifier(String identifier) {
+        return Optional.ofNullable(specificDefinitions.get(identifier)).orElseThrow(() -> new UnknownDefinitionException(identifier));
+    }
+
     public static JsonObject getReferenceObject(String root, JsonNode node, String name, boolean required) {
         String reference = SchemaUtils.parseReference(node);
         if (primitiveDefinitions.containsKey(reference)) {
@@ -108,20 +113,26 @@ public class DefinitionRepository {
         return false;
     }
 
-    public static boolean generateDefinition(String identifier) {
-        BaseDefinition baseDefinition = DefinitionRepository.getComplexDefinitionByIdentifier(identifier);
-        if (baseDefinition.getDefinition().get("properties").has("resourceType")) {
-            baseDefinition.convertToJson(identifier, identifier, true);
-            saveDefinition(baseDefinition);
+    public static boolean generateDefinition(String schemaName, StructureDefinition profile, List<StructureDefinition> extensions) {
+        ComplexDefinition complexDefinition = DefinitionRepository.getComplexDefinitionByIdentifier(schemaName);
+
+        // Generate the properties, apply the profile if any.
+        complexDefinition.generateProperties(profile, extensions);
+        if (complexDefinition.getDefinition().get("properties").has("resourceType")) {
+
+            // This method will generate the internal Json necessary.
+            complexDefinition.convertToJson(schemaName, schemaName, true);
+
+            saveDefinition(complexDefinition, (profile != null) ? profile.getName().toLowerCase() : schemaName.toLowerCase());
             definedRecords.clear();
             return true;
         }
         return false;
     }
 
-    private static void saveDefinition(BaseDefinition baseDefinition) {
+    private static void saveDefinition(BaseDefinition baseDefinition, String filename) {
         if (baseDefinition.getDefinition().get("properties").has("resourceType")) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("./src/resources/schemas/" + baseDefinition.getName().toLowerCase() + ".avsc"))) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("./src/resources/schemas/" + filename + ".avsc"))) {
                 writer.write(baseDefinition.getJsonObject().toString());
             } catch (IOException e) {
                 e.printStackTrace();

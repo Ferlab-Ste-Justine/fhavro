@@ -2,10 +2,7 @@ package fixture;
 
 import org.hl7.fhir.r4.model.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 public class PatientFixture {
 
@@ -19,7 +16,9 @@ public class PatientFixture {
         HumanName margeSimpson = new HumanName();
         homerSimpson.setFamily("Simpson");
         homerSimpson.addGiven("Marge");
+        patient.setText(NarrativeFixture.createNarrative());
         patient.addIdentifier(IdentifierFixture.createIdentifier());
+        patient.addIdentifier(IdentifierFixture.createDifferentIdentifier());
         patient.addExtension(ExtensionFixture.createExtension(new PositiveIntType(45)));
         patient.addName(homerSimpson);
         patient.addName(margeSimpson);

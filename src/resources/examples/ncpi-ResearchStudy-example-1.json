@@ -1,0 +1,13 @@
+{
+  "resourceType" : "ResearchStudy",
+  "id" : "research-study-example-1",
+  "text" : {
+    "status" : "generated",
+    "div" : "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative</b></p><p><b>title</b>: NCPI Research Study Example 1</p><p><b>status</b>: completed</p><p><b>principalInvestigator</b>: <a href=\"PractitionerRole-practitioner-role-example-1.html\">Generated Summary: active; <span title=\"Codes: {http://terminology.hl7.org/CodeSystem/practitioner-role researcher}\">Principal Investigator</span>; Phone: (555) 555-5555</a></p></div>"
+  },
+  "title" : "NCPI Research Study Example 1",
+  "status" : "completed",
+  "principalInvestigator" : {
+    "reference" : "PractitionerRole/practitioner-role-example-1"
+  }
+}

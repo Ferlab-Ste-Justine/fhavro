@@ -1,0 +1,43 @@
+{
+  "resourceType": "Organization",
+  "id": "organization-example-1",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative</b></p><p><b>active</b>: true</p><p><b>type</b>: <span title=\"Codes: {http://terminology.hl7.org/CodeSystem/organization-type prov}\">Hospital</span></p><p><b>name</b>: Amazing Children's Hospital</p><p><b>telecom</b>: ph: (555) 555-5555(WORK)</p><p><b>address</b>: 3401 Civic Center Blvd., Philadelphia, PA 19104(WORK)</p></div>"
+  },
+  "active": true,
+  "type": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/organization-type",
+          "code": "prov",
+          "display": "Healthcare Provider"
+        }
+      ],
+      "text": "Hospital"
+    }
+  ],
+  "name": "Amazing Children's Hospital",
+  "telecom": [
+    {
+      "system": "phone",
+      "value": "(555) 555-5555",
+      "use": "work",
+      "rank": 1
+    }
+  ],
+  "address": [
+    {
+      "use": "work",
+      "type": "both",
+      "text": "3401 Civic Center Blvd., Philadelphia, PA 19104",
+      "line": [
+        "3401 Civic Center Blvd."
+      ],
+      "city": "Philadelphia",
+      "state": "PA",
+      "postalCode": "19104"
+    }
+  ]
+}

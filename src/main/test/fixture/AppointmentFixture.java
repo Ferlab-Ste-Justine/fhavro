@@ -14,6 +14,7 @@ public class AppointmentFixture {
                 .addRequestedPeriod(PeriodFixture.createPlannedPeriod())
                 .addReasonCode(CodeableConceptFixture.createCodeableConcept());
         appointment.addExtension(ExtensionFixture.createExtension(new DateType(new Date())));
+        appointment.setText(NarrativeFixture.createNarrative());
         return appointment;
     }
 }

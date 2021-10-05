@@ -43,7 +43,7 @@ public class CarePlanFixture {
         carePlanActivityComponents.add(carePlanActivityComponent);
 
         carePlan.setActivity(carePlanActivityComponents);
-        
+        carePlan.setText(NarrativeFixture.createNarrative());
         return carePlan;
     }
 }

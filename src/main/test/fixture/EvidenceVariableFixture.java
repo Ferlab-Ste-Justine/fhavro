@@ -11,8 +11,8 @@ public class EvidenceVariableFixture {
     public static EvidenceVariable createEvidenceVariable() {
         EvidenceVariable evidenceVariable = new EvidenceVariable();
         evidenceVariable.setApprovalDate(new Date());
-        // TODO investigate this, may not be out of the woodwork yet. with arrays of arrays.
-//        evidenceVariable.setIdentifier(List.of(IdentifierFixture.createIdentifier(), IdentifierFixture.createIdentifier()));
+        evidenceVariable.setText(NarrativeFixture.createNarrative());
+        evidenceVariable.setIdentifier(List.of(IdentifierFixture.createIdentifier(), IdentifierFixture.createIdentifier()));
         evidenceVariable.setTitle("EVIDENCE YOUR HONOR!");
         evidenceVariable.setCopyright("The Copyright.");
         evidenceVariable.setExtension(List.of(ExtensionFixture.createExtension(new MarkdownType("Code"))));

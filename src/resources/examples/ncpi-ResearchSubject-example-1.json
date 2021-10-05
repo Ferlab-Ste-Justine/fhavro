@@ -1,0 +1,15 @@
+{
+  "resourceType" : "ResearchSubject",
+  "id" : "research-subject-example-1",
+  "text" : {
+    "status" : "generated",
+    "div" : "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative</b></p><p><b>status</b>: on-study</p><p><b>study</b>: <a href=\"ResearchStudy-research-study-example-1.html\">Generated Summary: title: NCPI Research Study Example 1; status: completed</a></p><p><b>individual</b>: <a href=\"Patient-patient-example-1.html\">Generated Summary: Mariah Abigail Smith(OFFICIAL); Phone: (555) 555-5555; gender: female; birthDate: 2019-06-15</a></p></div>"
+  },
+  "status" : "on-study",
+  "study" : {
+    "reference" : "ResearchStudy/research-study-example-1"
+  },
+  "individual" : {
+    "reference" : "Patient/patient-example-1"
+  }
+}

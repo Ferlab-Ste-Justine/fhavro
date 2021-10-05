@@ -1,0 +1,37 @@
+{
+  "resourceType": "DiagnosticReport",
+  "id": "diagnostic-report-1",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><h2><span title=\"Codes: {http://loinc.org 81247-9}\">Master HL7 genetic variant reporting panel</span> </h2><table class=\"grid\"><tr><td>Subject</td><td><b>Mariah Abigail Smith(OFFICIAL)</b> ?? 2019-06-15</td></tr></table><p><b>Report Details</b></p><table class=\"grid\"><tr><td><b>Code</b></td><td><b>Value</b></td></tr><tr><td><a href=\"Observation-variant-example-1.html\"><span title=\"Codes: {http://loinc.org 69548-6}\">Genetic variant assessment</span></a></td><td><span title=\"Codes: {http://loinc.org LA9633-4}\">Present</span></td></tr><tr><td><a href=\"Observation-diagnostic-implication-1.html\"><span title=\"Codes: {http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes diagnostic-implication}\">Diagnostic Implication</span></a></td><td></td></tr></table></div>"
+  },
+  "extension": [
+    {
+      "url": "https://ncpi-fhir.github.io/ncpi-fhir-ig/StructureDefinition/supporting-info",
+      "valueReference": {
+        "reference": "Task/task-example-1"
+      }
+    }
+  ],
+  "status": "final",
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "81247-9",
+        "display": "Master HL7 genetic variant reporting panel"
+      }
+    ]
+  },
+  "subject": {
+    "reference": "Patient/patient-example-1"
+  },
+  "result": [
+    {
+      "reference": "Observation/variant-example-1"
+    },
+    {
+      "reference": "Observation/diagnostic-implication-1"
+    }
+  ]
+}

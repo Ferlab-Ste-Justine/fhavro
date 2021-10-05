@@ -1,11 +1,8 @@
 package bio.ferlab.fhir.schema.utils;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.text.WordUtils;
 
 import javax.json.*;
-import java.util.HashSet;
-import java.util.Set;
 
 import static javax.json.JsonValue.NULL;
 
@@ -34,10 +31,17 @@ public class JsonObjectUtils {
                 .add(Constant.FIELDS, fields)
                 .add(Constant.DEFAULT, Json.createObjectBuilder().build())
                 .build();
+        JsonObjectBuilder defaultObjectBuilder = Json.createObjectBuilder();
+        for (JsonValue jsonValue : fields) {
+            JsonObject jsonObject = jsonValue.asJsonObject();
+            if (!jsonObject.containsKey(Constant.DEFAULT)) {
+                defaultObjectBuilder.add(jsonObject.getString(Constant.NAME), getDefaultValue(jsonObject.getString(Constant.TYPE)));
+            }
+        }
         return Json.createObjectBuilder()
                 .add(Constant.NAME, WordUtils.uncapitalize(name))
                 .add(Constant.TYPE, innerRecord)
-                .add(Constant.DEFAULT, Json.createObjectBuilder().build())
+                .add(Constant.DEFAULT, defaultObjectBuilder.build())
                 .build();
     }
 
@@ -109,6 +113,18 @@ public class JsonObjectUtils {
         return jsonObjectBuilder.build();
     }
 
+    public static JsonObject createRedefinedArray(String name, String type) {
+        return Json.createObjectBuilder()
+                .add(Constant.NAME, name)
+                .add(Constant.TYPE, Json.createObjectBuilder()
+                        .add(Constant.TYPE, Constant.ARRAY)
+                        .add(Constant.ITEMS, Constant.NAMESPACE_VALUE + "." + WordUtils.capitalize(type))
+                        .add(Constant.DEFAULT, JsonValue.EMPTY_JSON_ARRAY)
+                        .build())
+                .add(Constant.DEFAULT, JsonValue.EMPTY_JSON_ARRAY)
+                .build();
+    }
+
     public static JsonObjectBuilder createLogicalType(String type, String logicalType) {
         return Json.createObjectBuilder()
                 .add(Constant.TYPE, type)
@@ -117,5 +133,18 @@ public class JsonObjectUtils {
 
     private static String formatDoc(String doc) {
         return doc.replace("\"", "");
+    }
+
+    private static JsonValue getDefaultValue(String type) {
+        switch (type) {
+            case "string":
+                return Json.createValue("N/A");
+            case "array":
+                return JsonValue.EMPTY_JSON_ARRAY;
+            case "record":
+                return JsonValue.EMPTY_JSON_OBJECT;
+            default:
+                throw new RuntimeException("Not yet implemented!");
+        }
     }
 }

@@ -1,13 +1,6 @@
 package bio.ferlab.fhir.schema.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.apache.commons.text.WordUtils;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class SchemaUtils {
 
@@ -25,5 +18,13 @@ public class SchemaUtils {
             return "integer";
         }
         return type;
+    }
+
+    public static String parseBaseDefinition(String baseDefinition) {
+        return baseDefinition.substring(baseDefinition.lastIndexOf('/') + 1).trim();
+    }
+
+    public static String parsePropertyName(String propertyName) {
+        return propertyName.substring(propertyName.lastIndexOf('.') + 1).trim();
     }
 }
