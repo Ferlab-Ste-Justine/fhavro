@@ -7,6 +7,7 @@ import org.hl7.fhir.r4.model.UsageContext;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 public class EffectEvidenceSynthesisFixture {
 
@@ -22,7 +23,8 @@ public class EffectEvidenceSynthesisFixture {
         range.setLow(QuantityFixture.createQuantity());
         usageContext.setValue(range);
 
-        effectEvidenceSynthesis.setUseContext(Arrays.asList(usageContext));
+        effectEvidenceSynthesis.setUseContext(List.of(usageContext));
+        effectEvidenceSynthesis.setText(NarrativeFixture.createNarrative());
         return effectEvidenceSynthesis;
     }
 }

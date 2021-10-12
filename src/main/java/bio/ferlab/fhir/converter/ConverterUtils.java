@@ -2,28 +2,36 @@ package bio.ferlab.fhir.converter;
 
 import bio.ferlab.fhir.converter.exception.BadRequestException;
 import org.apache.commons.text.WordUtils;
+import org.hl7.fhir.r4.model.Base;
 import org.junit.platform.commons.util.StringUtils;
 
 import java.util.Deque;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 
 public class ConverterUtils {
 
-    private ConverterUtils() {}
+    private ConverterUtils() {
+    }
 
     public static String navigatePath(Deque<String> path) {
         if (path == null) {
             throw new BadRequestException("Please verify the path argument");
         }
 
-        return navigatePath(path, true, path.size());
+        return navigatePath(path, true, path.size(), 0);
     }
 
     public static String navigatePath(Deque<String> path, int depth) {
-        return navigatePath(path, true, depth);
+        return navigatePath(path, true, depth, 0);
     }
 
     public static String navigatePath(Deque<String> path, boolean forward, int depth) {
+        return navigatePath(path, forward, depth, 0);
+    }
+
+    public static String navigatePath(Deque<String> path, boolean forward, int depth, int skip) {
         if (path == null) {
             throw new BadRequestException("Please verify the path argument");
         }
@@ -34,6 +42,12 @@ public class ConverterUtils {
 
         StringBuilder absolutePath = new StringBuilder();
         Iterator<String> itr = (forward) ? path.iterator() : path.descendingIterator();
+
+        for (int i = 0; i < skip; i++) {
+            if (itr.hasNext()) {
+                itr.next();
+            }
+        }
 
         // Root
         if (itr.hasNext()) {
@@ -65,5 +79,10 @@ public class ConverterUtils {
         }
 
         return schemaName.toLowerCase();
+    }
+
+    public static Base getBase(List<Base> bases) {
+        return Optional.ofNullable(bases.get(0))
+                .orElseThrow(() -> new RuntimeException("Please verify this, this isn't suppose to occur."));
     }
 }

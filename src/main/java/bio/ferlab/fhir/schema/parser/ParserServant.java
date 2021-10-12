@@ -4,19 +4,17 @@ import bio.ferlab.fhir.schema.definition.Property;
 import bio.ferlab.fhir.schema.definition.exception.UnknownParserException;
 
 import javax.json.JsonObject;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ParserServant {
 
-    private static final List<IParser> parsers = Collections.unmodifiableList(new ArrayList<IParser>() {{
-        add(new ReferenceParser());
-        add(new ArrayParser());
-        add(new EnumParser());
-        add(new TypeParser());
-        add(new ConstantParser());
-    }});
+    private static final List<IParser> parsers = List.of(
+            new ReferenceParser(),
+            new ArrayParser(),
+            new EnumParser(),
+            new TypeParser(),
+            new ConstantParser()
+    );
 
     private ParserServant() {
     }

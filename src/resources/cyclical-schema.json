@@ -1,0 +1,35 @@
+{
+  "type":"record",
+  "name":"Parent",
+  "fields":[
+    {
+      "name":"id",
+      "type":"long"
+    },
+    {
+      "name":"child",
+      "type":{
+        "type":"record",
+        "name":"Child",
+        "fields":[
+          {
+            "name":"c",
+            "type":"string"
+          },
+          {
+            "name":"parent",
+            "type":[
+              "null",
+              "long",
+              "Parent"
+            ]
+          }
+        ],
+        "logicalType":"reference",
+        "ref-field-name":"parent"
+      }
+    }
+  ],
+  "logicalType":"referenceable",
+  "id-field-name":"id"
+}

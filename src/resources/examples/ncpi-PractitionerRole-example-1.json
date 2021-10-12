@@ -1,0 +1,35 @@
+{
+  "resourceType": "PractitionerRole",
+  "id": "practitioner-role-example-1",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative</b></p><p><b>active</b>: true</p><p><b>practitioner</b>: <a href=\"Practitioner-practitioner-example-1.html\">Generated Summary: active; Jane Samantha Smith(OFFICIAL); Phone: (555) 555-5555; gender: female</a></p><p><b>organization</b>: <a href=\"Organization-organization-example-1.html\">Generated Summary: active; <span title=\"Codes: {http://terminology.hl7.org/CodeSystem/organization-type prov}\">Hospital</span>; name: Amazing Children's Hospital; Phone: (555) 555-5555</a></p><p><b>code</b>: <span title=\"Codes: {http://terminology.hl7.org/CodeSystem/practitioner-role researcher}\">Principal Investigator</span></p><p><b>telecom</b>: ph: (555) 555-5555(WORK)</p></div>"
+  },
+  "active": true,
+  "practitioner": {
+    "reference": "Practitioner/practitioner-example-1"
+  },
+  "organization": {
+    "reference": "Organization/organization-example-1"
+  },
+  "code": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/practitioner-role",
+          "code": "researcher",
+          "display": "Researcher"
+        }
+      ],
+      "text": "Principal Investigator"
+    }
+  ],
+  "telecom": [
+    {
+      "system": "phone",
+      "value": "(555) 555-5555",
+      "use": "work",
+      "rank": 1
+    }
+  ]
+}

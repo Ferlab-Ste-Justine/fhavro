@@ -1,0 +1,93 @@
+{
+  "resourceType":"Patient",
+  "id":"PA0026",
+  "meta":{
+    "versionId":"11",
+    "lastUpdated":"2021-07-27T18:34:23.598+00:00",
+    "source":"#75a45c8ae30a2472",
+    "profile":[
+      "http://fhir.cqgc.ferlab.bio/StructureDefinition/cqgc-patient"
+    ]
+  },
+  "text":{
+    "status":"generated",
+    "div":"<div xmlns=\"http://www.w3.org/1999/xhtml\"><div class=\"hapiHeaderText\">Camille <b>BEDARD </b></div><table class=\"hapiPropertyTable\"><tbody><tr><td>Identifier</td><td>3265795</td></tr><tr><td>Date of birth</td><td><span>17 May 1984</span></td></tr></tbody></table></div>"
+  },
+  "extension":[
+    {
+      "url":"http://fhir.cqgc.ferlab.bio/StructureDefinition/qc-ethnicity",
+      "valueCoding":{
+        "system":"http://fhir.cqgc.ferlab.bio/CodeSystem/qc-ethnicity",
+        "code":"CA-FR",
+        "display":"French Canadian"
+      }
+    },
+    {
+      "url":"http://fhir.cqgc.ferlab.bio/StructureDefinition/is-proband",
+      "valueBoolean":true
+    },
+    {
+      "url":"http://fhir.cqgc.ferlab.bio/StructureDefinition/is-fetus",
+      "valueBoolean":false
+    },
+    {
+      "url":"http://fhir.cqgc.ferlab.bio/StructureDefinition/blood-relationship",
+      "valueCoding":{
+        "system":"http://fhir.cqgc.ferlab.bio/CodeSystem/blood-relationship",
+        "code":"N",
+        "display":"No"
+      }
+    },
+    {
+      "url":"http://fhir.cqgc.ferlab.bio/StructureDefinition/family-id",
+      "valueReference":{
+        "reference":"Group/e4b8441b-3b35-46ee-ab28-1ccf6d754f6e"
+      }
+    }
+  ],
+  "identifier":[
+    {
+      "type":{
+        "coding":[
+          {
+            "system":"http://terminology.hl7.org/CodeSystem/v2-0203",
+            "code":"MR",
+            "display":"Medical record number"
+          }
+        ],
+        "text":"Numéro du dossier médical"
+      },
+      "value":"3265795"
+    },
+    {
+      "type":{
+        "coding":[
+          {
+            "system":"http://terminology.hl7.org/CodeSystem/v2-0203",
+            "code":"JHN",
+            "display":"Jurisdictional health number (Canada)"
+          }
+        ],
+        "text":"Numéro du dossier médical"
+      },
+      "value":"BEDC84051741"
+    }
+  ],
+  "active":true,
+  "name":[
+    {
+      "use":"official",
+      "family":"Bedard",
+      "given":[
+        "Camille"
+      ]
+    }
+  ],
+  "gender":"female",
+  "birthDate":"1984-05-17",
+  "generalPractitioner":[
+    {
+      "reference":"PractitionerRole/PRR00101"
+    }
+  ]
+}

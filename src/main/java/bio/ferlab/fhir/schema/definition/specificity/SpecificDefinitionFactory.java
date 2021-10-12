@@ -11,6 +11,7 @@ public class SpecificDefinitionFactory {
         put("dateTime", new DateTimeDefinition());
         put("decimal", new DecimalDefinition());
         put("xhtml", new XHtmlDefinition());
+        // put("Element", new ElementDefinition());
         put("Extension", new ExtensionDefinition());
         put("Reference", new ReferenceDefinition());
         put("ResourceList", new ResourceListDefinition());

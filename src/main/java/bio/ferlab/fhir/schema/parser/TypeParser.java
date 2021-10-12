@@ -4,6 +4,7 @@ import bio.ferlab.fhir.schema.definition.Property;
 import bio.ferlab.fhir.schema.parser.regex.DateParser;
 import bio.ferlab.fhir.schema.parser.regex.DateTimeParser;
 import bio.ferlab.fhir.schema.parser.regex.DecimalParser;
+import bio.ferlab.fhir.schema.parser.regex.StringParser;
 import bio.ferlab.fhir.schema.repository.DefinitionRepository;
 import bio.ferlab.fhir.schema.utils.Constant;
 import bio.ferlab.fhir.schema.utils.SchemaUtils;
@@ -14,8 +15,7 @@ import java.util.Optional;
 
 public class TypeParser implements IParser {
 
-    // The ordering is important.
-    private static final List<IParser> INNER_PARSER = List.of(new DateTimeParser(), new DateParser(), new DecimalParser());
+    private static final List<IParser> INNER_PARSER = List.of(new StringParser(), new DateTimeParser(), new DateParser(), new DecimalParser());
 
     @Override
     public boolean canParse(Property property) {

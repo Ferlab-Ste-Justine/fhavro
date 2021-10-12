@@ -15,6 +15,7 @@ public class EventDefinitionFixture {
         eventDefinition.setApprovalDate(new Date());
         eventDefinition.setCopyright("Copyright");
         eventDefinition.setStatus(Enumerations.PublicationStatus.RETIRED);
+        eventDefinition.setText(NarrativeFixture.createNarrative());
         eventDefinition.setExtension(List.of(ExtensionFixture.createExtension(new DateTimeType(new Date()))));
         return eventDefinition;
     }

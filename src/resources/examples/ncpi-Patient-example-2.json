@@ -1,0 +1,130 @@
+{
+  "resourceType": "Patient",
+  "id": "patient-example-2",
+  "text": {
+    "status": "extensions",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative</b></p><blockquote><p><b>US Core Race Extension</b></p><p><b>value</b>: <span title=\"{urn:oid:2.16.840.1.113883.6.238 2106-3}\">White</span></p><p><b>value</b>: White</p></blockquote><blockquote><p><b>US Core Ethnicity Extension</b></p><p><b>value</b>: <span title=\"{urn:oid:2.16.840.1.113883.6.238 2135-2}\">Hispanic or Latino</span></p><p><b>value</b>: <span title=\"{urn:oid:2.16.840.1.113883.6.238 2148-5}\">Mexican</span></p><p><b>value</b>: Hispanic or Latino</p></blockquote><p><b>name</b>: Jane Samantha Smith(OFFICIAL)</p><p><b>telecom</b>: ph: (555) 555-5555(HOME)</p><p><b>gender</b>: female</p><p><b>address</b>: 3401 Civic Center Blvd., Philadelphia, PA 19104(HOME)</p><h3>Contacts</h3><table class=\"grid\"><tr><td>-</td><td><b>Relationship</b></td><td><b>Name</b></td><td><b>Telecom</b></td><td><b>Address</b></td><td><b>Gender</b></td></tr><tr><td>*</td><td><span title=\"Codes: {http://terminology.hl7.org/CodeSystem/v2-0131 C}\">Spouse</span></td><td>John Samuel Smith(OFFICIAL)</td><td>ph: (555) 555-5555(HOME)</td><td>3401 Civic Center Blvd., Philadelphia, PA 19104(HOME)</td><td>male</td></tr></table></div>"
+  },
+  "extension": [
+    {
+      "extension": [
+        {
+          "url": "ombCategory",
+          "valueCoding": {
+            "system": "urn:oid:2.16.840.1.113883.6.238",
+            "code": "2106-3",
+            "display": "White"
+          }
+        },
+        {
+          "url": "text",
+          "valueString": "White"
+        }
+      ],
+      "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race"
+    },
+    {
+      "extension": [
+        {
+          "url": "ombCategory",
+          "valueCoding": {
+            "system": "urn:oid:2.16.840.1.113883.6.238",
+            "code": "2135-2",
+            "display": "Hispanic or Latino"
+          }
+        },
+        {
+          "url": "detailed",
+          "valueCoding": {
+            "system": "urn:oid:2.16.840.1.113883.6.238",
+            "code": "2148-5",
+            "display": "Mexican"
+          }
+        },
+        {
+          "url": "text",
+          "valueString": "Hispanic or Latino"
+        }
+      ],
+      "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity"
+    }
+  ],
+  "name": [
+    {
+      "use": "official",
+      "text": "Jane Samantha Smith",
+      "family": "Smith",
+      "given": [
+        "Jane",
+        "Samantha"
+      ]
+    }
+  ],
+  "telecom": [
+    {
+      "system": "phone",
+      "value": "(555) 555-5555",
+      "use": "home",
+      "rank": 1
+    }
+  ],
+  "gender": "female",
+  "address": [
+    {
+      "use": "home",
+      "type": "both",
+      "text": "3401 Civic Center Blvd., Philadelphia, PA 19104",
+      "line": [
+        "3401 Civic Center Blvd."
+      ],
+      "city": "Philadelphia",
+      "state": "PA",
+      "postalCode": "19104"
+    }
+  ],
+  "contact": [
+    {
+      "relationship": [
+        {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0131",
+              "code": "C",
+              "display": "Emergency Contact"
+            }
+          ],
+          "text": "Spouse"
+        }
+      ],
+      "name": {
+        "use": "official",
+        "text": "John Samuel Smith",
+        "family": "Smith",
+        "given": [
+          "John",
+          "Samuel"
+        ]
+      },
+      "telecom": [
+        {
+          "system": "phone",
+          "value": "(555) 555-5555",
+          "use": "home",
+          "rank": 1
+        }
+      ],
+      "address": {
+        "use": "home",
+        "type": "both",
+        "text": "3401 Civic Center Blvd., Philadelphia, PA 19104",
+        "line": [
+          "3401 Civic Center Blvd."
+        ],
+        "city": "Philadelphia",
+        "state": "PA",
+        "postalCode": "19104"
+      },
+      "gender": "male"
+    }
+  ]
+}

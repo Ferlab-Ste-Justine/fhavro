@@ -1,0 +1,67 @@
+{
+  "resourceType": "Condition",
+  "id": "phenotype-example-1",
+  "meta": {
+    "profile": [
+      "https://ncpi-fhir.github.io/ncpi-fhir-ig/StructureDefinition/phenotype"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative</b></p><p><b>verificationStatus</b>: <span title=\"Codes: {http://terminology.hl7.org/CodeSystem/condition-ver-status confirmed}\">Confirmed</span></p><p><b>code</b>: <span title=\"Codes: {http://purl.obolibrary.org/obo/hp.owl HP:0000076}\">Present: Vesicoureteral reflux</span></p><p><b>subject</b>: <a href=\"Patient-patient-example-1.html\">Generated Summary: Mariah Abigail Smith(OFFICIAL); Phone: (555) 555-5555; gender: female; birthDate: 2019-06-15</a></p><p><b>recordedDate</b>: </p></div>"
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed",
+        "display": "Confirmed"
+      }
+    ]
+  },
+  "code": {
+    "coding": [
+      {
+        "system": "http://purl.obolibrary.org/obo/hp.owl",
+        "code": "HP:0000076",
+        "display": "Vesicoureteral reflux"
+      }
+    ],
+    "text": "Present: Vesicoureteral reflux"
+  },
+  "subject": {
+    "reference": "Patient/patient-example-1"
+  },
+  "_recordedDate": {
+    "extension": [
+      {
+        "extension": [
+          {
+            "url": "target",
+            "valueReference": {
+              "reference": "Patient/patient-example-1"
+            }
+          },
+          {
+            "url": "targetPath",
+            "valueString": "birthDate"
+          },
+          {
+            "url": "relationship",
+            "valueCode": "after"
+          },
+          {
+            "url": "offset",
+            "valueDuration": {
+              "value": 2,
+              "unit": "w",
+              "system": "http://unitsofmeasure.org",
+              "code": "weeks"
+            }
+          }
+        ],
+        "url": "http://hl7.org/fhir/StructureDefinition/cqf-relativeDateTime"
+      }
+    ]
+  }
+}

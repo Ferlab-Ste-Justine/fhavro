@@ -3,10 +3,8 @@ package bio.ferlab.fhir.converter;
 import bio.ferlab.fhir.converter.converters.DateConverter;
 import bio.ferlab.fhir.converter.converters.DateTimeConverter;
 import bio.ferlab.fhir.converter.converters.IConverter;
-import bio.ferlab.fhir.converter.exception.AvroConversionException;
 import bio.ferlab.fhir.converter.exception.UnionTypeException;
 import bio.ferlab.fhir.schema.utils.Constant;
-import bio.ferlab.fhir.schema.utils.SymbolUtils;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -43,8 +41,6 @@ public class FhirAvroConverter {
         switch (schema.getType()) {
             case RECORD:
                 return readRecord(schema, bases);
-            case ENUM:
-                return readEnum(schema, bases);
             case ARRAY:
                 return readArray(schema, bases);
             case UNION:
@@ -59,6 +55,7 @@ public class FhirAvroConverter {
                 return readType(bases, Double::valueOf);
             case BOOLEAN:
                 return readType(bases, Boolean::parseBoolean);
+            case ENUM:
             case STRING:
                 return readType(bases, string -> string);
             case BYTES:
@@ -76,7 +73,9 @@ public class FhirAvroConverter {
 
         for (Base base : bases) {
             for (Schema.Field field : schema.getFields()) {
-                getProperty(base, field).ifPresent(property -> recordBuilder.set(field.name(), read(field.schema(), property.getValues())));
+                if (!readSpecificField(recordBuilder, base, field)) {
+                    getProperty(base, field).ifPresent(property -> recordBuilder.set(field.name(), read(field.schema(), property.getValues())));
+                }
             }
         }
 
@@ -113,19 +112,8 @@ public class FhirAvroConverter {
         return null;
     }
 
-    protected static Object readEnum(Schema schema, List<Base> bases) {
-        Base base = getSingle(bases);
-        List<String> symbols = schema.getEnumSymbols();
-        String encodedSymbol = SymbolUtils.encodeSymbol(base.primitiveValue());
-        if (symbols.contains(encodedSymbol)) {
-            return new GenericData.EnumSymbol(schema, encodedSymbol);
-        } else {
-            throw new AvroConversionException(String.format("value: %s was not found within Symbols: %s", base.primitiveValue(), symbols));
-        }
-    }
-
     protected static <T> Object readType(List<Base> bases, Function<String, T> function) {
-        Base base = getSingle(bases);
+        Base base = ConverterUtils.getBase(bases);
         String value = formatPrimitiveValue(base.primitiveValue());
         try {
             return function.apply(value);
@@ -145,11 +133,6 @@ public class FhirAvroConverter {
 
     private static ByteBuffer bytesForString(String string) {
         return ByteBuffer.wrap(string.getBytes(StandardCharsets.UTF_8));
-    }
-
-    private static Base getSingle(List<Base> bases) {
-        return Optional.ofNullable(bases.get(0))
-                .orElseThrow(() -> new RuntimeException("Please verify this, this isn't suppose to occur."));
     }
 
     private static Optional<Property> getProperty(Base base, Schema.Field field) {
@@ -183,5 +166,14 @@ public class FhirAvroConverter {
             }
         }
         return Optional.empty();
+    }
+
+    // XhtmlNode does not inherit from Base therefore cannot be made into a Property.
+    private static boolean readSpecificField(GenericRecordBuilder recordBuilder, Base base, Schema.Field field) {
+        if (field.name().equals("div")) {
+            recordBuilder.set(field.name(), base.castToNarrative(base).getDiv().getValue());
+            return true;
+        }
+        return false;
     }
 }

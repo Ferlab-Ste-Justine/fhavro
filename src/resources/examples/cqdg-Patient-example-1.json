@@ -1,0 +1,93 @@
+{
+  "resourceType": "Patient",
+  "id": "PA0017",
+  "meta": {
+    "versionId": "11",
+    "lastUpdated": "2021-06-28T19:33:41.980+00:00",
+    "source": "#760a21912177a4a3",
+    "profile": [
+      "http://fhir.cqgc.ferlab.bio/StructureDefinition/cqgc-patient"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><div class=\"hapiHeaderText\">Clara <b>NADEAU </b></div><table class=\"hapiPropertyTable\"><tbody><tr><td>Identifier</td><td>3265786</td></tr><tr><td>Date of birth</td><td><span>01 December 1982</span></td></tr></tbody></table></div>"
+  },
+  "extension": [
+    {
+      "url": "http://fhir.cqgc.ferlab.bio/StructureDefinition/qc-ethnicity",
+      "valueCoding": {
+        "system": "http://fhir.cqgc.ferlab.bio/CodeSystem/qc-ethnicity",
+        "code": "SO-AS",
+        "display": "South Asian"
+      }
+    },
+    {
+      "url": "http://fhir.cqgc.ferlab.bio/StructureDefinition/is-proband",
+      "valueBoolean": true
+    },
+    {
+      "url": "http://fhir.cqgc.ferlab.bio/StructureDefinition/is-fetus",
+      "valueBoolean": false
+    },
+    {
+      "url": "http://fhir.cqgc.ferlab.bio/StructureDefinition/blood-relationship",
+      "valueCoding": {
+        "system": "http://fhir.cqgc.ferlab.bio/CodeSystem/blood-relationship",
+        "code": "N",
+        "display": "No"
+      }
+    },
+    {
+      "url": "http://fhir.cqgc.ferlab.bio/StructureDefinition/family-id",
+      "valueReference": {
+        "reference": "Group/42977"
+      }
+    }
+  ],
+  "identifier": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+            "code": "MR",
+            "display": "Medical record number"
+          }
+        ],
+        "text": "Numéro du dossier médical"
+      },
+      "value": "3265786"
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+            "code": "JHN",
+            "display": "Jurisdictional health number (Canada)"
+          }
+        ],
+        "text": "Numéro du dossier médical"
+      },
+      "value": "NADC82120141"
+    }
+  ],
+  "active": true,
+  "name": [
+    {
+      "use": "official",
+      "family": "Nadeau",
+      "given": [
+        "Clara"
+      ]
+    }
+  ],
+  "gender": "female",
+  "birthDate": "1982-12-01",
+  "generalPractitioner": [
+    {
+      "reference": "PractitionerRole/PRR00117"
+    }
+  ]
+}
