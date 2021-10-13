@@ -23,4 +23,14 @@ public class IdentifierFixture {
                 .setType(CodeableConceptFixture.createCodeableConcept())
                 .setValue("IdentifierValueTest");
     }
+
+    public static Identifier createRelativeIdentifier() {
+        return new Identifier()
+                .setPeriod(PeriodFixture.createPlannedPeriod())
+                .setSystem("http://this-is-the-best-system-ever")
+                .setUse(Identifier.IdentifierUse.OFFICIAL)
+                .setAssigner(ReferenceFixture.createRelativeReference())
+                .setType(CodeableConceptFixture.createCodeableConcept())
+                .setValue("IdentifierValue");
+    }
 }

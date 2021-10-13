@@ -2,11 +2,16 @@ package bio.ferlab.fhir.converter.converters;
 
 import bio.ferlab.fhir.converter.DateUtils;
 
+// A date, date-time or partial date (e.g. just year or year + month).
 public class DateTimeConverter implements IConverter<String> {
 
     @Override
     public String convert(String value) {
-        return Long.toString(DateUtils.toEpochSecond(value));
+        if (value.length() > 10) {
+            return Long.toString(DateUtils.toEpochSecond(value));
+        } else {
+            return Long.toString(DateUtils.toEpochDay(value));
+        }
     }
 
     @Override

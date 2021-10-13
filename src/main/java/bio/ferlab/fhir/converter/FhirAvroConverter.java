@@ -3,6 +3,7 @@ package bio.ferlab.fhir.converter;
 import bio.ferlab.fhir.converter.converters.DateConverter;
 import bio.ferlab.fhir.converter.converters.DateTimeConverter;
 import bio.ferlab.fhir.converter.converters.IConverter;
+import bio.ferlab.fhir.converter.converters.InstantConverter;
 import bio.ferlab.fhir.converter.exception.UnionTypeException;
 import bio.ferlab.fhir.schema.utils.Constant;
 import org.apache.avro.AvroTypeException;
@@ -22,10 +23,11 @@ import java.util.regex.Pattern;
 
 public class FhirAvroConverter {
 
-    private static final List<IConverter<String>> PRIMITIVE_CONVERTERS = List.of(
-            new DateConverter(),
-            new DateTimeConverter()
-    );
+    private static final Map<String, IConverter<String>> PRIMITIVE_CONVERTERS = new HashMap<>() {{
+        put("date", new DateConverter());
+        put("dateTime", new DateTimeConverter());
+        put("instant", new InstantConverter());
+    }};
 
     private FhirAvroConverter() {
     }
@@ -114,7 +116,7 @@ public class FhirAvroConverter {
 
     protected static <T> Object readType(List<Base> bases, Function<String, T> function) {
         Base base = ConverterUtils.getBase(bases);
-        String value = formatPrimitiveValue(base.primitiveValue());
+        String value = formatPrimitiveValue(base, base.primitiveValue());
         try {
             return function.apply(value);
         } catch (Exception ex) {
@@ -122,11 +124,9 @@ public class FhirAvroConverter {
         }
     }
 
-    protected static String formatPrimitiveValue(String value) {
-        for (IConverter<String> converter : PRIMITIVE_CONVERTERS) {
-            if (Pattern.compile(converter.getPattern()).matcher(value).matches()) {
-                return converter.convert(value);
-            }
+    protected static String formatPrimitiveValue(Base base, String value) {
+        if (PRIMITIVE_CONVERTERS.containsKey(base.fhirType())) {
+            return PRIMITIVE_CONVERTERS.get(base.fhirType()).convert(value);
         }
         return value;
     }

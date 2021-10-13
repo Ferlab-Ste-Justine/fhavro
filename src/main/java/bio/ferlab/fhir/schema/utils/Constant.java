@@ -2,7 +2,8 @@ package bio.ferlab.fhir.schema.utils;
 
 public class Constant {
 
-    private Constant() {}
+    private Constant() {
+    }
 
     public static final String NAMESPACE = "namespace";
     public static final String DEFAULT = "default";
@@ -22,7 +23,10 @@ public class Constant {
     public static final String VALUE = "value";
     public static final String EXTENSION = "extension";
     public static final String REFERENCE = "reference";
+    public static final String IDENTIFIER = "identifier";
+    public static final String REFERENCEABLE = "referenceable";
     public static final String CODE = "code";
+    public static final String ID_FIELD_NAME = "idFieldName";
 
     // Avro-specific
     public static final String ENUM = "enum";
@@ -34,6 +38,7 @@ public class Constant {
     public static final String INT = "int";
     public static final String LONG = "long";
     public static final String DATE = "date";
+    public static final String TIMESTAMP_MILLIS = "timestamp-millis";
     public static final String TIMESTAMP_MICROS = "timestamp-micros";
 
     public static final String NULL = "null";

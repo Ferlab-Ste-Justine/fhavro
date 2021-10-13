@@ -45,6 +45,24 @@ public class JsonObjectUtils {
                 .build();
     }
 
+    public static JsonObject createReference(String name, String identifier, String description, String idFieldName, JsonArray fields, boolean required) {
+        JsonObject innerRecord = Json.createObjectBuilder()
+                .add(Constant.TYPE, Constant.RECORD)
+                .add(Constant.NAME, identifier)
+                .add(Constant.DOC, formatDoc(description))
+                .add(Constant.NAMESPACE, Constant.NAMESPACE_VALUE)
+                .add(Constant.FIELDS, fields)
+                .add("logicalType", "reference")
+                .add("id-field-name", idFieldName)
+                .add(Constant.DEFAULT, Json.createObjectBuilder().build())
+                .build();
+        return Json.createObjectBuilder()
+                .add(Constant.NAME, WordUtils.uncapitalize(name))
+                .add(Constant.TYPE, innerRecord)
+                .add(Constant.DEFAULT, JsonValue.EMPTY_JSON_OBJECT)
+                .build();
+    }
+
     // TODO clean that up.
     public static JsonObject createArray(String name, JsonObject jsonObject) {
         if (jsonObject.containsKey("type")) {
@@ -106,7 +124,7 @@ public class JsonObjectUtils {
     public static JsonObject createRedefinedRecord(String name, String type, JsonObject defaultObject) {
         JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder()
                 .add(Constant.TYPE, Constant.NAMESPACE_VALUE + "." + WordUtils.capitalize(type))
-                .add(Constant.NAME, name);
+                .add(Constant.NAME, WordUtils.uncapitalize(name));
         if (defaultObject != null) {
             jsonObjectBuilder.add(Constant.DEFAULT, defaultObject);
         }

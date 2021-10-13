@@ -13,11 +13,8 @@ import org.hl7.fhir.r4.model.BaseResource;
 import org.hl7.fhir.r4.model.StructureDefinition;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class FhavroConverter {
@@ -37,22 +34,22 @@ public class FhavroConverter {
     }
 
     @NotNull
-    public static <T extends BaseResource> T convertGenericRecordToResource(GenericRecord genericRecord, Schema schema, Class<T> type) {
-        return AvroFhirConverter.readGenericRecord(genericRecord, schema, type);
+    public static <T extends BaseResource> T convertGenericRecordToResource(GenericRecord genericRecord, Schema schema, String name) {
+        return AvroFhirConverter.readGenericRecord(genericRecord, schema, name);
     }
 
     @NotNull
     public static Schema loadSchema(String schemaName) {
         schemaName = ConverterUtils.formatSchemaName(schemaName);
 
-        URL resource = ClassLoader.getSystemClassLoader().getResource("schemas/" + schemaName);
-        if (resource == null) {
+        InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream("schemas/" + schemaName);
+        if (inputStream == null) {
             throw new BadRequestException("The following schema is not found: " + schemaName);
         }
 
         try {
-            return new Schema.Parser().parse(new File(resource.toURI()));
-        } catch (IOException | URISyntaxException ex) {
+            return new Schema.Parser().parse(inputStream);
+        } catch (IOException ex) {
             throw new BadRequestException(ex.getMessage());
         }
     }
@@ -64,15 +61,14 @@ public class FhavroConverter {
 
     @NotNull
     public static StructureDefinition loadProfile(String filename) {
-        URL resource = ClassLoader.getSystemClassLoader().getResource("profiles/" + filename);
-        if (resource == null) {
+        InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream("profiles/" + filename);
+        if (inputStream == null) {
             throw new BadRequestException("The following profile is not found: profiles/" + filename);
         }
 
         try {
-            FileInputStream fileInputStream = new FileInputStream(new File(resource.toURI()));
-            return fhirContext.newJsonParser().parseResource(StructureDefinition.class, IOUtils.toString(fileInputStream, StandardCharsets.UTF_8));
-        } catch (IOException | URISyntaxException ex) {
+            return fhirContext.newJsonParser().parseResource(StructureDefinition.class, IOUtils.toString(inputStream, StandardCharsets.UTF_8));
+        } catch (IOException ex) {
             throw new BadRequestException(ex.getMessage());
         }
     }

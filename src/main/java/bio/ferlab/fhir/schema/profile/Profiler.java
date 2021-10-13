@@ -9,7 +9,6 @@ import bio.ferlab.fhir.schema.utils.Constant;
 import bio.ferlab.fhir.schema.utils.SchemaUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.Opt;
 import org.hl7.fhir.r4.model.Element;
 import org.hl7.fhir.r4.model.ElementDefinition;
 import org.hl7.fhir.r4.model.StructureDefinition;

@@ -20,10 +20,10 @@ public class ReferenceDefinition extends SpecificDefinition {
             JsonArray fields = Json.createArrayBuilder()
                     .add(JsonObjectUtils.createConst(Constant.REFERENCE, Constant.STRING, false))
                     .add(JsonObjectUtils.createConst(Constant.TYPE, Constant.STRING, false))
-                    .add(JsonObjectUtils.createConst("identifier", Constant.STRING, false))
+                    .add(JsonObjectUtils.createConst(Constant.IDENTIFIER, WordUtils.capitalize(Constant.IDENTIFIER), false))
                     .add(JsonObjectUtils.createConst("display", Constant.STRING, false))
                     .build();
-            return JsonObjectUtils.createInnerRecord(name, formattedName, "A Reference", fields, required);
+            return JsonObjectUtils.createReference(name, formattedName, "A Reference", Constant.IDENTIFIER, fields, required);
         }
     }
 }

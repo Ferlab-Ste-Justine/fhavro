@@ -8,12 +8,12 @@ import org.apache.commons.text.WordUtils;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ExtensionDefinition extends SpecificDefinition {
 
-    private static Map<String, Extension> extensions;
+    private static LinkedHashMap<String, Extension> extensions;
 
     @Override
     public JsonObject convertToJson(String root, String name, boolean required) {
@@ -38,14 +38,13 @@ public class ExtensionDefinition extends SpecificDefinition {
             return;
         }
 
-        extensions = new HashMap<>() {{
+        extensions = new LinkedHashMap<>() {{
             put("valueBase64Binary", new Extension("base64Binary", DefinitionType.PRIMITIVE));
             put("valueBoolean", new Extension("boolean", DefinitionType.PRIMITIVE));
             put("valueCanonical", new Extension("canonical", DefinitionType.PRIMITIVE));
             put("valueCode", new Extension("code", DefinitionType.PRIMITIVE));
             put("valueTime", new Extension("time", DefinitionType.PRIMITIVE));
             put("valueId", new Extension("id", DefinitionType.PRIMITIVE));
-            put("valueInstant", new Extension("instant", DefinitionType.PRIMITIVE));
             put("valueInteger", new Extension("integer", DefinitionType.PRIMITIVE));
             put("valueMarkdown", new Extension("markdown", DefinitionType.PRIMITIVE));
             put("valueOid", new Extension("oid", DefinitionType.PRIMITIVE));
@@ -57,7 +56,9 @@ public class ExtensionDefinition extends SpecificDefinition {
             put("valueUuid", new Extension("uuid", DefinitionType.PRIMITIVE));
             put("valueDate", new Extension("date", DefinitionType.SPECIFIC));
             put("valueDateTime", new Extension("dateTime", DefinitionType.SPECIFIC));
+            put("valueInstant", new Extension("instant", DefinitionType.SPECIFIC));
             put("valueDecimal", new Extension("decimal", DefinitionType.SPECIFIC));
+            put("valueIdentifier", new Extension("Identifier", DefinitionType.SPECIFIC));
             put("valueReference", new Extension("Reference", DefinitionType.SPECIFIC));
             put("valueAddress", new Extension("Address", DefinitionType.COMPLEX));
             put("valueAge", new Extension("Age", DefinitionType.COMPLEX));
@@ -76,7 +77,6 @@ public class ExtensionDefinition extends SpecificDefinition {
             put("valueMeta", new Extension("Meta", DefinitionType.COMPLEX));
             put("valueCodeableConcept", new Extension("CodeableConcept", DefinitionType.COMPLEX));
             put("valueCoding", new Extension("Coding", DefinitionType.COMPLEX));
-            put("valueIdentifier", new Extension("Identifier", DefinitionType.COMPLEX));
             put("valueQuantity", new Extension("Quantity", DefinitionType.COMPLEX));
             put("valueRange", new Extension("Range", DefinitionType.COMPLEX));
             put("valueRatio", new Extension("Ratio", DefinitionType.COMPLEX));
