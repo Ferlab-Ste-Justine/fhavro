@@ -2,6 +2,7 @@ package fixture;
 
 import org.hl7.fhir.r4.model.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class PatientFixture {
@@ -29,6 +30,13 @@ public class PatientFixture {
         patient.setBirthDate(new Date());
         patient.setId(IdType.newRandomUuid());
         patient.addAddress(AddressFixture.createAddress());
+        return patient;
+    }
+
+    public static Patient createPatientWithRelativeReference() {
+        Patient patient = createPatient();
+        patient.setIdentifier(new ArrayList<>());
+        patient.addIdentifier(IdentifierFixture.createRelativeIdentifier());
         return patient;
     }
 }

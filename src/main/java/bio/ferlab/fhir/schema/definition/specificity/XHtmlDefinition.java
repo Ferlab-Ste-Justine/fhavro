@@ -9,6 +9,6 @@ public class XHtmlDefinition extends SpecificDefinition {
 
     @Override
     public JsonObject convertToJson(String root, String name, boolean required) {
-        return JsonObjectUtils.createConst(name, Constant.STRING, required);
+        return JsonObjectUtils.createConst(name, Constant.STRING, false);
     }
 }

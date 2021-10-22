@@ -23,11 +23,17 @@ import static bio.ferlab.fhir.converter.ConverterUtils.navigatePath;
 
 public class AvroFhirConverter {
 
-    private AvroFhirConverter() {
+    private static final FhirContext fhirContext;
+
+    AvroFhirConverter() {
     }
 
-    public static <T extends BaseResource> T readGenericRecord(GenericRecord genericRecord, Schema schema, Class<T> type) {
-        ResourceContext resourceContext = new ResourceContext(TerserUtilHelper.newHelper(FhirContext.forR4(), type.getSimpleName()));
+    static {
+        fhirContext = FhirContext.forR4();
+    }
+
+    public static <T extends BaseResource> T readGenericRecord(GenericRecord genericRecord, Schema schema, String name) {
+        ResourceContext resourceContext = new ResourceContext(TerserUtilHelper.newHelper(fhirContext, name));
         read(resourceContext, null, schema, genericRecord);
         return resourceContext.getHelper().getResource();
     }
@@ -141,8 +147,16 @@ public class AvroFhirConverter {
         }
 
         switch (schema.getLogicalType().getName()) {
+            case Constant.TIMESTAMP_MILLIS:
+                readType(context, DateUtils.formatTimestampMillis((Long) value));
+                return;
             case Constant.TIMESTAMP_MICROS:
-                readType(context, DateUtils.formatTimestampMicros((Long) value));
+                // TODO think this again, it will break one day.
+                if ((Long) value < 20000) {
+                    readType(context, DateUtils.formatDate(Math.toIntExact((Long) value)));
+                } else {
+                    readType(context, DateUtils.formatTimestampMicros((Long) value));
+                }
                 return;
             case Constant.DATE:
                 readType(context, DateUtils.formatDate((Integer) value));
@@ -170,7 +184,13 @@ public class AvroFhirConverter {
                 for (String result : operation.getResult()) {
                     Base parentBase = (Base) context.getArrayContext().getCurrentBase(result);
                     if (parentBase.isPrimitive()) {
-                        continue;
+                        // Arrays of String primitiveType are already written somehow.
+                        if ("string".equals(parentBase.fhirType())) {
+                            continue;
+                        } else {
+                            context.getHelper().setField(navigatePath(context.getPath()), value);
+                            break;
+                        }
                     }
 
                     String relativePath = navigatePath(context.getPath(), true, context.getPath().size(), count);

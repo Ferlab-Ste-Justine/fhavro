@@ -1,12 +1,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>fhavro.qs</groupId>
+    <groupId>bio.ferlab.fhir</groupId>
     <artifactId>fhavro</artifactId>
     <packaging>jar</packaging>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
     <name>fhavro</name>
+    <description>The fhavro project is to serialize FHIR v4.0.7 resources in Avro, and vice-versa.</description>
     <url>https://github.com/Ferlab-Ste-Justine/fhavro</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://svn.apache.org/viewvc/maven</url>
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -14,6 +27,8 @@
         <java.version>11.0.12</java.version>
         <avro.version>1.10.2</avro.version>
         <junit.version>5.4.0</junit.version>
+        <fhir.version>5.5.1</fhir.version>
+        <javax.version>1.1.4</javax.version>
     </properties>
 
     <dependencies>
@@ -29,10 +44,10 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-           <dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.25</version>
+            <version>1.7.30</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -48,12 +63,12 @@
         <dependency>
             <groupId>javax.json</groupId>
             <artifactId>javax.json-api</artifactId>
-            <version>1.1.4</version>
+            <version>${javax.version}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
-            <version>1.1.4</version>
+            <version>${javax.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
@@ -63,8 +78,13 @@
         </dependency>
         <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
+            <artifactId>hapi-fhir-client</artifactId>
+            <version>${fhir.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.uhn.hapi.fhir</groupId>
             <artifactId>hapi-fhir-structures-r4</artifactId>
-            <version>5.5.1</version>
+            <version>${fhir.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-cli</groupId>
@@ -72,14 +92,9 @@
             <version>1.4</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-avro</artifactId>
-            <version>2.8.5</version>
-        </dependency>
-        <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
+            <version>22.0.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -106,12 +121,28 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <release>11</release>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifestFile>src/resources/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
                 </configuration>
             </plugin>
         </plugins>
-    </build>
 
+        <resources>
+            <resource>
+                <directory>src/resources/schemas</directory>
+                <targetPath>schemas</targetPath>
+            </resource>
+        </resources>
+    </build>
 </project>

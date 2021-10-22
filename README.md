@@ -57,3 +57,5 @@ The resulting Schema file (.avsc) are located under /src/resources/schemas/ of t
 ## Known issues
 
  - Identifier property in the Reference type is saved as a String in order to avoid Cyclical definition.
+ - "Private" fields are not serializable yet. (e.g: field where field name starts with "_" of type Element).
+ - "Narrative.div" is marked as Optional even thought it is Required because some entities does not provide it (may be due to the quality of the dev data).

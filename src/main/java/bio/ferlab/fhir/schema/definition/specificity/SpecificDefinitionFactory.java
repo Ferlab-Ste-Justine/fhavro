@@ -10,14 +10,17 @@ public class SpecificDefinitionFactory {
         put("date", new DateDefinition());
         put("dateTime", new DateTimeDefinition());
         put("decimal", new DecimalDefinition());
+        put("instant", new InstantDefinition());
         put("xhtml", new XHtmlDefinition());
         // put("Element", new ElementDefinition());
         put("Extension", new ExtensionDefinition());
+        put("Identifier", new IdentifierDefinition());
         put("Reference", new ReferenceDefinition());
         put("ResourceList", new ResourceListDefinition());
     }};
 
-    private SpecificDefinitionFactory() {}
+    private SpecificDefinitionFactory() {
+    }
 
     public static SpecificDefinition getSpecificDefinition(String identifier) {
         return Optional.ofNullable(SPECIFIC_DEFINITIONS.get(identifier))

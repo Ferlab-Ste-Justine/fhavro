@@ -7,16 +7,14 @@ public class DateUtils {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
+    private static final DateTimeFormatter UTC_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    private static final DateTimeFormatter GENERIC_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd[['T']HH:mm:ss[.SSS][XXX]]");
 
     private DateUtils() {
     }
 
     public static LocalDate parseDate(String date) {
         return LocalDate.parse(date, DATE_FORMATTER);
-    }
-
-    public static ZonedDateTime parseTimestamp(String timestamp) {
-        return ZonedDateTime.parse(timestamp, DATETIME_FORMATTER);
     }
 
     public static String formatDate(Integer epochDay) {
@@ -28,10 +26,12 @@ public class DateUtils {
         return ZonedDateTime.ofInstant(Instant.ofEpochSecond(epochSeconds), ZoneId.of("UTC")).format(DATETIME_FORMATTER);
     }
 
+    public static String formatTimestampMillis(Long epochMillis) {
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMillis * 1000), ZoneId.of("UTC")).format(UTC_FORMATTER);
+    }
+
     public static Long toEpochSecond(String timestamp) {
-        return LocalDateTime.ofInstant(parseTimestamp(timestamp).toInstant(), ZoneId.of("UTC"))
-                .toInstant(ZoneOffset.UTC)
-                .getEpochSecond();
+        return LocalDateTime.parse(timestamp, GENERIC_FORMATTER).toInstant(ZoneOffset.UTC).toEpochMilli() / 1000;
     }
 
     public static Long toEpochDay(String date) {
