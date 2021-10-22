@@ -1,0 +1,57 @@
+{
+  "resourceType": "Condition",
+  "id": "disease-example-1",
+  "meta": {
+    "profile": [
+      "https://ncpi-fhir.github.io/ncpi-fhir-ig/StructureDefinition/disease"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative</b></p><p><b>clinicalStatus</b>: <span title=\"Codes: {http://terminology.hl7.org/CodeSystem/condition-clinical active}\">Active</span></p><p><b>verificationStatus</b>: <span title=\"Codes: {http://terminology.hl7.org/CodeSystem/condition-ver-status confirmed}\">Affected</span></p><p><b>category</b>: <span title=\"Codes: {http://terminology.hl7.org/CodeSystem/condition-category encounter-diagnosis}\">Encounter Diagnosis</span></p><p><b>code</b>: <span title=\"Codes: {http://purl.obolibrary.org/obo/ncit.owl NCIT:Neuroblastoma}\">Neuroblastoma</span></p><p><b>subject</b>: <a href=\"Patient-patient-example-1.html\">Generated Summary: Mariah Abigail Smith(OFFICIAL); Phone: (555) 555-5555; gender: female; birthDate: 2019-06-15</a></p><p><b>recordedDate</b>: </p></div>"
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "active",
+        "display": "Active"
+      }
+    ],
+    "text": "Active"
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed",
+        "display": "Confirmed"
+      }
+    ],
+    "text": "Affected"
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "encounter-diagnosis",
+          "display": "Encounter Diagnosis"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://purl.obolibrary.org/obo/ncit.owl",
+        "code": "NCIT:Neuroblastoma",
+        "display": "Neuroblastoma"
+      }
+    ],
+    "text": "Neuroblastoma"
+  },
+  "subject": {
+    "reference": "Patient/patient-example-1"
+  }
+}

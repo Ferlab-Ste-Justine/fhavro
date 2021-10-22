@@ -22,8 +22,8 @@ public class Constant {
     public static final String RESOURCE_TYPE = "resourceType";
     public static final String VALUE = "value";
     public static final String EXTENSION = "extension";
-    public static final String REFERENCE = "reference";
     public static final String IDENTIFIER = "identifier";
+    public static final String REFERENCE = "reference";
     public static final String REFERENCEABLE = "referenceable";
     public static final String CODE = "code";
     public static final String ID_FIELD_NAME = "idFieldName";

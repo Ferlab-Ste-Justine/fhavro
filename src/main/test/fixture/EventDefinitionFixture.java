@@ -19,4 +19,10 @@ public class EventDefinitionFixture {
         eventDefinition.setExtension(List.of(ExtensionFixture.createExtension(new DateTimeType(new Date()))));
         return eventDefinition;
     }
+
+    public static EventDefinition createSimpleEventDefinition() {
+        EventDefinition eventDefinition = createEventDefinition();
+        eventDefinition.setExtension(null);
+        return eventDefinition;
+    }
 }

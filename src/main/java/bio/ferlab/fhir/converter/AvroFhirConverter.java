@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static bio.ferlab.fhir.converter.ConverterUtils.navigatePath;
 
@@ -104,9 +105,9 @@ public class AvroFhirConverter {
 
         // Build the Array elements.
         for (Object element : (List<?>) value) {
-            Operation<String> operation = findRegisteredNode(context);
+            Operation<List<String>> operation = findAllRegisteredNodes(context);
             if (operation.isValid()) {
-                Base base = (Base) context.getArrayContext().getCurrentBase(operation.getResult());
+                Base base = (Base) context.getArrayContext().getCurrentBase(operation.getResult().get(0));
                 String relativePath = navigatePath(context.getPath(), true, context.getPath().size(), 1);
                 if (element instanceof GenericRecord) {
                     context.getTerser().addElement(base, relativePath);
@@ -151,8 +152,7 @@ public class AvroFhirConverter {
                 readType(context, DateUtils.formatTimestampMillis((Long) value));
                 return;
             case Constant.TIMESTAMP_MICROS:
-                // TODO think this again, it will break one day.
-                if ((Long) value < 20000) {
+                if (String.valueOf(value).length() <= 5) {
                     readType(context, DateUtils.formatDate(Math.toIntExact((Long) value)));
                 } else {
                     readType(context, DateUtils.formatTimestampMicros((Long) value));
@@ -175,37 +175,19 @@ public class AvroFhirConverter {
         }
 
         String root = navigatePath(context.getPath(), context.getPath().size() - 1);
-        // The field is not found directly from the root, we need to dig deeper.
         if (!context.getArrayContext().hasNode(root)) {
-            // There can be multiple occurrences, get all of them.
             Operation<List<String>> operation = findAllRegisteredNodes(context);
-            if (operation.isValid() && !operation.getResult().isEmpty()) {
-                int count = 1;
-                for (String result : operation.getResult()) {
-                    Base parentBase = (Base) context.getArrayContext().getCurrentBase(result);
-                    if (parentBase.isPrimitive()) {
-                        // Arrays of String primitiveType are already written somehow.
-                        if ("string".equals(parentBase.fhirType())) {
-                            continue;
-                        } else {
-                            context.getHelper().setField(navigatePath(context.getPath()), value);
-                            break;
-                        }
-                    }
-
-                    String relativePath = navigatePath(context.getPath(), true, context.getPath().size(), count);
-                    List<IBase> elements = context.getTerser().getValues(parentBase, relativePath);
-                    if (elements.isEmpty()) {
-                        context.getTerser().setElement(
-                                parentBase,
-                                relativePath,
-                                value);
-                        break;
-                    } else {
-                        // Unfortunately, not yet found, keep digging.
-                        count++;
-                    }
-                }
+            if (operation.isValid()) {
+                AtomicInteger index = new AtomicInteger(0);
+                operation.getResult().stream()
+                        .map(node -> (Base) context.getArrayContext().getCurrentBase(node))
+                        .filter(parent -> !(parent.isPrimitive() && Constant.STRING.equals(parent.fhirType())))
+                        .forEach(parent -> setValue(
+                                context,
+                                parent,
+                                navigatePath(context.getPath(), true, context.getPath().size(), index.incrementAndGet()),
+                                value)
+                        );
             } else {
                 context.getHelper().setField(navigatePath(context.getPath()), value);
             }
@@ -226,7 +208,7 @@ public class AvroFhirConverter {
     protected static boolean readSpecificField(ResourceContext context, String value) {
         if (context.getPath().getLast().equals("div")) {
             Property property = context.getResource().getNamedProperty(navigatePath(context.getPath(), 1));
-            if ("Narrative" .equals(property.getTypeCode()) && property.hasValues()) {
+            if ("Narrative".equals(property.getTypeCode()) && property.hasValues()) {
                 Base base = property.getValues().get(0);
                 Narrative narrative = base.castToNarrative(base);
                 narrative.setDivAsString(value);
@@ -235,28 +217,6 @@ public class AvroFhirConverter {
             return true;
         }
         return false;
-    }
-
-    private static Operation<String> findRegisteredNode(ResourceContext context) {
-        Iterator<String> iterator = context.getPath().iterator();
-
-        StringBuilder stringBuilder = new StringBuilder();
-        while (iterator.hasNext()) {
-            stringBuilder.append(iterator.next());
-
-            if (context.getArrayContext().hasNode(stringBuilder.toString())) {
-                return new Operation<>(stringBuilder.toString());
-            } else {
-                stringBuilder.append(".");
-            }
-        }
-
-        String absolutePath = navigatePath(context.getPath(), true, context.getPath().size() - 1);
-        if (context.getArrayContext().hasNode(absolutePath)) {
-            return new Operation<>(absolutePath);
-        }
-
-        return new Operation<>();
     }
 
     private static Operation<List<String>> findAllRegisteredNodes(ResourceContext context) {
@@ -279,6 +239,21 @@ public class AvroFhirConverter {
             possibleNodes.add(absolutePath);
         }
 
-        return new Operation<>(possibleNodes);
+        return possibleNodes.isEmpty() ? new Operation<>() : new Operation<>(possibleNodes);
+    }
+
+    private static void setValue(ResourceContext context, Base parent, String relativePath, String value) {
+        if (parent.isPrimitive()) {
+            context.getHelper().setField(navigatePath(context.getPath()), value);
+            return;
+        }
+
+        try {
+            List<IBase> elements = context.getTerser().getValues(parent, relativePath);
+            if (elements.isEmpty()) {
+                context.getTerser().setElement(parent, relativePath, value);
+            }
+        } catch (ClassCastException ignored) {
+        }
     }
 }

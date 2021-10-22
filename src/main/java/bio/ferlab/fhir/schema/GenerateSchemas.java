@@ -1,20 +1,17 @@
 package bio.ferlab.fhir.schema;
 
-import bio.ferlab.fhir.FhavroConverter;
-import bio.ferlab.fhir.schema.definition.specificity.ExtensionDefinition;
+import bio.ferlab.fhir.converter.Operation;
+import bio.ferlab.fhir.schema.definition.BaseDefinition;
+import bio.ferlab.fhir.schema.definition.SchemaDefinition;
 import bio.ferlab.fhir.schema.repository.DefinitionRepository;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import bio.ferlab.fhir.schema.repository.SchemaMode;
 import org.apache.commons.cli.*;
-import org.apache.commons.lang3.StringUtils;
-import org.hl7.fhir.r4.model.StructureDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -24,86 +21,44 @@ public class GenerateSchemas {
     private static final Logger LOGGER = LoggerFactory.getLogger(GenerateSchemas.class);
 
     private static final List<String> unsupportedEntities = new ArrayList<>();
-    private static final List<String> supportedEntities = new ArrayList<>();
-
-    private static final Options options = new Options();
-    private static final HelpFormatter helpFormatter = new HelpFormatter();
-    private static final CommandLineParser commandLineParser = new DefaultParser();
-
     private static List<String> generatedEntities = new ArrayList<>();
 
-    public static void main(String[] args) throws URISyntaxException, IOException {
-        setupCommandLine();
+    public static void main(String[] args) {
+        CommandLine commandLine = setupCommandLine(args);
 
-        CommandLine commandLine;
-        try {
-            commandLine = commandLineParser.parse(options, args);
-        } catch (ParseException e) {
-            helpFormatter.printHelp("--generate <profileName>", options);
-            System.exit(1);
-            return;
-        }
-
-        initialize();
+        DefinitionRepository.initialize(SchemaMode.parseSchemaMode(commandLine.getOptionValue("mode")));
 
         generate(commandLine.getOptionValue("generate"),
                 commandLine.getOptionValue("profile"),
                 commandLine.getOptionValues("extension"));
-
-        if (commandLine.hasOption("report")) {
-            LOGGER.info(String.format("Report: %n" +
-                    "--- Number of support entities: %d%n" +
-                    "--- Number of unsupported entities: %d%nSupported entities: %s", supportedEntities.size(), unsupportedEntities.size(), supportedEntities));
-        }
     }
 
-    private static void setupCommandLine() {
-        Option schema = new Option("g", "generate", true, "Generate the schema for the entity. The argument must be the fullname of the entity.");
-        schema.setRequired(true);
-        schema.setArgName("schemaName");
-        options.addOption(schema);
-
-        Option profile = new Option("p", "profile", true, "Generate the schema with a profile. The argument must be the filename of the profile (with extension).");
-        profile.setRequired(false);
-        profile.setArgName("profileName");
-        options.addOption(profile);
-
-        Option extensions = new Option("e", "extension", true, "Comma-separated list of Extension filename dependencies for the profile.");
-        extensions.setRequired(false);
-        extensions.setArgName("extensionNames");
-        extensions.setArgs(Option.UNLIMITED_VALUES);
-        options.addOption(extensions);
-
-        Option report = new Option("r", "report", false, "Allow to output a report of the schema generation process or not.");
-        report.setRequired(false);
-        options.addOption(report);
-    }
-
-    private static void initialize() throws IOException, URISyntaxException {
-        URL resource = ClassLoader.getSystemClassLoader().getResource("fhir.schema.json");
-        if (resource == null) {
-            throw new IllegalArgumentException("file not found!");
-        }
-
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode root = mapper.readTree(new File(resource.toURI()));
-        DefinitionRepository.populatePrimitiveDefinitions(root);
-        DefinitionRepository.populateComplexDefinitions(root);
-        ExtensionDefinition.initializeExtensions();
-    }
-
-    public static void generate(String schemaName, String profileName, String[] extensionNames) {
-        if ("all" .equalsIgnoreCase(schemaName)) {
+    private static void generate(String schemaName, String profileName, String[] extensionNames) {
+        if ("all".equalsIgnoreCase(schemaName)) {
             generatedEntities = new ArrayList<>(DefinitionRepository.getComplexDefinitions().keySet());
             loadAll();
-
-            LOGGER.info("Generated all schemas.");
         } else {
             loadOne(schemaName, profileName, extensionNames);
         }
     }
 
-    public static void loadAll() {
+    private static void loadOne(String schemaName, String profileName, String[] extensionNames) {
+        SchemaDefinition schema = new SchemaDefinition(schemaName, profileName, extensionNames);
+
+        Operation<BaseDefinition> operation = DefinitionRepository.generateDefinition(schema);
+        if (operation.isValid()) {
+
+            saveDefinition(operation.getResult(), DefinitionRepository.getSchemaMode(), schema.hasProfile() ? schema.getProfile().getName().toLowerCase() : schemaName.toLowerCase());
+
+            if (schema.hasProfile())
+                LOGGER.info("Generated: {} with {} profile", schemaName, profileName);
+            else {
+                LOGGER.info("Generated: {}", schemaName);
+            }
+        }
+    }
+
+    private static void loadAll() {
         String currentKey = "";
         try {
             ListIterator<String> listIterator = generatedEntities.listIterator();
@@ -119,26 +74,49 @@ public class GenerateSchemas {
             unsupportedEntities.add(currentKey);
             loadAll();
         }
+
+        LOGGER.info("Generated all schemas.");
     }
 
-    public static void loadOne(String schemaName, String profileName, String[] extensionNames) {
-        StructureDefinition profile = null;
-        List<StructureDefinition> extensions = new ArrayList<>();
-        if (StringUtils.isNotBlank(profileName)) {
-            profile = FhavroConverter.loadProfile(profileName);
-            if (extensionNames != null) {
-                for (String filename : extensionNames) {
-                    extensions.add(FhavroConverter.loadExtension(filename));
-                }
-            }
-        }
+    private static CommandLine setupCommandLine(String[] args) {
+        Options options = new Options();
 
-        if (DefinitionRepository.generateDefinition(schemaName, profile, extensions)) {
-            supportedEntities.add(schemaName);
-            if (profile != null) {
-                LOGGER.info(String.format("Generated: %s with %s profile", schemaName, profileName));
-            } else {
-                LOGGER.info(String.format("Generated: %s", schemaName));
+        Option schema = new Option("g", "generate", true, "Generate the schema for the entity. The argument must be the full name of the entity [Required].");
+        schema.setRequired(true);
+        schema.setArgName("schemaName");
+        options.addOption(schema);
+
+        Option mode = new Option("m", "mode", true, "Generate the schema with a mode (Default/Simple/Advanced)[Required].");
+        mode.setRequired(true);
+        mode.setArgName("schemaMode");
+        options.addOption(mode);
+
+        Option profile = new Option("p", "profile", true, "Generate the schema with a profile. The argument must be the filename of the profile (with extension) [Optional]");
+        profile.setRequired(false);
+        profile.setArgName("profileName");
+        options.addOption(profile);
+
+        Option extensions = new Option("e", "extension", true, "Space-separated list of Extension filename dependencies for the profile. [Optional]");
+        extensions.setRequired(false);
+        extensions.setArgName("extensionNames");
+        extensions.setArgs(Option.UNLIMITED_VALUES);
+        options.addOption(extensions);
+
+        try {
+            return new DefaultParser().parse(options, args);
+        } catch (ParseException e) {
+            new HelpFormatter().printHelp("--generate <schemaName> --mode <mode>", options);
+            System.exit(1);
+        }
+        throw new RuntimeException();
+    }
+
+    private static void saveDefinition(BaseDefinition baseDefinition, SchemaMode schemaMode, String filename) {
+        if (baseDefinition.getDefinition().get("properties").has("resourceType")) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("./src/resources/schemas/" + schemaMode.toString().toLowerCase() + "/" + filename + ".avsc"))) {
+                writer.write(baseDefinition.getJsonObject().toString());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }

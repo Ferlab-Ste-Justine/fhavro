@@ -17,4 +17,10 @@ public class AppointmentFixture {
         appointment.setText(NarrativeFixture.createNarrative());
         return appointment;
     }
+
+    public static Appointment createSimpleAppointment() {
+        Appointment appointment = createAppointment();
+        appointment.getExtension().clear();
+        return appointment;
+    }
 }

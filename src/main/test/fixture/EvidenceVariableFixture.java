@@ -18,4 +18,10 @@ public class EvidenceVariableFixture {
         evidenceVariable.setExtension(List.of(ExtensionFixture.createExtension(new MarkdownType("Code"))));
         return evidenceVariable;
     }
+
+    public static EvidenceVariable createSimpleEvidenceVariable() {
+        EvidenceVariable evidenceVariable = createEvidenceVariable();
+        evidenceVariable.setExtension(null);
+        return evidenceVariable;
+    }
 }

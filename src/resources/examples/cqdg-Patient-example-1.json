@@ -23,6 +23,19 @@
       }
     },
     {
+      "url": "http://to-extension-2",
+      "extension": [
+        {
+          "url": "http://fhir.cqgc.ferlab.bio/StructureDefinition/is-proband",
+          "valueBoolean": true
+        },
+        {
+          "url": "http://fhir.cqgc.ferlab.bio/StructureDefinition/is-proband2",
+          "valueBoolean": false
+        }
+      ]
+    },
+    {
       "url": "http://fhir.cqgc.ferlab.bio/StructureDefinition/is-proband",
       "valueBoolean": true
     },

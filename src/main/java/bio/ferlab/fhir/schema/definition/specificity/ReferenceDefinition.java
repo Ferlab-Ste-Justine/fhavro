@@ -1,6 +1,7 @@
 package bio.ferlab.fhir.schema.definition.specificity;
 
 import bio.ferlab.fhir.schema.repository.DefinitionRepository;
+import bio.ferlab.fhir.schema.repository.SchemaMode;
 import bio.ferlab.fhir.schema.utils.Constant;
 import bio.ferlab.fhir.schema.utils.JsonObjectUtils;
 import org.apache.commons.text.WordUtils;
@@ -17,13 +18,19 @@ public class ReferenceDefinition extends SpecificDefinition {
         if (DefinitionRepository.registerInnerRecords(root, Constant.REFERENCE)) {
             return JsonObjectUtils.createRedefinedRecord(name, formattedName, Json.createObjectBuilder().build());
         } else {
+            SchemaMode schemaMode = DefinitionRepository.getSchemaMode();
+            boolean isSimple = schemaMode == SchemaMode.SIMPLE || schemaMode == SchemaMode.ADVANCED;
             JsonArray fields = Json.createArrayBuilder()
                     .add(JsonObjectUtils.createConst(Constant.REFERENCE, Constant.STRING, false))
                     .add(JsonObjectUtils.createConst(Constant.TYPE, Constant.STRING, false))
-                    .add(JsonObjectUtils.createConst(Constant.IDENTIFIER, WordUtils.capitalize(Constant.IDENTIFIER), false))
+                    .add(JsonObjectUtils.createConst("identifier", (isSimple) ? Constant.STRING : "Identifier", false))
                     .add(JsonObjectUtils.createConst("display", Constant.STRING, false))
                     .build();
-            return JsonObjectUtils.createReference(name, formattedName, "A Reference", Constant.IDENTIFIER, fields, required);
+            if (isSimple) {
+                return JsonObjectUtils.createInnerRecord(name, formattedName, "A Reference", fields, required);
+            } else {
+                return JsonObjectUtils.createReference(name, formattedName, "A Reference", Constant.IDENTIFIER, fields, required);
+            }
         }
     }
 }

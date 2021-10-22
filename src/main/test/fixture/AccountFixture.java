@@ -15,4 +15,10 @@ public class AccountFixture {
         account.setText(NarrativeFixture.createNarrative());
         return account;
     }
+
+    public static Account createSimpleAccount() {
+        Account account = createAccount();
+        account.getExtension().clear();
+        return account;
+    }
 }
