@@ -1,7 +1,10 @@
 package bio.ferlab.fhir.schema.definition.specificity;
 
+import bio.ferlab.fhir.converter.Operation;
 import bio.ferlab.fhir.schema.definition.IDefinition;
 import bio.ferlab.fhir.schema.repository.DefinitionRepository;
+import bio.ferlab.fhir.schema.repository.SchemaMode;
+import bio.ferlab.fhir.schema.utils.Constant;
 import bio.ferlab.fhir.schema.utils.JsonObjectUtils;
 import org.apache.commons.text.WordUtils;
 
@@ -17,86 +20,127 @@ public class ExtensionDefinition extends SpecificDefinition {
 
     @Override
     public JsonObject convertToJson(String root, String name, boolean required) {
+        Operation<RecursiveExtension> operation = checkIfRecursive(name);
+
         String formattedName = WordUtils.capitalize(name);
-        if (DefinitionRepository.registerInnerRecords(root, name)) {
+
+        if (!operation.isValid() && DefinitionRepository.registerInnerRecords(root, name)) {
             return JsonObjectUtils.createRedefinedRecord(name, formattedName, Json.createObjectBuilder().build());
         } else {
             JsonArrayBuilder fields = Json.createArrayBuilder();
             fields.add(JsonObjectUtils.createConst("url", "string", false));
-            fields.add(JsonObjectUtils.createRedefinedArray("extension", "Extension"));
+            if (DefinitionRepository.getSchemaMode() == SchemaMode.DEFAULT) {
+                fields.add(JsonObjectUtils.createRedefinedArray(Constant.EXTENSION, "Extension"));
+            } else if (DefinitionRepository.getSchemaMode() == SchemaMode.ADVANCED) {
+                handleAdvancedExtension(root, fields, operation);
+            }
 
             for (Map.Entry<String, Extension> entry : extensions.entrySet()) {
                 fields.add(entry.getValue().getDefinition().convertToJson(root, entry.getKey(), entry.getValue().isRequired()));
             }
 
-            return JsonObjectUtils.createInnerRecord(name, formattedName, "An Extension", fields.build(), required);
+            return JsonObjectUtils.createInnerRecord(Constant.EXTENSION, formattedName, "An Extension", fields.build(), required);
         }
     }
 
-    public static void initializeExtensions() {
-        if (extensions != null) {
+    public static void initializeExtensions(SchemaMode schemaMode) {
+        extensions = new LinkedHashMap<>();
+
+        if (schemaMode == SchemaMode.DEFAULT) {
+            extensions.put("valueBase64Binary", new Extension("base64Binary", DefinitionType.PRIMITIVE));
+            extensions.put("valueBoolean", new Extension("boolean", DefinitionType.PRIMITIVE));
+            extensions.put("valueCanonical", new Extension("canonical", DefinitionType.PRIMITIVE));
+            extensions.put("valueCode", new Extension("code", DefinitionType.PRIMITIVE));
+            extensions.put("valueTime", new Extension("time", DefinitionType.PRIMITIVE));
+            extensions.put("valueId", new Extension("id", DefinitionType.PRIMITIVE));
+            extensions.put("valueInteger", new Extension("integer", DefinitionType.PRIMITIVE));
+            extensions.put("valueMarkdown", new Extension("markdown", DefinitionType.PRIMITIVE));
+            extensions.put("valueOid", new Extension("oid", DefinitionType.PRIMITIVE));
+            extensions.put("valuePositiveInt", new Extension("positiveInt", DefinitionType.PRIMITIVE));
+            extensions.put("valueString", new Extension("string", DefinitionType.PRIMITIVE));
+            extensions.put("valueUnsignedInt", new Extension("unsignedInt", DefinitionType.PRIMITIVE));
+            extensions.put("valueUri", new Extension("uri", DefinitionType.PRIMITIVE));
+            extensions.put("valueUrl", new Extension("url", DefinitionType.PRIMITIVE));
+            extensions.put("valueUuid", new Extension("uuid", DefinitionType.PRIMITIVE));
+            extensions.put("valueDate", new Extension("date", DefinitionType.SPECIFIC));
+            extensions.put("valueDateTime", new Extension("dateTime", DefinitionType.SPECIFIC));
+            extensions.put("valueInstant", new Extension("instant", DefinitionType.SPECIFIC));
+            extensions.put("valueDecimal", new Extension("decimal", DefinitionType.SPECIFIC));
+            extensions.put("valueIdentifier", new Extension("Identifier", DefinitionType.SPECIFIC));
+            extensions.put("valueReference", new Extension("Reference", DefinitionType.SPECIFIC));
+            extensions.put("valueAddress", new Extension("Address", DefinitionType.COMPLEX));
+            extensions.put("valueAge", new Extension("Age", DefinitionType.COMPLEX));
+            extensions.put("valueAnnotation", new Extension("Annotation", DefinitionType.COMPLEX));
+            extensions.put("valueAttachment", new Extension("Attachment", DefinitionType.COMPLEX));
+            extensions.put("valueContactPoint", new Extension("ContactPoint", DefinitionType.COMPLEX));
+            extensions.put("valueCount", new Extension("Count", DefinitionType.COMPLEX));
+            extensions.put("valueDistance", new Extension("Distance", DefinitionType.COMPLEX));
+            extensions.put("valueDuration", new Extension("Duration", DefinitionType.COMPLEX));
+            extensions.put("valueHumanName", new Extension("HumanName", DefinitionType.COMPLEX));
+            extensions.put("valueMoney", new Extension("Money", DefinitionType.COMPLEX));
+            extensions.put("valuePeriod", new Extension("Period", DefinitionType.COMPLEX));
+            extensions.put("valueTriggerDefinition", new Extension("TriggerDefinition", DefinitionType.COMPLEX));
+            extensions.put("valueUsageContext", new Extension("UsageContext", DefinitionType.COMPLEX));
+            extensions.put("valueDosage", new Extension("Dosage", DefinitionType.COMPLEX));
+            extensions.put("valueMeta", new Extension("Meta", DefinitionType.COMPLEX));
+            extensions.put("valueCodeableConcept", new Extension("CodeableConcept", DefinitionType.COMPLEX));
+            extensions.put("valueCoding", new Extension("Coding", DefinitionType.COMPLEX));
+            extensions.put("valueQuantity", new Extension("Quantity", DefinitionType.COMPLEX));
+            extensions.put("valueRange", new Extension("Range", DefinitionType.COMPLEX));
+            extensions.put("valueRatio", new Extension("Ratio", DefinitionType.COMPLEX));
+            extensions.put("valueSampledData", new Extension("SampledData", DefinitionType.COMPLEX));
+            extensions.put("valueSignature", new Extension("Signature", DefinitionType.COMPLEX));
+            extensions.put("valueTiming", new Extension("Timing", DefinitionType.COMPLEX));
+            extensions.put("valueContactDetail", new Extension("ContactDetail", DefinitionType.COMPLEX));
+            extensions.put("valueContributor", new Extension("Contributor", DefinitionType.COMPLEX));
+            extensions.put("valueDataRequirement", new Extension("DataRequirement", DefinitionType.COMPLEX));
+            extensions.put("valueExpression", new Extension("Expression", DefinitionType.COMPLEX));
+            extensions.put("valueParameterDefinition", new Extension("ParameterDefinition", DefinitionType.COMPLEX));
+            extensions.put("valueRelatedArtifact", new Extension("RelatedArtifact", DefinitionType.COMPLEX));
+        }
+    }
+
+    public static void registerExtension(String valueType) {
+        String valueName = "value" + WordUtils.capitalize(valueType);
+        if (extensions.containsKey(valueName)) {
             return;
         }
 
-        extensions = new LinkedHashMap<>() {{
-            put("valueBase64Binary", new Extension("base64Binary", DefinitionType.PRIMITIVE));
-            put("valueBoolean", new Extension("boolean", DefinitionType.PRIMITIVE));
-            put("valueCanonical", new Extension("canonical", DefinitionType.PRIMITIVE));
-            put("valueCode", new Extension("code", DefinitionType.PRIMITIVE));
-            put("valueTime", new Extension("time", DefinitionType.PRIMITIVE));
-            put("valueId", new Extension("id", DefinitionType.PRIMITIVE));
-            put("valueInteger", new Extension("integer", DefinitionType.PRIMITIVE));
-            put("valueMarkdown", new Extension("markdown", DefinitionType.PRIMITIVE));
-            put("valueOid", new Extension("oid", DefinitionType.PRIMITIVE));
-            put("valuePositiveInt", new Extension("positiveInt", DefinitionType.PRIMITIVE));
-            put("valueString", new Extension("string", DefinitionType.PRIMITIVE));
-            put("valueUnsignedInt", new Extension("unsignedInt", DefinitionType.PRIMITIVE));
-            put("valueUri", new Extension("uri", DefinitionType.PRIMITIVE));
-            put("valueUrl", new Extension("url", DefinitionType.PRIMITIVE));
-            put("valueUuid", new Extension("uuid", DefinitionType.PRIMITIVE));
-            put("valueDate", new Extension("date", DefinitionType.SPECIFIC));
-            put("valueDateTime", new Extension("dateTime", DefinitionType.SPECIFIC));
-            put("valueInstant", new Extension("instant", DefinitionType.SPECIFIC));
-            put("valueDecimal", new Extension("decimal", DefinitionType.SPECIFIC));
-            put("valueIdentifier", new Extension("Identifier", DefinitionType.SPECIFIC));
-            put("valueReference", new Extension("Reference", DefinitionType.SPECIFIC));
-            put("valueAddress", new Extension("Address", DefinitionType.COMPLEX));
-            put("valueAge", new Extension("Age", DefinitionType.COMPLEX));
-            put("valueAnnotation", new Extension("Annotation", DefinitionType.COMPLEX));
-            put("valueAttachment", new Extension("Attachment", DefinitionType.COMPLEX));
-            put("valueContactPoint", new Extension("ContactPoint", DefinitionType.COMPLEX));
-            put("valueCount", new Extension("Count", DefinitionType.COMPLEX));
-            put("valueDistance", new Extension("Distance", DefinitionType.COMPLEX));
-            put("valueDuration", new Extension("Duration", DefinitionType.COMPLEX));
-            put("valueHumanName", new Extension("HumanName", DefinitionType.COMPLEX));
-            put("valueMoney", new Extension("Money", DefinitionType.COMPLEX));
-            put("valuePeriod", new Extension("Period", DefinitionType.COMPLEX));
-            put("valueTriggerDefinition", new Extension("TriggerDefinition", DefinitionType.COMPLEX));
-            put("valueUsageContext", new Extension("UsageContext", DefinitionType.COMPLEX));
-            put("valueDosage", new Extension("Dosage", DefinitionType.COMPLEX));
-            put("valueMeta", new Extension("Meta", DefinitionType.COMPLEX));
-            put("valueCodeableConcept", new Extension("CodeableConcept", DefinitionType.COMPLEX));
-            put("valueCoding", new Extension("Coding", DefinitionType.COMPLEX));
-            put("valueQuantity", new Extension("Quantity", DefinitionType.COMPLEX));
-            put("valueRange", new Extension("Range", DefinitionType.COMPLEX));
-            put("valueRatio", new Extension("Ratio", DefinitionType.COMPLEX));
-            put("valueSampledData", new Extension("SampledData", DefinitionType.COMPLEX));
-            put("valueSignature", new Extension("Signature", DefinitionType.COMPLEX));
-            put("valueTiming", new Extension("Timing", DefinitionType.COMPLEX));
-            put("valueContactDetail", new Extension("ContactDetail", DefinitionType.COMPLEX));
-            put("valueContributor", new Extension("Contributor", DefinitionType.COMPLEX));
-            put("valueDataRequirement", new Extension("DataRequirement", DefinitionType.COMPLEX));
-            put("valueExpression", new Extension("Expression", DefinitionType.COMPLEX));
-            put("valueParameterDefinition", new Extension("ParameterDefinition", DefinitionType.COMPLEX));
-            put("valueRelatedArtifact", new Extension("RelatedArtifact", DefinitionType.COMPLEX));
-        }};
+        extensions.put(valueName, new Extension(valueType, DefinitionRepository.getDefinitionByIdentifier(valueType), false));
     }
 
-    public static void registerExtension(String valueName, String valueType, boolean required) {
-        extensions.values().stream()
-                .filter(extension -> extension.getIdentifier().equals(valueType))
-                .findFirst()
-                .ifPresent(x -> extensions.put(valueName, new Extension(valueType, x.getDefinitionType(), required)));
+    private void handleAdvancedExtension(String root, JsonArrayBuilder fields, Operation<RecursiveExtension> recursiveOperation) {
+        if (recursiveOperation.isValid()) {
+            RecursiveExtension recursiveExtension = recursiveOperation.getResult();
+            if (recursiveExtension.getDepth() < DefinitionRepository.getRecursivityDepth()) {
+                fields.add(JsonObjectUtils.createArray(Constant.EXTENSION, convertToJson(root, recursiveExtension.getAbsoluteRoot() + ".extension", false)));
+            }
+        } else {
+            fields.add(JsonObjectUtils.createArray(Constant.EXTENSION, convertToJson(root, "Patient.extension", false)));
+        }
+    }
+
+    private Operation<RecursiveExtension> checkIfRecursive(String name) {
+        return (name.contains(".")) ? new Operation<>(new RecursiveExtension(name)) : new Operation<>();
+    }
+
+    private static class RecursiveExtension {
+
+        private final String absoluteRoot;
+        private final Integer depth;
+
+        public RecursiveExtension(String absoluteRoot) {
+            this.absoluteRoot = absoluteRoot;
+            this.depth = Math.toIntExact(absoluteRoot.chars().filter(ch -> ch == '.').count());
+        }
+
+        public String getAbsoluteRoot() {
+            return absoluteRoot;
+        }
+
+        public Integer getDepth() {
+            return depth;
+        }
     }
 
     private static class Extension {
@@ -107,10 +151,6 @@ public class ExtensionDefinition extends SpecificDefinition {
         private boolean required;
 
         public Extension(String identifier, DefinitionType definitionType) {
-            this(identifier, definitionType, false);
-        }
-
-        public Extension(String identifier, DefinitionType definitionType, boolean required) {
             this.identifier = identifier;
             this.definitionType = definitionType;
             switch (definitionType) {
@@ -126,6 +166,14 @@ public class ExtensionDefinition extends SpecificDefinition {
             }
             // All extension has to be required = false due to the nature of an Extension.
             this.required = false;
+        }
+
+        public Extension(String identifier, IDefinition definition, boolean required) {
+            setIdentifier(identifier);
+            setDefinition(definition);
+
+            // All extension has to be required = false due to the nature of an Extension.
+            setRequired(required);
         }
 
         public String getIdentifier() {

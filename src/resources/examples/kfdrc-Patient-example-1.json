@@ -1,0 +1,47 @@
+{
+  "resourceType": "Patient",
+  "id": "4867",
+  "meta": {
+    "versionId": "2",
+    "lastUpdated": "2021-10-14T20:44:49.627+00:00",
+    "source": "#xsLOtV9gSBsbc0Lj",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Patient" ]
+  },
+  "extension": [ {
+    "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race",
+    "extension": [ {
+      "url": "text",
+      "valueString": "Unknown"
+    }, {
+      "url": "ombCategory",
+      "valueCoding": {
+        "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+        "code": "UNK",
+        "display": "Unknown"
+      }
+    } ]
+  }, {
+    "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity",
+    "extension": [ {
+      "url": "text",
+      "valueString": "Not Hispanic or Latino"
+    }, {
+      "url": "ombCategory",
+      "valueCoding": {
+        "system": "urn:oid:2.16.840.1.113883.6.238",
+        "code": "2186-5",
+        "display": "Not Hispanic or Latino"
+      }
+    } ]
+  } ],
+  "identifier": [ {
+    "value": "01700"
+  }, {
+    "system": "https://kf-api-dataservice.kidsfirstdrc.org/participants/",
+    "value": "PT_F1T56RDS"
+  }, {
+    "system": "urn:kids-first:unique-string",
+    "value": "Patient-SD_FFVQ3T38-PT_F1T56RDS"
+  } ],
+  "gender": "male"
+}

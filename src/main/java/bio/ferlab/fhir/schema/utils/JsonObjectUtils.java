@@ -52,12 +52,30 @@ public class JsonObjectUtils {
                 .add(Constant.DOC, formatDoc(description))
                 .add(Constant.NAMESPACE, Constant.NAMESPACE_VALUE)
                 .add(Constant.FIELDS, fields)
-                .add("logicalType", "reference")
-                .add("id-field-name", idFieldName)
+                .add(Constant.LOGICAL_TYPE, Constant.REFERENCE)
+                .add(Constant.ID_FIELD_NAME, idFieldName)
                 .add(Constant.DEFAULT, Json.createObjectBuilder().build())
                 .build();
         return Json.createObjectBuilder()
                 .add(Constant.NAME, WordUtils.uncapitalize(name))
+                .add(Constant.TYPE, innerRecord)
+                .add(Constant.DEFAULT, JsonValue.EMPTY_JSON_OBJECT)
+                .build();
+    }
+
+    public static JsonObject createReferenceable(String name, String identifier, String description, String idFieldName, JsonArray fields, boolean required) {
+        JsonObject innerRecord = Json.createObjectBuilder()
+                .add(Constant.NAME, identifier)
+                .add(Constant.TYPE, Constant.RECORD)
+                .add(Constant.DOC, description)
+                .add(Constant.FIELDS, fields)
+                .add(Constant.LOGICAL_TYPE, Constant.REFERENCEABLE)
+                .add(Constant.ID_FIELD_NAME, idFieldName)
+                .add(Constant.DEFAULT, JsonValue.EMPTY_JSON_OBJECT)
+                .build();
+
+        return Json.createObjectBuilder()
+                .add(Constant.NAME, name)
                 .add(Constant.TYPE, innerRecord)
                 .add(Constant.DEFAULT, JsonValue.EMPTY_JSON_OBJECT)
                 .build();

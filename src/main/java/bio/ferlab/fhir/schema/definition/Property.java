@@ -7,6 +7,11 @@ public class Property {
     private JsonNode jsonNode;
     private boolean required;
 
+    public Property(JsonNode jsonNode) {
+        setJsonNode(jsonNode);
+        setRequired(false);
+    }
+
     public Property(JsonNode jsonNode, boolean required) {
         setJsonNode(jsonNode);
         setRequired(required);
