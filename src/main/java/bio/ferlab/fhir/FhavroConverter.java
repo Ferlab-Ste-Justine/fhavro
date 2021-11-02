@@ -20,6 +20,7 @@ import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.DatumReader;
 import org.apache.commons.io.IOUtils;
 import org.hl7.fhir.r4.model.BaseResource;
+import org.hl7.fhir.r4.model.DomainResource;
 import org.hl7.fhir.r4.model.StructureDefinition;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,12 +44,12 @@ public class FhavroConverter {
     }
 
     @NotNull
-    public static GenericData.Record convertResourceToGenericRecord(BaseResource baseResource, Schema schema) {
+    public static GenericData.Record convertResourceToGenericRecord(DomainResource baseResource, Schema schema) {
         return FhirAvroConverter.readResource(baseResource, schema);
     }
 
     @NotNull
-    public static <T extends BaseResource> T convertGenericRecordToResource(GenericRecord genericRecord, Schema schema, String name) {
+    public static <T extends DomainResource> T convertGenericRecordToResource(GenericRecord genericRecord, Schema schema, String name) {
         return AvroFhirConverter.readGenericRecord(genericRecord, schema, name);
     }
 

@@ -46,57 +46,63 @@ public class ExtensionDefinition extends SpecificDefinition {
     public static void initializeExtensions(SchemaMode schemaMode) {
         extensions = new LinkedHashMap<>();
 
-        if (schemaMode == SchemaMode.DEFAULT) {
-            extensions.put("valueBase64Binary", new Extension("base64Binary", DefinitionType.PRIMITIVE));
-            extensions.put("valueBoolean", new Extension("boolean", DefinitionType.PRIMITIVE));
-            extensions.put("valueCanonical", new Extension("canonical", DefinitionType.PRIMITIVE));
-            extensions.put("valueCode", new Extension("code", DefinitionType.PRIMITIVE));
-            extensions.put("valueTime", new Extension("time", DefinitionType.PRIMITIVE));
-            extensions.put("valueId", new Extension("id", DefinitionType.PRIMITIVE));
-            extensions.put("valueInteger", new Extension("integer", DefinitionType.PRIMITIVE));
-            extensions.put("valueMarkdown", new Extension("markdown", DefinitionType.PRIMITIVE));
-            extensions.put("valueOid", new Extension("oid", DefinitionType.PRIMITIVE));
-            extensions.put("valuePositiveInt", new Extension("positiveInt", DefinitionType.PRIMITIVE));
-            extensions.put("valueString", new Extension("string", DefinitionType.PRIMITIVE));
-            extensions.put("valueUnsignedInt", new Extension("unsignedInt", DefinitionType.PRIMITIVE));
-            extensions.put("valueUri", new Extension("uri", DefinitionType.PRIMITIVE));
-            extensions.put("valueUrl", new Extension("url", DefinitionType.PRIMITIVE));
-            extensions.put("valueUuid", new Extension("uuid", DefinitionType.PRIMITIVE));
-            extensions.put("valueDate", new Extension("date", DefinitionType.SPECIFIC));
-            extensions.put("valueDateTime", new Extension("dateTime", DefinitionType.SPECIFIC));
-            extensions.put("valueInstant", new Extension("instant", DefinitionType.SPECIFIC));
-            extensions.put("valueDecimal", new Extension("decimal", DefinitionType.SPECIFIC));
-            extensions.put("valueIdentifier", new Extension("Identifier", DefinitionType.SPECIFIC));
-            extensions.put("valueReference", new Extension("Reference", DefinitionType.SPECIFIC));
-            extensions.put("valueAddress", new Extension("Address", DefinitionType.COMPLEX));
-            extensions.put("valueAge", new Extension("Age", DefinitionType.COMPLEX));
-            extensions.put("valueAnnotation", new Extension("Annotation", DefinitionType.COMPLEX));
-            extensions.put("valueAttachment", new Extension("Attachment", DefinitionType.COMPLEX));
-            extensions.put("valueContactPoint", new Extension("ContactPoint", DefinitionType.COMPLEX));
-            extensions.put("valueCount", new Extension("Count", DefinitionType.COMPLEX));
-            extensions.put("valueDistance", new Extension("Distance", DefinitionType.COMPLEX));
-            extensions.put("valueDuration", new Extension("Duration", DefinitionType.COMPLEX));
-            extensions.put("valueHumanName", new Extension("HumanName", DefinitionType.COMPLEX));
-            extensions.put("valueMoney", new Extension("Money", DefinitionType.COMPLEX));
-            extensions.put("valuePeriod", new Extension("Period", DefinitionType.COMPLEX));
-            extensions.put("valueTriggerDefinition", new Extension("TriggerDefinition", DefinitionType.COMPLEX));
-            extensions.put("valueUsageContext", new Extension("UsageContext", DefinitionType.COMPLEX));
-            extensions.put("valueDosage", new Extension("Dosage", DefinitionType.COMPLEX));
-            extensions.put("valueMeta", new Extension("Meta", DefinitionType.COMPLEX));
-            extensions.put("valueCodeableConcept", new Extension("CodeableConcept", DefinitionType.COMPLEX));
-            extensions.put("valueCoding", new Extension("Coding", DefinitionType.COMPLEX));
-            extensions.put("valueQuantity", new Extension("Quantity", DefinitionType.COMPLEX));
-            extensions.put("valueRange", new Extension("Range", DefinitionType.COMPLEX));
-            extensions.put("valueRatio", new Extension("Ratio", DefinitionType.COMPLEX));
-            extensions.put("valueSampledData", new Extension("SampledData", DefinitionType.COMPLEX));
-            extensions.put("valueSignature", new Extension("Signature", DefinitionType.COMPLEX));
-            extensions.put("valueTiming", new Extension("Timing", DefinitionType.COMPLEX));
-            extensions.put("valueContactDetail", new Extension("ContactDetail", DefinitionType.COMPLEX));
-            extensions.put("valueContributor", new Extension("Contributor", DefinitionType.COMPLEX));
-            extensions.put("valueDataRequirement", new Extension("DataRequirement", DefinitionType.COMPLEX));
-            extensions.put("valueExpression", new Extension("Expression", DefinitionType.COMPLEX));
-            extensions.put("valueParameterDefinition", new Extension("ParameterDefinition", DefinitionType.COMPLEX));
-            extensions.put("valueRelatedArtifact", new Extension("RelatedArtifact", DefinitionType.COMPLEX));
+        switch (schemaMode) {
+            case DEFAULT:
+                extensions.put("valueIdentifier", new Extension("Identifier", DefinitionType.SPECIFIC));
+                extensions.put("valueReference", new Extension("Reference", DefinitionType.SPECIFIC));
+                extensions.put("valueAddress", new Extension("Address", DefinitionType.COMPLEX));
+                extensions.put("valueAge", new Extension("Age", DefinitionType.COMPLEX));
+                extensions.put("valueAnnotation", new Extension("Annotation", DefinitionType.COMPLEX));
+                // TODO Find a way to not include those ONLY if the resources contains an Attachment.
+                // extensions.put("valueAttachment", new Extension("Attachment", DefinitionType.COMPLEX));
+                // extensions.put("valueRelatedArtifact", new Extension("RelatedArtifact", DefinitionType.COMPLEX));
+                extensions.put("valueContactPoint", new Extension("ContactPoint", DefinitionType.COMPLEX));
+                extensions.put("valueCount", new Extension("Count", DefinitionType.COMPLEX));
+                extensions.put("valueDistance", new Extension("Distance", DefinitionType.COMPLEX));
+                extensions.put("valueDuration", new Extension("Duration", DefinitionType.COMPLEX));
+                extensions.put("valueHumanName", new Extension("HumanName", DefinitionType.COMPLEX));
+                extensions.put("valueMoney", new Extension("Money", DefinitionType.COMPLEX));
+                extensions.put("valuePeriod", new Extension("Period", DefinitionType.COMPLEX));
+                extensions.put("valueTriggerDefinition", new Extension("TriggerDefinition", DefinitionType.COMPLEX));
+                extensions.put("valueUsageContext", new Extension("UsageContext", DefinitionType.COMPLEX));
+                extensions.put("valueDosage", new Extension("Dosage", DefinitionType.COMPLEX));
+                extensions.put("valueMeta", new Extension("Meta", DefinitionType.COMPLEX));
+                extensions.put("valueQuantity", new Extension("Quantity", DefinitionType.COMPLEX));
+                extensions.put("valueRange", new Extension("Range", DefinitionType.COMPLEX));
+                extensions.put("valueRatio", new Extension("Ratio", DefinitionType.COMPLEX));
+                extensions.put("valueSampledData", new Extension("SampledData", DefinitionType.COMPLEX));
+                extensions.put("valueSignature", new Extension("Signature", DefinitionType.COMPLEX));
+                extensions.put("valueTiming", new Extension("Timing", DefinitionType.COMPLEX));
+                extensions.put("valueContactDetail", new Extension("ContactDetail", DefinitionType.COMPLEX));
+                extensions.put("valueContributor", new Extension("Contributor", DefinitionType.COMPLEX));
+                extensions.put("valueDataRequirement", new Extension("DataRequirement", DefinitionType.COMPLEX));
+                extensions.put("valueExpression", new Extension("Expression", DefinitionType.COMPLEX));
+                extensions.put("valueParameterDefinition", new Extension("ParameterDefinition", DefinitionType.COMPLEX));
+            case ADVANCED:
+                extensions.put("valueDate", new Extension("date", DefinitionType.SPECIFIC));
+                extensions.put("valueDateTime", new Extension("dateTime", DefinitionType.SPECIFIC));
+                extensions.put("valueInstant", new Extension("instant", DefinitionType.SPECIFIC));
+                extensions.put("valueDecimal", new Extension("decimal", DefinitionType.SPECIFIC));
+                extensions.put("valueCoding", new Extension("Coding", DefinitionType.COMPLEX));
+                extensions.put("valueCodeableConcept", new Extension("CodeableConcept", DefinitionType.COMPLEX));
+                extensions.put("valueBase64Binary", new Extension("base64Binary", DefinitionType.PRIMITIVE));
+                extensions.put("valueBoolean", new Extension("boolean", DefinitionType.PRIMITIVE));
+                extensions.put("valueCanonical", new Extension("canonical", DefinitionType.PRIMITIVE));
+                extensions.put("valueCode", new Extension("code", DefinitionType.PRIMITIVE));
+                extensions.put("valueTime", new Extension("time", DefinitionType.PRIMITIVE));
+                extensions.put("valueId", new Extension("id", DefinitionType.PRIMITIVE));
+                extensions.put("valueInteger", new Extension("integer", DefinitionType.PRIMITIVE));
+                extensions.put("valueMarkdown", new Extension("markdown", DefinitionType.PRIMITIVE));
+                extensions.put("valueOid", new Extension("oid", DefinitionType.PRIMITIVE));
+                extensions.put("valuePositiveInt", new Extension("positiveInt", DefinitionType.PRIMITIVE));
+                extensions.put("valueString", new Extension("string", DefinitionType.PRIMITIVE));
+                extensions.put("valueUnsignedInt", new Extension("unsignedInt", DefinitionType.PRIMITIVE));
+                extensions.put("valueUri", new Extension("uri", DefinitionType.PRIMITIVE));
+                extensions.put("valueUrl", new Extension("url", DefinitionType.PRIMITIVE));
+                extensions.put("valueUuid", new Extension("uuid", DefinitionType.PRIMITIVE));
+                break;
+            case SIMPLE:
+                break;
         }
     }
 
@@ -116,7 +122,7 @@ public class ExtensionDefinition extends SpecificDefinition {
                 fields.add(JsonObjectUtils.createArray(Constant.EXTENSION, convertToJson(root, recursiveExtension.getAbsoluteRoot() + ".extension", false)));
             }
         } else {
-            fields.add(JsonObjectUtils.createArray(Constant.EXTENSION, convertToJson(root, "Patient.extension", false)));
+            fields.add(JsonObjectUtils.createArray(Constant.EXTENSION, convertToJson(root, root + ".extension", false)));
         }
     }
 

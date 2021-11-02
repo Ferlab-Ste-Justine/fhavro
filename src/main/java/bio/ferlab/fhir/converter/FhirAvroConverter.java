@@ -33,8 +33,7 @@ public class FhirAvroConverter {
     }
 
     public static GenericData.Record readResource(BaseResource baseResource, Schema schema) {
-        Object object = FhirAvroConverter.read(schema, Arrays.asList(baseResource));
-        GenericData.Record genericRecord = (GenericData.Record) object;
+        GenericData.Record genericRecord = (GenericData.Record) FhirAvroConverter.read(schema, List.of(baseResource));
         genericRecord.put(Constant.RESOURCE_TYPE, schema.getName());
         return genericRecord;
     }

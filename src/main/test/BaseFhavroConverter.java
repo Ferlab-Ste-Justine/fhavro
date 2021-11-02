@@ -3,6 +3,7 @@ import bio.ferlab.fhir.converter.ConverterUtils;
 import bio.ferlab.fhir.converter.exception.BadRequestException;
 import bio.ferlab.fhir.schema.repository.SchemaMode;
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.avro.Schema;
@@ -14,18 +15,21 @@ import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.DatumReader;
 import org.apache.commons.io.IOUtils;
 import org.hl7.fhir.r4.model.BaseResource;
+import org.hl7.fhir.r4.model.DomainResource;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 public class BaseFhavroConverter {
 
-    protected <T extends BaseResource> void assertBaseResource(String name, SchemaMode schemaMode, BaseResource baseResource, Class<T> type) {
+    protected <T extends DomainResource> void assertBaseResource(String name, SchemaMode schemaMode, DomainResource baseResource, Class<T> type) {
         Schema schema = FhavroConverter.loadSchema(name, schemaMode);
 
         GenericRecord input = FhavroConverter.convertResourceToGenericRecord(baseResource, schema);
@@ -64,6 +68,27 @@ public class BaseFhavroConverter {
 
         try (InputStream inputStream = resource.openStream()) {
             return FhirContext.forR4().newJsonParser().parseResource(clazz, IOUtils.toString(inputStream, StandardCharsets.UTF_8));
+        } catch (IOException ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
+
+    protected <T extends BaseResource> List<T> loadExamplesFromFile(String filename, Class<T> clazz) {
+        URL resource = ClassLoader.getSystemClassLoader().getResource("examples/" + filename);
+        if (resource == null) {
+            throw new BadRequestException("The following example is not found: examples/" + filename);
+        }
+
+        try (InputStream inputStream = resource.openStream()) {
+            ObjectMapper mapper = new ObjectMapper();
+            Object[] participantJsonList = mapper.readValue(IOUtils.toString(inputStream, StandardCharsets.UTF_8), Object[].class);
+
+            IParser jsonParser = FhirContext.forR4().newJsonParser();
+            List<T> baseResources = new ArrayList<>();
+            for (Object object : participantJsonList) {
+                baseResources.add(jsonParser.parseResource(clazz, mapper.writeValueAsString(object)));
+            }
+            return baseResources;
         } catch (IOException ex) {
             throw new RuntimeException(ex.getMessage());
         }

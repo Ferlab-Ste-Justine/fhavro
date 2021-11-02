@@ -7,6 +7,7 @@ import bio.ferlab.fhir.schema.definition.Property;
 import bio.ferlab.fhir.schema.definition.SchemaDefinition;
 import bio.ferlab.fhir.schema.definition.specificity.ExtensionDefinition;
 import bio.ferlab.fhir.schema.repository.DefinitionRepository;
+import bio.ferlab.fhir.schema.repository.SchemaMode;
 import bio.ferlab.fhir.schema.utils.Constant;
 import bio.ferlab.fhir.schema.utils.SchemaUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,14 +39,10 @@ public class Profiler {
                 .stream()
                 .collect(Collectors.toMap(StructureDefinition::getId, Function.identity()));
 
+        properties.put("extension", createExtensionProperty());
+
         for (Element element : schemaDefinition.getProfile().getDifferential().getElement()) {
             String elementName = SchemaUtils.parsePropertyName(element.getId());
-
-            // If the Profile includes an Extension, add it manually.
-            if ("extension".equals(elementName)) {
-                properties.put("extension", createExtensionProperty());
-                continue;
-            }
 
             Cardinality cardinality = new Cardinality(element);
             if (!cardinality.isValid()) {

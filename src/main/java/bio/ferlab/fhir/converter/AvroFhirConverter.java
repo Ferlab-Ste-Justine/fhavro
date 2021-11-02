@@ -4,6 +4,7 @@ import bio.ferlab.fhir.converter.exception.AvroConversionException;
 import bio.ferlab.fhir.converter.exception.UnionTypeException;
 import bio.ferlab.fhir.schema.utils.Constant;
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.util.TerserUtilHelper;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
@@ -15,10 +16,7 @@ import org.hl7.fhir.r4.model.Property;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static bio.ferlab.fhir.converter.ConverterUtils.navigatePath;
 
@@ -105,21 +103,21 @@ public class AvroFhirConverter {
 
         // Build the Array elements.
         for (Object element : (List<?>) value) {
-            Operation<List<String>> operation = findAllRegisteredNodes(context);
+            Operation<List<String>> operation = context.findAllRegisteredNodes();
             if (operation.isValid()) {
-                Base base = (Base) context.getArrayContext().getCurrentBase(operation.getResult().get(0));
-                String relativePath = navigatePath(context.getPath(), true, context.getPath().size(), 1);
-                if (element instanceof GenericRecord) {
-                    context.getTerser().addElement(base, relativePath);
-                } else {
-                    context.getTerser().addElement(base, relativePath, element.toString());
+                for (String node : operation.getResult()) {
+                    Base currentBase = (Base) context.getArrayContext().getCurrentBase(node);
+                    String relativePath = navigatePath(context.getPath(), true, context.getPath().size(), ConverterUtils.getSkipCount(node));
+                    if (addElement(context, currentBase, relativePath, element)) {
+                        break;
+                    }
                 }
             } else {
                 context.getTerser().addElement(context.getResource(), absolutePath);
             }
         }
 
-        context.detectPathConflict(context.getPath());
+        context.detectPathConflict();
 
         // Populate the Array.
         for (Object element : (List<?>) value) {
@@ -130,6 +128,19 @@ public class AvroFhirConverter {
         }
 
         context.getPath().removeLast();
+    }
+
+    private static boolean addElement(ResourceContext context, Base base, String relativePath, Object element) {
+        try {
+            if (element instanceof GenericRecord) {
+                context.getTerser().addElement(base, relativePath);
+            } else {
+                context.getTerser().addElement(base, relativePath, element.toString());
+            }
+            return true;
+        } catch (DataFormatException ex) {
+            return false;
+        }
     }
 
     protected static void readUnion(ResourceContext context, Schema.Field field, Schema schema, Object value) {
@@ -176,18 +187,19 @@ public class AvroFhirConverter {
 
         String root = navigatePath(context.getPath(), context.getPath().size() - 1);
         if (!context.getArrayContext().hasNode(root)) {
-            Operation<List<String>> operation = findAllRegisteredNodes(context);
+            Operation<List<String>> operation = context.findAllRegisteredNodes();
             if (operation.isValid()) {
-                AtomicInteger index = new AtomicInteger(0);
-                operation.getResult().stream()
-                        .map(node -> (Base) context.getArrayContext().getCurrentBase(node))
-                        .filter(parent -> !(parent.isPrimitive() && Constant.STRING.equals(parent.fhirType())))
-                        .forEach(parent -> setValue(
-                                context,
-                                parent,
-                                navigatePath(context.getPath(), true, context.getPath().size(), index.incrementAndGet()),
-                                value)
-                        );
+                for (String node : operation.getResult()) {
+                    Base base = (Base) context.getArrayContext().getCurrentBase(node);
+                    if (base.isPrimitive() && Constant.STRING.equals(base.fhirType())) {
+                        continue;
+                    }
+
+                    setValue(context,
+                            base,
+                            navigatePath(context.getPath(), true, context.getPath().size(), ConverterUtils.getSkipCount(node)),
+                            value);
+                }
             } else {
                 context.getHelper().setField(navigatePath(context.getPath()), value);
             }
@@ -217,29 +229,6 @@ public class AvroFhirConverter {
             return true;
         }
         return false;
-    }
-
-    private static Operation<List<String>> findAllRegisteredNodes(ResourceContext context) {
-        Iterator<String> iterator = context.getPath().iterator();
-
-        List<String> possibleNodes = new ArrayList<>();
-
-        StringBuilder stringBuilder = new StringBuilder();
-        while (iterator.hasNext()) {
-            stringBuilder.append(iterator.next());
-
-            if (context.getArrayContext().hasNode(stringBuilder.toString())) {
-                possibleNodes.add(stringBuilder.toString());
-            }
-            stringBuilder.append(".");
-        }
-
-        String absolutePath = navigatePath(context.getPath(), true, context.getPath().size() - 1);
-        if (context.getArrayContext().hasNode(absolutePath)) {
-            possibleNodes.add(absolutePath);
-        }
-
-        return possibleNodes.isEmpty() ? new Operation<>() : new Operation<>(possibleNodes);
     }
 
     private static void setValue(ResourceContext context, Base parent, String relativePath, String value) {

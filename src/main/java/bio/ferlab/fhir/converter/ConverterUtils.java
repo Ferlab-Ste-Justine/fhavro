@@ -98,4 +98,8 @@ public class ConverterUtils {
         }
         return s;
     }
+
+    public static int getSkipCount(String path) {
+        return Math.toIntExact(path.chars().filter(ch -> ch == '.').count()) + 1;
+    }
 }

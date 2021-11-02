@@ -32,24 +32,43 @@ public class ResourceContext {
         path.addLast(value);
     }
 
-    public void detectPathConflict(Deque<String> path) {
-        Iterator<String> iterator = path.iterator();
+    public void detectPathConflict() {
         String absolutePath = navigatePath(path);
-
-        while (iterator.hasNext()) {
-            String currentNode = iterator.next();
-            if (getArrayContext().hasNode(currentNode)) {
-                Base parent = (Base) getArrayContext().getCurrentBase(currentNode);
-                List<IBase> children = getTerser().getValues(parent, navigatePath(path, true, path.size(), 1));
-                getArrayContext().addNode(absolutePath, children);
-                return;
+        Operation<List<String>> operation = findAllRegisteredNodes();
+        if (operation.isValid()) {
+            for (String node : operation.getResult()) {
+                Base parent = (Base) getArrayContext().getCurrentBase(node);
+                try {
+                    List<IBase> children = getTerser().getValues(parent, navigatePath(path, true, path.size(), ConverterUtils.getSkipCount(node)));
+                    getArrayContext().addNode(absolutePath, children);
+                    return;
+                } catch (Exception ignored) {
+                }
+            }
+        } else {
+            List<IBase> parents = getTerser().getValues(getResource(), absolutePath);
+            if (!parents.isEmpty()) {
+                getArrayContext().addNode(absolutePath, parents);
             }
         }
+    }
 
-        List<IBase> parents = getTerser().getValues(getResource(), absolutePath);
-        if (!parents.isEmpty()) {
-            getArrayContext().addNode(absolutePath, parents);
+    public Operation<List<String>> findAllRegisteredNodes() {
+        Iterator<String> iterator = getPath().iterator();
+
+        List<String> possibleNodes = new ArrayList<>();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        while (iterator.hasNext()) {
+            stringBuilder.append(iterator.next());
+
+            if (getArrayContext().hasNode(stringBuilder.toString())) {
+                possibleNodes.add(stringBuilder.toString());
+            }
+            stringBuilder.append(".");
         }
+
+        return possibleNodes.isEmpty() ? new Operation<>() : new Operation<>(possibleNodes);
     }
 
     public TerserUtilHelper getHelper() {
