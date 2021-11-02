@@ -12,7 +12,7 @@ public class SpecificDefinitionFactory {
         put("decimal", new DecimalDefinition());
         put("instant", new InstantDefinition());
         put("xhtml", new XHtmlDefinition());
-        // put("Element", new ElementDefinition());
+        put("Element", new ElementDefinition());
         put("Extension", new ExtensionDefinition());
         put("Identifier", new IdentifierDefinition());
         put("Reference", new ReferenceDefinition());

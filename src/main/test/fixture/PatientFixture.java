@@ -68,7 +68,6 @@ public class PatientFixture {
 
         patient.addExtension(outerExtension3);
 
-
         return patient;
     }
 }

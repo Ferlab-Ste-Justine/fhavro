@@ -1,20 +1,93 @@
 {
-  "resourceType" : "DocumentReference",
-  "id" : "drs-document-reference-example-1",
-  "meta" : {
-    "profile" : [
-      "https://ncpi-fhir.github.io/ncpi-fhir-ig/StructureDefinition/ncpi-drs-document-reference"
+  "resourceType": "DocumentReference",
+  "id": "337674",
+  "meta": {
+    "versionId": "1",
+    "lastUpdated": "2021-10-15T16:39:40.761+00:00",
+    "source": "#hMszgzQ3ByELd4oN",
+    "profile": [
+      "https://nih-ncpi.github.io/ncpi-fhir-ig/StructureDefinition/drs-document-reference"
     ]
   },
-  "text" : {
-    "status" : "generated",
-    "div" : "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative</b></p><p><b>status</b>: current</p><blockquote><p><b>content</b></p></blockquote></div>"
-  },
-  "status" : "current",
-  "content" : [
+  "identifier": [
     {
-      "attachment" : {
-        "url" : "drs://example.com/ga4gh/drs/v1/objects/0f8c27b9-3300-4249-bb28-f49ffb80e277"
+      "system": "https://kf-api-dataservice.kidsfirstdrc.org/genomic-files/",
+      "value": "GF_KKRTTBDW"
+    },
+    {
+      "system": "urn:kids-first:unique-string",
+      "value": "DocumentReference-SD_Z6MWD3H0-GF_KKRTTBDW"
+    }
+  ],
+  "status": "current",
+  "docStatus": "final",
+  "type": {
+    "text": "Other"
+  },
+  "subject": {
+    "reference": "Patient/39150"
+  },
+  "securityLabel": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+          "code": "R",
+          "display": "restricted"
+        }
+      ],
+      "text": "True"
+    },
+    {
+      "coding": [
+        {
+          "code": "c1"
+        }
+      ],
+      "text": "phs002330.c1"
+    },
+    {
+      "coding": [
+        {
+          "code": "c999"
+        }
+      ],
+      "text": "phs002330.c999"
+    },
+    {
+      "text": "SD_Z6MWD3H0"
+    }
+  ],
+  "content": [
+    {
+      "attachment": {
+        "url": "drs://data.kidsfirstdrc.org//1f240d52-ea3a-4626-890c-03ea61e41a4e"
+      }
+    },
+    {
+      "attachment": {
+        "extension": [
+          {
+            "url": "https://nih-ncpi.github.io/ncpi-fhir-ig/StructureDefinition/file-size",
+            "valueDecimal": 194341
+          },
+          {
+            "url": "https://nih-ncpi.github.io/ncpi-fhir-ig/StructureDefinition/hashes",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "display": "etag"
+                }
+              ],
+              "text": "9b58be974a3faafb8dc8321da631cf98"
+            }
+          }
+        ],
+        "url": "s3://kf-study-us-east-1-prd-sd-z6mwd3h0/harmonized-data/family-variants/2a36bcca-20d7-4928-ad97-72f2cf18103a.peddy.html",
+        "title": "2a36bcca-20d7-4928-ad97-72f2cf18103a.peddy.html"
+      },
+      "format": {
+        "display": "html"
       }
     }
   ]

@@ -140,21 +140,11 @@ public class FhavroConverterDefaultTest extends BaseFhavroConverter {
         assertBaseResource("CarePlan", SchemaMode.DEFAULT, CarePlanFixture.createCarePlan(), CarePlan.class);
     }
 
-
-    // Not working, contains private fields (e.g: _receivedTime) with data.
+//    // Not working, contains private fields (e.g: _receivedTime) with data.
 //    @Test
 //    public void test_serialize_ncpi_Specimen_example_1() {
 //        Specimen specimen = loadExampleFromFile("ncpi-Specimen-example-1.json", Specimen.class);
-//        assertBaseResource("Specimen", specimen, Specimen.class);
-//    }
-
-    // Not working because "start": 2021-06-08 (an instant) does not have seconds (according to Fhir standard it must) (data quality)
-//    @Test
-//    public void test_serialize_fhir_appointment_examples() {
-//        List<String> examples = List.of("fhir-Appointment-example-1.json", "fhir-Appointment-example-2.json");
-//        for (String example : examples) {
-//            assertBaseResource("Appointment", loadExampleFromFile(example, Appointment.class), Appointment.class);
-//        }
+//        assertBaseResource("Specimen", SchemaMode.DEFAULT, specimen, Specimen.class);
 //    }
 
     // TODO FIX THIS.
@@ -163,7 +153,7 @@ public class FhavroConverterDefaultTest extends BaseFhavroConverter {
 //    public void test_serialize_fhir_patient_examples() {
 //        List<String> examples = List.of("fhir-Patient-example-1.json");
 //        for (String example : examples) {
-//            assertBaseResource("Patient", loadExampleFromFile(example, Patient.class), Patient.class);
+//            assertBaseResource("Patient", SchemaMode.DEFAULT, loadExampleFromFile(example, Patient.class), Patient.class);
 //        }
 //    }
 }

@@ -51,38 +51,6 @@
     ]
   },
   "collection": {
-    "_collectedDateTime": {
-      "extension": [
-        {
-          "extension": [
-            {
-              "url": "target",
-              "valueReference": {
-                "reference": "Patient/patient-example-1"
-              }
-            },
-            {
-              "url": "targetPath",
-              "valueString": "birthDate"
-            },
-            {
-              "url": "relationship",
-              "valueCode": "after"
-            },
-            {
-              "url": "offset",
-              "valueDuration": {
-                "value": 366,
-                "unit": "d",
-                "system": "http://unitsofmeasure.org",
-                "code": "days"
-              }
-            }
-          ],
-          "url": "http://hl7.org/fhir/StructureDefinition/cqf-relativeDateTime"
-        }
-      ]
-    },
     "quantity": {
       "value": 50,
       "system": "http://unitsofmeasure.org",

@@ -38,8 +38,10 @@ public class ComplexDefinition extends BaseDefinition {
             setDescription(getDefinition().get(Constant.DESCRIPTION).asText());
         }
 
+        SchemaMode schemaMode = DefinitionRepository.getSchemaMode();
+
         // Ensure that the Extension properties is the first one to be populated.
-        if (DefinitionRepository.getSchemaMode() == SchemaMode.DEFAULT && getDefinition().get(Constant.PROPERTIES).has(Constant.EXTENSION)) {
+        if ((schemaMode == SchemaMode.DEFAULT || schemaMode == SchemaMode.ADVANCED) && getDefinition().get(Constant.PROPERTIES).has(Constant.EXTENSION)) {
             properties.put(Constant.EXTENSION, new Property(getDefinition().get(Constant.PROPERTIES).get(Constant.EXTENSION), false));
         }
 
