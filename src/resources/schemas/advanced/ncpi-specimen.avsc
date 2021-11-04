@@ -1,7 +1,7 @@
 {
   "type": "record",
-  "name": "Condition",
-  "doc": "A clinical condition, problem, diagnosis, or other event, situation, issue, or clinical concept that has risen to a level of concern.",
+  "name": "Specimen",
+  "doc": "A sample to be used for analysis.",
   "namespace": "bio.ferlab.fhir",
   "fields": [
     {
@@ -922,42 +922,22 @@
       "default": []
     },
     {
-      "type": "bio.ferlab.fhir.CodeableConcept",
-      "name": "clinicalStatus",
+      "type": "bio.ferlab.fhir.Identifier",
+      "name": "accessionIdentifier",
       "default": {}
     },
     {
-      "type": "bio.ferlab.fhir.CodeableConcept",
-      "name": "verificationStatus",
-      "default": {}
-    },
-    {
-      "name": "category",
-      "type": {
-        "type": "array",
-        "items": "bio.ferlab.fhir.CodeableConcept",
-        "default": []
-      },
-      "default": []
+      "name": "status",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
     },
     {
       "type": "bio.ferlab.fhir.CodeableConcept",
-      "name": "severity",
+      "name": "type",
       "default": {}
-    },
-    {
-      "type": "bio.ferlab.fhir.CodeableConcept",
-      "name": "code",
-      "default": {}
-    },
-    {
-      "name": "bodySite",
-      "type": {
-        "type": "array",
-        "items": "bio.ferlab.fhir.CodeableConcept",
-        "default": []
-      },
-      "default": []
     },
     {
       "type": "bio.ferlab.fhir.Reference",
@@ -965,12 +945,7 @@
       "default": {}
     },
     {
-      "type": "bio.ferlab.fhir.Reference",
-      "name": "encounter",
-      "default": {}
-    },
-    {
-      "name": "onsetDateTime",
+      "name": "receivedTime",
       "type": [
         "null",
         {
@@ -981,22 +956,13 @@
       "default": null
     },
     {
-      "name": "onsetAge",
+      "name": "_receivedTime",
       "type": {
         "type": "record",
-        "name": "Age",
-        "doc": "A duration of time during which an organism (or a process) has existed.",
+        "name": "Element",
+        "doc": "Base definition for all elements in a resource.",
         "namespace": "bio.ferlab.fhir",
         "fields": [
-          {
-            "name": "extension",
-            "type": {
-              "type": "array",
-              "items": "bio.ferlab.fhir.Extension",
-              "default": []
-            },
-            "default": []
-          },
           {
             "name": "id",
             "type": [
@@ -1006,49 +972,13 @@
             "default": null
           },
           {
-            "name": "value",
-            "type": [
-              "null",
-              {
-                "type": "bytes",
-                "logicalType": "decimal",
-                "precision": 18,
-                "scale": 0
-              }
-            ],
-            "default": null
-          },
-          {
-            "name": "comparator",
-            "type": [
-              "null",
-              "string"
-            ],
-            "default": null
-          },
-          {
-            "name": "unit",
-            "type": [
-              "null",
-              "string"
-            ],
-            "default": null
-          },
-          {
-            "name": "system",
-            "type": [
-              "null",
-              "string"
-            ],
-            "default": null
-          },
-          {
-            "name": "code",
-            "type": [
-              "null",
-              "string"
-            ],
-            "default": null
+            "name": "extension",
+            "type": {
+              "type": "array",
+              "items": "bio.ferlab.fhir.Extension",
+              "default": []
+            },
+            "default": []
           }
         ],
         "default": {}
@@ -1056,16 +986,29 @@
       "default": {}
     },
     {
-      "type": "bio.ferlab.fhir.Period",
-      "name": "onsetPeriod",
-      "default": {}
+      "name": "parent",
+      "type": {
+        "type": "array",
+        "items": "bio.ferlab.fhir.Reference",
+        "default": []
+      },
+      "default": []
     },
     {
-      "name": "onsetRange",
+      "name": "request",
+      "type": {
+        "type": "array",
+        "items": "bio.ferlab.fhir.Reference",
+        "default": []
+      },
+      "default": []
+    },
+    {
+      "name": "collection",
       "type": {
         "type": "record",
-        "name": "Range",
-        "doc": "A set of ordered Quantities defined by a low and high limit.",
+        "name": "Specimen_Collection",
+        "doc": "A sample to be used for analysis.",
         "namespace": "bio.ferlab.fhir",
         "fields": [
           {
@@ -1086,7 +1029,33 @@
             "default": null
           },
           {
-            "name": "low",
+            "type": "bio.ferlab.fhir.Reference",
+            "name": "collector",
+            "default": {}
+          },
+          {
+            "name": "collectedDateTime",
+            "type": [
+              "null",
+              {
+                "type": "long",
+                "logicalType": "timestamp-micros"
+              }
+            ],
+            "default": null
+          },
+          {
+            "type": "bio.ferlab.fhir.Period",
+            "name": "collectedPeriod",
+            "default": {}
+          },
+          {
+            "type": "bio.ferlab.fhir.Duration",
+            "name": "duration",
+            "default": {}
+          },
+          {
+            "name": "quantity",
             "type": {
               "type": "record",
               "name": "Quantity",
@@ -1161,8 +1130,23 @@
             "default": {}
           },
           {
-            "type": "bio.ferlab.fhir.Quantity",
-            "name": "high",
+            "type": "bio.ferlab.fhir.CodeableConcept",
+            "name": "method",
+            "default": {}
+          },
+          {
+            "type": "bio.ferlab.fhir.CodeableConcept",
+            "name": "bodySite",
+            "default": {}
+          },
+          {
+            "type": "bio.ferlab.fhir.CodeableConcept",
+            "name": "fastingStatusCodeableConcept",
+            "default": {}
+          },
+          {
+            "type": "bio.ferlab.fhir.Duration",
+            "name": "fastingStatusDuration",
             "default": {}
           }
         ],
@@ -1171,106 +1155,13 @@
       "default": {}
     },
     {
-      "name": "onsetString",
-      "type": [
-        "null",
-        "string"
-      ],
-      "default": null
-    },
-    {
-      "name": "abatementDateTime",
-      "type": [
-        "null",
-        {
-          "type": "long",
-          "logicalType": "timestamp-micros"
-        }
-      ],
-      "default": null
-    },
-    {
-      "type": "bio.ferlab.fhir.Age",
-      "name": "abatementAge",
-      "default": {}
-    },
-    {
-      "type": "bio.ferlab.fhir.Period",
-      "name": "abatementPeriod",
-      "default": {}
-    },
-    {
-      "type": "bio.ferlab.fhir.Range",
-      "name": "abatementRange",
-      "default": {}
-    },
-    {
-      "name": "abatementString",
-      "type": [
-        "null",
-        "string"
-      ],
-      "default": null
-    },
-    {
-      "name": "recordedDate",
-      "type": [
-        "null",
-        {
-          "type": "long",
-          "logicalType": "timestamp-micros"
-        }
-      ],
-      "default": null
-    },
-    {
-      "name": "_recordedDate",
-      "type": {
-        "type": "record",
-        "name": "Element",
-        "doc": "Base definition for all elements in a resource.",
-        "namespace": "bio.ferlab.fhir",
-        "fields": [
-          {
-            "name": "id",
-            "type": [
-              "null",
-              "string"
-            ],
-            "default": null
-          },
-          {
-            "name": "extension",
-            "type": {
-              "type": "array",
-              "items": "bio.ferlab.fhir.Extension",
-              "default": []
-            },
-            "default": []
-          }
-        ],
-        "default": {}
-      },
-      "default": {}
-    },
-    {
-      "type": "bio.ferlab.fhir.Reference",
-      "name": "recorder",
-      "default": {}
-    },
-    {
-      "type": "bio.ferlab.fhir.Reference",
-      "name": "asserter",
-      "default": {}
-    },
-    {
-      "name": "stage",
+      "name": "processing",
       "type": {
         "type": "array",
         "items": {
           "type": "record",
-          "name": "Condition_Stage",
-          "doc": "A clinical condition, problem, diagnosis, or other event, situation, issue, or clinical concept that has risen to a level of concern.",
+          "name": "Specimen_Processing",
+          "doc": "A sample to be used for analysis.",
           "namespace": "bio.ferlab.fhir",
           "fields": [
             {
@@ -1291,12 +1182,20 @@
               "default": null
             },
             {
+              "name": "description",
+              "type": [
+                "null",
+                "string"
+              ],
+              "default": null
+            },
+            {
               "type": "bio.ferlab.fhir.CodeableConcept",
-              "name": "summary",
+              "name": "procedure",
               "default": {}
             },
             {
-              "name": "assessment",
+              "name": "additive",
               "type": {
                 "type": "array",
                 "items": "bio.ferlab.fhir.Reference",
@@ -1305,8 +1204,19 @@
               "default": []
             },
             {
-              "type": "bio.ferlab.fhir.CodeableConcept",
-              "name": "type",
+              "name": "timeDateTime",
+              "type": [
+                "null",
+                {
+                  "type": "long",
+                  "logicalType": "timestamp-micros"
+                }
+              ],
+              "default": null
+            },
+            {
+              "type": "bio.ferlab.fhir.Period",
+              "name": "timePeriod",
               "default": {}
             }
           ],
@@ -1317,13 +1227,13 @@
       "default": []
     },
     {
-      "name": "evidence",
+      "name": "container",
       "type": {
         "type": "array",
         "items": {
           "type": "record",
-          "name": "Condition_Evidence",
-          "doc": "A clinical condition, problem, diagnosis, or other event, situation, issue, or clinical concept that has risen to a level of concern.",
+          "name": "Specimen_Container",
+          "doc": "A sample to be used for analysis.",
           "namespace": "bio.ferlab.fhir",
           "fields": [
             {
@@ -1344,26 +1254,59 @@
               "default": null
             },
             {
-              "name": "code",
+              "name": "identifier",
               "type": {
                 "type": "array",
-                "items": "bio.ferlab.fhir.CodeableConcept",
+                "items": "bio.ferlab.fhir.Identifier",
                 "default": []
               },
               "default": []
             },
             {
-              "name": "detail",
-              "type": {
-                "type": "array",
-                "items": "bio.ferlab.fhir.Reference",
-                "default": []
-              },
-              "default": []
+              "name": "description",
+              "type": [
+                "null",
+                "string"
+              ],
+              "default": null
+            },
+            {
+              "type": "bio.ferlab.fhir.CodeableConcept",
+              "name": "type",
+              "default": {}
+            },
+            {
+              "type": "bio.ferlab.fhir.Quantity",
+              "name": "capacity",
+              "default": {}
+            },
+            {
+              "type": "bio.ferlab.fhir.Quantity",
+              "name": "specimenQuantity",
+              "default": {}
+            },
+            {
+              "type": "bio.ferlab.fhir.CodeableConcept",
+              "name": "additiveCodeableConcept",
+              "default": {}
+            },
+            {
+              "type": "bio.ferlab.fhir.Reference",
+              "name": "additiveReference",
+              "default": {}
             }
           ],
           "default": {}
         },
+        "default": []
+      },
+      "default": []
+    },
+    {
+      "name": "condition",
+      "type": {
+        "type": "array",
+        "items": "bio.ferlab.fhir.CodeableConcept",
         "default": []
       },
       "default": []

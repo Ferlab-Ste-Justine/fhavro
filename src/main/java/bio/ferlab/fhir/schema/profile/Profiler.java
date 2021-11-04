@@ -7,7 +7,6 @@ import bio.ferlab.fhir.schema.definition.Property;
 import bio.ferlab.fhir.schema.definition.SchemaDefinition;
 import bio.ferlab.fhir.schema.definition.specificity.ExtensionDefinition;
 import bio.ferlab.fhir.schema.repository.DefinitionRepository;
-import bio.ferlab.fhir.schema.repository.SchemaMode;
 import bio.ferlab.fhir.schema.utils.Constant;
 import bio.ferlab.fhir.schema.utils.SchemaUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;

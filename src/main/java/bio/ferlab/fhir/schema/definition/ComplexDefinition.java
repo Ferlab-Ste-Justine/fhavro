@@ -48,6 +48,7 @@ public class ComplexDefinition extends BaseDefinition {
         for (Iterator<Map.Entry<String, JsonNode>> it = getDefinition().get(Constant.PROPERTIES).fields(); it.hasNext(); ) {
             Map.Entry<String, JsonNode> node = it.next();
 
+            // "_" field are not supported by default, they need to be manually added using Profile.
             if (node.getKey().contains("_") || UNSUPPORTED_PROPERTIES.contains(node.getKey())) {
                 continue;
             }

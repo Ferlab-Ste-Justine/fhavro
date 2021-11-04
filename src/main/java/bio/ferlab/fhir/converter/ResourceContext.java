@@ -16,11 +16,13 @@ public class ResourceContext {
     private final TerserUtilHelper helper;
     private final Deque<String> path;
     private final ArrayContext arrayState;
+    private final List<String> elements;
 
     public ResourceContext(TerserUtilHelper terserUtilHelper) {
         helper = terserUtilHelper;
         path = new ArrayDeque<>();
         arrayState = new ArrayContext();
+        elements = new ArrayList<>();
     }
 
     public void addLastToPath(String value) {
@@ -69,6 +71,15 @@ public class ResourceContext {
         }
 
         return possibleNodes.isEmpty() ? new Operation<>() : new Operation<>(possibleNodes);
+    }
+
+    // An Element may be a field[x] as well, therefore we need to record if one of the [x] has been handled to avoid conflict.
+    public void registerElements(String value) {
+        elements.add(value);
+    }
+
+    public boolean isElement(String value) {
+        return elements.stream().anyMatch(value::contains);
     }
 
     public TerserUtilHelper getHelper() {

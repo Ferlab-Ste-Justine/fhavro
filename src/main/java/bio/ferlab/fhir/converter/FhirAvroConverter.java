@@ -115,6 +115,11 @@ public class FhirAvroConverter {
 
     protected static <T> Object readType(List<Base> bases, Function<String, T> function) {
         Base base = ConverterUtils.getBase(bases);
+
+        if (base.primitiveValue() == null) {
+            return null;
+        }
+
         String value = formatPrimitiveValue(base, base.primitiveValue());
         try {
             return function.apply(value);
@@ -151,6 +156,19 @@ public class FhirAvroConverter {
                 }
             } else {
                 return Optional.empty();
+            }
+        }
+
+        if (field.name().startsWith("_")) {
+            property = base.getNamedProperty(field.name().replace("_", ""));
+            if (property != null && property.hasValues()) {
+                Optional<Base> innerBase = property.getValues()
+                        .stream()
+                        .filter(x -> x.getNamedProperty(Constant.EXTENSION).hasValues())
+                        .findFirst();
+                if (innerBase.isPresent()) {
+                    return Optional.of(property);
+                }
             }
         }
 

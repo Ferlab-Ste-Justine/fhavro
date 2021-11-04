@@ -57,9 +57,6 @@ public class ExtensionDefinition extends SpecificDefinition {
                 // extensions.put("valueAttachment", new Extension("Attachment", DefinitionType.COMPLEX));
                 // extensions.put("valueRelatedArtifact", new Extension("RelatedArtifact", DefinitionType.COMPLEX));
                 extensions.put("valueContactPoint", new Extension("ContactPoint", DefinitionType.COMPLEX));
-                extensions.put("valueCount", new Extension("Count", DefinitionType.COMPLEX));
-                extensions.put("valueDistance", new Extension("Distance", DefinitionType.COMPLEX));
-                extensions.put("valueDuration", new Extension("Duration", DefinitionType.COMPLEX));
                 extensions.put("valueHumanName", new Extension("HumanName", DefinitionType.COMPLEX));
                 extensions.put("valueMoney", new Extension("Money", DefinitionType.COMPLEX));
                 extensions.put("valuePeriod", new Extension("Period", DefinitionType.COMPLEX));
@@ -67,7 +64,6 @@ public class ExtensionDefinition extends SpecificDefinition {
                 extensions.put("valueUsageContext", new Extension("UsageContext", DefinitionType.COMPLEX));
                 extensions.put("valueDosage", new Extension("Dosage", DefinitionType.COMPLEX));
                 extensions.put("valueMeta", new Extension("Meta", DefinitionType.COMPLEX));
-                extensions.put("valueQuantity", new Extension("Quantity", DefinitionType.COMPLEX));
                 extensions.put("valueRange", new Extension("Range", DefinitionType.COMPLEX));
                 extensions.put("valueRatio", new Extension("Ratio", DefinitionType.COMPLEX));
                 extensions.put("valueSampledData", new Extension("SampledData", DefinitionType.COMPLEX));
@@ -100,6 +96,10 @@ public class ExtensionDefinition extends SpecificDefinition {
                 extensions.put("valueUri", new Extension("uri", DefinitionType.PRIMITIVE));
                 extensions.put("valueUrl", new Extension("url", DefinitionType.PRIMITIVE));
                 extensions.put("valueUuid", new Extension("uuid", DefinitionType.PRIMITIVE));
+                extensions.put("valueCount", new Extension("Count", DefinitionType.COMPLEX));
+                extensions.put("valueDistance", new Extension("Distance", DefinitionType.COMPLEX));
+                extensions.put("valueDuration", new Extension("Duration", DefinitionType.COMPLEX));
+                extensions.put("valueQuantity", new Extension("Quantity", DefinitionType.COMPLEX));
                 break;
             case SIMPLE:
                 break;

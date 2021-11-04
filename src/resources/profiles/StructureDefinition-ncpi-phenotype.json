@@ -1998,6 +1998,15 @@
           "strength": "required",
           "valueSet": "https://ncpi-fhir.github.io/ncpi-fhir-ig/ValueSet/phenotype-codes"
         }
+      },
+      {
+        "id": "Condition._recordedDate",
+        "path": "Condition._recordedDate",
+        "type": [
+          {
+            "code": "Element"
+          }
+        ]
       }
     ]
   }

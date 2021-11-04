@@ -397,53 +397,6 @@
                         "string"
                       ],
                       "default": null
-                    },
-                    {
-                      "type": {
-                        "type": "record",
-                        "name": "Reference",
-                        "doc": "A Reference",
-                        "namespace": "bio.ferlab.fhir",
-                        "fields": [
-                          {
-                            "name": "reference",
-                            "type": [
-                              "null",
-                              "string"
-                            ],
-                            "default": null
-                          },
-                          {
-                            "name": "type",
-                            "type": [
-                              "null",
-                              "string"
-                            ],
-                            "default": null
-                          },
-                          {
-                            "name": "identifier",
-                            "type": [
-                              "null",
-                              "string"
-                            ],
-                            "default": null
-                          },
-                          {
-                            "name": "display",
-                            "type": [
-                              "null",
-                              "string"
-                            ],
-                            "default": null
-                          }
-                        ],
-                        "logicalType": "reference",
-                        "idFieldName": "identifier",
-                        "default": {}
-                      },
-                      "name": "valueReference",
-                      "default": {}
                     }
                   ],
                   "default": {}
@@ -501,11 +454,6 @@
             {
               "type": "bio.ferlab.fhir.Coding",
               "name": "valueCoding",
-              "default": {}
-            },
-            {
-              "type": "bio.ferlab.fhir.Reference",
-              "name": "valueReference",
               "default": {}
             },
             {
@@ -911,7 +859,47 @@
             },
             {
               "name": "assigner",
-              "type": "bio.ferlab.fhir.Reference",
+              "type": {
+                "type": "record",
+                "name": "Reference",
+                "doc": "A Reference",
+                "namespace": "bio.ferlab.fhir",
+                "fields": [
+                  {
+                    "name": "reference",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "type",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "identifier",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "display",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ],
+                "default": {}
+              },
               "default": {}
             }
           ],
@@ -979,6 +967,36 @@
         }
       ],
       "default": null
+    },
+    {
+      "name": "_onsetDateTime",
+      "type": {
+        "type": "record",
+        "name": "Element",
+        "doc": "Base definition for all elements in a resource.",
+        "namespace": "bio.ferlab.fhir",
+        "fields": [
+          {
+            "name": "id",
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null
+          },
+          {
+            "name": "extension",
+            "type": {
+              "type": "array",
+              "items": "bio.ferlab.fhir.Extension",
+              "default": []
+            },
+            "default": []
+          }
+        ],
+        "default": {}
+      },
+      "default": {}
     },
     {
       "name": "onsetAge",
@@ -1222,36 +1240,6 @@
         }
       ],
       "default": null
-    },
-    {
-      "name": "_recordedDate",
-      "type": {
-        "type": "record",
-        "name": "Element",
-        "doc": "Base definition for all elements in a resource.",
-        "namespace": "bio.ferlab.fhir",
-        "fields": [
-          {
-            "name": "id",
-            "type": [
-              "null",
-              "string"
-            ],
-            "default": null
-          },
-          {
-            "name": "extension",
-            "type": {
-              "type": "array",
-              "items": "bio.ferlab.fhir.Extension",
-              "default": []
-            },
-            "default": []
-          }
-        ],
-        "default": {}
-      },
-      "default": {}
     },
     {
       "type": "bio.ferlab.fhir.Reference",
