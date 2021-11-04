@@ -1,6 +1,7 @@
 package bio.ferlab.fhir.converter;
 
 import bio.ferlab.fhir.converter.exception.BadRequestException;
+import bio.ferlab.fhir.converter.exception.LogicException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
 import org.hl7.fhir.r4.model.Base;
@@ -84,8 +85,7 @@ public class ConverterUtils {
     }
 
     public static Base getBase(List<Base> bases) {
-        return Optional.ofNullable(bases.get(0))
-                .orElseThrow(() -> new RuntimeException("Please verify this, this isn't suppose to occur."));
+        return Optional.ofNullable(bases.get(0)).orElseThrow(LogicException::new);
     }
 
     // Standardize the date formatting within a String

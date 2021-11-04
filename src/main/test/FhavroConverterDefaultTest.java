@@ -140,13 +140,6 @@ public class FhavroConverterDefaultTest extends BaseFhavroConverter {
         assertBaseResource("CarePlan", SchemaMode.DEFAULT, CarePlanFixture.createCarePlan(), CarePlan.class);
     }
 
-//    // Not working, contains private fields (e.g: _receivedTime) with data.
-//    @Test
-//    public void test_serialize_ncpi_Specimen_example_1() {
-//        Specimen specimen = loadExampleFromFile("ncpi-Specimen-example-1.json", Specimen.class);
-//        assertBaseResource("Specimen", SchemaMode.DEFAULT, specimen, Specimen.class);
-//    }
-
     // TODO FIX THIS.
     // Does not work; deceasedDateTime is converted into deceasedBoolean ?
 //    @Test

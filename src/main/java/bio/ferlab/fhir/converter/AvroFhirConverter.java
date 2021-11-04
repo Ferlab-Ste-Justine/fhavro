@@ -1,21 +1,22 @@
 package bio.ferlab.fhir.converter;
 
 import bio.ferlab.fhir.converter.exception.AvroConversionException;
+import bio.ferlab.fhir.converter.exception.BadRequestException;
+import bio.ferlab.fhir.converter.exception.LogicException;
 import bio.ferlab.fhir.converter.exception.UnionTypeException;
 import bio.ferlab.fhir.schema.utils.Constant;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.util.TerserUtilHelper;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericRecord;
 import org.hl7.fhir.instance.model.api.IBase;
-import org.hl7.fhir.r4.model.Base;
-import org.hl7.fhir.r4.model.BaseResource;
-import org.hl7.fhir.r4.model.Narrative;
-import org.hl7.fhir.r4.model.Property;
+import org.hl7.fhir.r4.model.*;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import static bio.ferlab.fhir.converter.ConverterUtils.navigatePath;
@@ -73,8 +74,20 @@ public class AvroFhirConverter {
 
     protected static void readRecord(ResourceContext context, Schema schema, Object value) {
         GenericRecord genericRecord = (GenericRecord) value;
+
         for (Schema.Field innerField : schema.getFields()) {
             if (Constant.RESOURCE_TYPE.equalsIgnoreCase(innerField.name())) {
+                continue;
+            }
+
+            if (innerField.name().startsWith("_")) {
+                context.addLastToPath(innerField.name());
+                readUndeclaredExtensions(context, genericRecord.get(innerField.name()));
+                context.getPath().removeLast();
+                continue;
+            }
+
+            if (context.isElement(innerField.name())) {
                 continue;
             }
 
@@ -100,6 +113,11 @@ public class AvroFhirConverter {
         }
 
         String absolutePath = navigatePath(context.getPath());
+
+        if (context.isElement(absolutePath)) {
+            context.getPath().removeLast();
+            return;
+        }
 
         // Build the Array elements.
         for (Object element : (List<?>) value) {
@@ -228,6 +246,7 @@ public class AvroFhirConverter {
             context.getPath().removeLast();
             return true;
         }
+
         return false;
     }
 
@@ -244,5 +263,31 @@ public class AvroFhirConverter {
             }
         } catch (ClassCastException ignored) {
         }
+    }
+
+    private static void readUndeclaredExtensions(ResourceContext context, Object value) {
+        List<GenericRecord> values = new ArrayList<>();
+        if (value instanceof GenericRecord) {
+            values = (List<GenericRecord>) ((GenericRecord) value).get(Constant.EXTENSION);
+        } else if (value instanceof GenericArray) {
+            values = (List<GenericRecord>) value;
+        }
+
+        if (values.isEmpty()) {
+            return;
+        }
+
+        Base base = context.getTerser().addElement(context.getResource(), navigatePath(context.getPath()).replace("_", ""));
+        for (GenericRecord element : values) {
+            ((PrimitiveType) base).addExtension(ElementConverter.readExtension(element));
+        }
+
+        String root = context.getPath().stream()
+                .filter(node -> node.startsWith("_"))
+                .map(node -> node.replace("_", ""))
+                .map(node -> node.split("(?<=[a-z])(?=[A-Z])"))
+                .findFirst()
+                .orElseThrow(LogicException::new)[0];
+        context.registerElements(root);
     }
 }

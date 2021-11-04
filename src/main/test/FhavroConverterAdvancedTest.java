@@ -1,8 +1,5 @@
 import bio.ferlab.fhir.schema.repository.SchemaMode;
-import org.hl7.fhir.r4.model.Condition;
-import org.hl7.fhir.r4.model.DocumentReference;
-import org.hl7.fhir.r4.model.Observation;
-import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.*;
 import org.junit.Test;
 
 import java.util.List;
@@ -45,19 +42,33 @@ public class FhavroConverterAdvancedTest extends BaseFhavroConverter {
         assertBaseResource("ncpi-disease", SchemaMode.ADVANCED, condition, Condition.class);
     }
 
-    // Partially working, contains private field which are not serializable. (e.g: _recordedDate which is a <dateTime> recorded as a { dateTime },
-    // profile does not describe this behaviour. If you do not consider those private fields, the test should pass.
-//    @Test
-//    public void test_serialize_ncpi_condition_disease_example_1() {
-//        Condition condition = loadExampleFromFile("ncpi-Disease-example-1.json", Condition.class);
-//        assertBaseResource("ncpi-disease", SchemaMode.ADVANCED, condition, Condition.class);
-//    }
-//
+    @Test
+    public void test_serialize_kfdrc_condition_example_1() {
+        Condition condition = loadExampleFromFile("kfdrc-Condition-example-1.json", Condition.class);
+        assertBaseResource("kfdrc-condition", SchemaMode.ADVANCED, condition, Condition.class);
+    }
 
-    // Not working due to Private fields
-//    @Test
-//    public void test_serialize_ncpi_phenotype() {
-//        Condition condition = loadExampleFromFile("ncpi-Phenotype-example-1.json", Condition.class);
-//        assertBaseResource("ncpi-phenotype", SchemaMode.ADVANCED, condition, Condition.class);
-//    }
+    @Test
+    public void test_serialize_kfdrc_observation_example_1() {
+        Observation observation = loadExampleFromFile("kfdrc-Observation-example-1.json", Observation.class);
+        assertBaseResource("kfdrc-observation", SchemaMode.ADVANCED, observation, Observation.class);
+    }
+
+    @Test
+    public void test_serialize_ncpi_Specimen_example_1() {
+        Specimen specimen = loadExampleFromFile("ncpi-Specimen-example-1.json", Specimen.class);
+        assertBaseResource("ncpi-specimen", SchemaMode.ADVANCED, specimen, Specimen.class);
+    }
+
+    @Test
+    public void test_serialize_ncpi_condition_disease_example_1() {
+        Condition condition = loadExampleFromFile("ncpi-Disease-example-1.json", Condition.class);
+        assertBaseResource("ncpi-disease", SchemaMode.ADVANCED, condition, Condition.class);
+    }
+
+    @Test
+    public void test_serialize_ncpi_phenotype() {
+        Condition condition = loadExampleFromFile("ncpi-Phenotype-example-1.json", Condition.class);
+        assertBaseResource("ncpi-phenotype", SchemaMode.ADVANCED, condition, Condition.class);
+    }
 }
