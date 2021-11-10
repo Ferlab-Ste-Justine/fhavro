@@ -4,8 +4,6 @@ import org.hl7.fhir.r4.model.EffectEvidenceSynthesis;
 import org.hl7.fhir.r4.model.Range;
 import org.hl7.fhir.r4.model.UsageContext;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 

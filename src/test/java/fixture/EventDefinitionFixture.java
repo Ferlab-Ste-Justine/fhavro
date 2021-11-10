@@ -4,7 +4,6 @@ import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.EventDefinition;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
