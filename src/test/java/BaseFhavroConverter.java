@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +37,11 @@ public class BaseFhavroConverter {
 
     static {
         fhirContext = FhirContext.forR4();
+        try {
+            Files.createDirectories(Paths.get("./results"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     protected <T extends DomainResource> void assertBaseResource(String name, SchemaMode schemaMode, DomainResource baseResource, Class<T> type) {
