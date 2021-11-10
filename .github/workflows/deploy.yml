@@ -7,7 +7,7 @@ on:
 
 jobs:
   publish:
-    name: Publish Image
+    name: Publish
     runs-on: ubuntu-latest
 
     steps:
@@ -22,6 +22,12 @@ jobs:
         run: |
           cat <(echo -e "${{ secrets.OSSRH_GPG_SECRET_KEY }}") | gpg --batch --import
           gpg --list-secret-keys --keyid-format LONG
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
       - id: publish-to-central
         name: Publish to Central Repository
         env:
