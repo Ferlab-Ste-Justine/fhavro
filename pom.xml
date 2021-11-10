@@ -21,6 +21,21 @@
         <url>https://svn.apache.org/viewvc/maven</url>
     </scm>
 
+    <developers>
+        <developer>
+            <id>jplourde</id>
+            <name>J. Plourde</name>
+            <email>jplourde@ferlab.bio</email>
+            <url>https://github.com/joelplourde3</url>
+            <organization>Ferlab-Ste-Justine</organization>
+            <organizationUrl>https://github.com/Ferlab-Ste-Justine/</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>-5</timezone>
+        </developer>
+    </developers>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compiler-plugin.version>3.8.0</compiler-plugin.version>
