@@ -1,7 +1,6 @@
 name: Build
 
-on:
-  push:
+on: [push, pull_request]
 
 jobs:
   publish:
@@ -25,4 +24,4 @@ jobs:
         run: mvn -B test
       - id: package
         name: Package
-        run: mvn package
+        run: mvn package -DskipTests
