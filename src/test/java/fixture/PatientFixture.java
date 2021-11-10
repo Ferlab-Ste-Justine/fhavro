@@ -1,6 +1,5 @@
 package fixture;
 
-import bio.ferlab.fhir.schema.repository.SchemaMode;
 import org.hl7.fhir.r4.model.*;
 
 import java.util.ArrayList;

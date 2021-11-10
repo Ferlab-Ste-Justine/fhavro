@@ -4,7 +4,6 @@ import bio.ferlab.fhir.converter.exception.BadRequestException;
 import bio.ferlab.fhir.schema.repository.SchemaMode;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileReader;
