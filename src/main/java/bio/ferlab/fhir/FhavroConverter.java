@@ -9,6 +9,7 @@ import bio.ferlab.fhir.schema.definition.BaseDefinition;
 import bio.ferlab.fhir.schema.definition.SchemaDefinition;
 import bio.ferlab.fhir.schema.repository.DefinitionRepository;
 import bio.ferlab.fhir.schema.repository.SchemaMode;
+import ca.uhn.fhir.context.BaseRuntimeElementDefinition;
 import ca.uhn.fhir.context.FhirContext;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileReader;
@@ -75,6 +76,11 @@ public class FhavroConverter {
     }
 
     @NotNull
+    public static StructureDefinition loadExtension(InputStream inputStream) {
+        return loadProfile(inputStream);
+    }
+
+    @NotNull
     public static StructureDefinition loadProfile(String filename) {
         InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream("profiles/" + filename);
         if (inputStream == null) {
@@ -124,6 +130,15 @@ public class FhavroConverter {
             return list;
         } catch (IOException ex) {
             throw new BadRequestException("Please verify the Input File.");
+        }
+    }
+
+    public static <T extends BaseResource> T parseJsonResource(String resourceName, String json) {
+        try {
+            BaseRuntimeElementDefinition elementDefinition = fhirContext.getResourceDefinition(resourceName);
+            return (T) fhirContext.newJsonParser().parseResource(elementDefinition.getImplementingClass(), json);
+        } catch (Exception ex) {
+            throw new BadRequestException(ex.getMessage());
         }
     }
 
