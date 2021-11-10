@@ -29,35 +29,18 @@ import static org.junit.Assert.assertEquals;
 
 public class BaseFhavroConverter {
 
+    private static final FhirContext fhirContext;
+
+    BaseFhavroConverter() {
+    }
+
+    static {
+        fhirContext = FhirContext.forR4();
+    }
+
     protected <T extends DomainResource> void assertBaseResource(String name, SchemaMode schemaMode, DomainResource baseResource, Class<T> type) {
         Schema schema = FhavroConverter.loadSchema(name, schemaMode);
-
-        GenericRecord input = FhavroConverter.convertResourceToGenericRecord(baseResource, schema);
-        File file = serializeGenericRecord(schema, name, input);
-
-        GenericRecord output = null;
-        try {
-            output = deserializeGenericRecord(schema, file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        T result = FhavroConverter.convertGenericRecordToResource(output, schema, type.getSimpleName());
-
-        FhirContext fhirContext = FhirContext.forR4();
-        String inputString = ConverterUtils.standardizeDate(fhirContext.newJsonParser().encodeResourceToString(baseResource));
-        String outputString = ConverterUtils.standardizeDate(fhirContext.newJsonParser().encodeResourceToString(result));
-
-        assertEquals(inputString, outputString);
-
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            Object jsonObject = mapper.readValue(outputString, Object.class);
-            String prettyJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-            System.out.println(prettyJson);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        assertBaseResource(schema, name, baseResource, type);
     }
 
     protected <T extends BaseResource> T loadExampleFromFile(String filename, Class<T> clazz) {
@@ -67,7 +50,7 @@ public class BaseFhavroConverter {
         }
 
         try (InputStream inputStream = resource.openStream()) {
-            return FhirContext.forR4().newJsonParser().parseResource(clazz, IOUtils.toString(inputStream, StandardCharsets.UTF_8));
+            return fhirContext.newJsonParser().parseResource(clazz, IOUtils.toString(inputStream, StandardCharsets.UTF_8));
         } catch (IOException ex) {
             throw new RuntimeException(ex.getMessage());
         }
@@ -83,7 +66,7 @@ public class BaseFhavroConverter {
             ObjectMapper mapper = new ObjectMapper();
             Object[] participantJsonList = mapper.readValue(IOUtils.toString(inputStream, StandardCharsets.UTF_8), Object[].class);
 
-            IParser jsonParser = FhirContext.forR4().newJsonParser();
+            IParser jsonParser = fhirContext.newJsonParser();
             List<T> baseResources = new ArrayList<>();
             for (Object object : participantJsonList) {
                 baseResources.add(jsonParser.parseResource(clazz, mapper.writeValueAsString(object)));
@@ -115,5 +98,35 @@ public class BaseFhavroConverter {
             data = dataFileReader.next(data);
         }
         return data;
+    }
+
+    private <T extends DomainResource> void assertBaseResource(Schema schema, String name, DomainResource baseResource, Class<T> type) {
+        GenericRecord input = FhavroConverter.convertResourceToGenericRecord(baseResource, schema);
+        File file = serializeGenericRecord(schema, name, input);
+
+        GenericRecord output = null;
+        try {
+            output = deserializeGenericRecord(schema, file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        T result = FhavroConverter.convertGenericRecordToResource(output, schema, type.getSimpleName());
+
+        String inputString = ConverterUtils.standardizeDate(fhirContext.newJsonParser().encodeResourceToString(baseResource));
+        String outputString = ConverterUtils.standardizeDate(fhirContext.newJsonParser().encodeResourceToString(result));
+
+        assertEquals(inputString, outputString);
+
+        /* For Development purposes.
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Object jsonObject = mapper.readValue(outputString, Object.class);
+            String prettyJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
+            System.out.println(prettyJson);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        */
     }
 }
