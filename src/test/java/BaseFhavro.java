@@ -1,4 +1,4 @@
-import bio.ferlab.fhir.FhavroConverter;
+import bio.ferlab.fhir.Fhavro;
 import bio.ferlab.fhir.converter.ConverterUtils;
 import bio.ferlab.fhir.converter.exception.BadRequestException;
 import bio.ferlab.fhir.schema.repository.SchemaMode;
@@ -28,24 +28,19 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class BaseFhavroConverter {
+public class BaseFhavro {
 
     private static final FhirContext fhirContext;
 
-    BaseFhavroConverter() {
+    BaseFhavro() {
     }
 
     static {
         fhirContext = FhirContext.forR4();
-        try {
-            Files.createDirectories(Paths.get("./results"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     protected <T extends DomainResource> void assertBaseResource(String name, SchemaMode schemaMode, DomainResource baseResource, Class<T> type) {
-        Schema schema = FhavroConverter.loadSchema(name, schemaMode);
+        Schema schema = Fhavro.loadSchema(name, schemaMode);
         assertBaseResource(schema, name, baseResource, type);
     }
 
@@ -85,6 +80,7 @@ public class BaseFhavroConverter {
 
     protected static File serializeGenericRecord(Schema schema, String name, GenericRecord genericRecord) {
         try {
+            createResultDirectory(name);
             File file = new File("./results/" + name + ".avro");
             DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<>(new GenericDatumWriter<>(schema));
             dataFileWriter.create(schema, file);
@@ -107,7 +103,7 @@ public class BaseFhavroConverter {
     }
 
     private <T extends DomainResource> void assertBaseResource(Schema schema, String name, DomainResource baseResource, Class<T> type) {
-        GenericRecord input = FhavroConverter.convertResourceToGenericRecord(baseResource, schema);
+        GenericRecord input = Fhavro.convertResourceToGenericRecord(baseResource, schema);
         File file = serializeGenericRecord(schema, name, input);
 
         GenericRecord output = null;
@@ -117,7 +113,7 @@ public class BaseFhavroConverter {
             e.printStackTrace();
         }
 
-        T result = FhavroConverter.convertGenericRecordToResource(output, schema, type.getSimpleName());
+        T result = Fhavro.convertGenericRecordToResource(output, schema, type.getSimpleName());
 
         String inputString = ConverterUtils.standardizeDate(fhirContext.newJsonParser().encodeResourceToString(baseResource));
         String outputString = ConverterUtils.standardizeDate(fhirContext.newJsonParser().encodeResourceToString(result));
@@ -134,5 +130,14 @@ public class BaseFhavroConverter {
             e.printStackTrace();
         }
         */
+    }
+
+    private static void createResultDirectory(String relativePath) {
+        try {
+            String before = relativePath.substring(0, relativePath.lastIndexOf("/") + 1);
+            Files.createDirectories(Paths.get("./results/" + before));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

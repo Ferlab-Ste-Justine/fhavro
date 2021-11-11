@@ -18,16 +18,16 @@ To do so, simply load the schema like so:
 
 ```java
 // Load the schema from the packaged schema in the library.
-Schema patientSchema = FhavroConverter.loadSchema("Patient", SchemaMode.DEFAULT);
+Schema patientSchema = Fhavro.loadSchema("Patient", SchemaMode.DEFAULT);
 
-// Use this method if you want to cache the schema locally in a file
-String patientSchemaString = FhavroConverter.generateSchema("Patient", SchemaMode.DEFAULT);
+// Use this method if you want to generate the schema and then cache it locally in a file
+String patientSchemaString = Fhavro.generateSchema("Patient", SchemaMode.DEFAULT);
 ```
 
 ### Fhir → Avro
 With the schema, you can convert the Fhir resource to its Avro counterpart, like so:
 ```java
-Schema schema = FhavroConverter.loadSchema("Patient", SchemaMode.DEFAULT);
+Schema schema = Fhavro.loadSchema("Patient", SchemaMode.DEFAULT);
 
 Patient patient = new Patient();
 patient.setGender(Enumerations.AdministrativeGender.MALE);
@@ -37,7 +37,7 @@ patient.addName()
        .addGiven("Homer")
        .setFamily("Simpson");
 
-GenericRecord patientRecord = FhavroConverter.convertResourceToGenericRecord(patient, schema);
+GenericRecord patientRecord = Fhavro.convertResourceToGenericRecord(patient, schema);
 ```
 
 The GenericRecord can be serialized as described in the following documentation: https://avro.apache.org/docs/current/gettingstartedjava.html
@@ -45,7 +45,7 @@ The GenericRecord can be serialized as described in the following documentation:
 ### Avro → Fhir
 Again, with the schema, you can convert the Avro record to a Fhir resource, like so:
 ```java
-Patient convertedPatient = FhavroConverter.convertGenericRecordToResource(patientRecord, schema, "Patient");
+Patient convertedPatient = Fhavro.convertGenericRecordToResource(patientRecord, schema, "Patient");
 ```
 
 ## Schema Generation
@@ -58,10 +58,12 @@ but the latest version of it is packaged in the library itself.
 The resulting Schema file (.avsc) are located under /src/resources/schemas/* of this project under their respective schema mode.
 All default & simple schemas are packaged in the library itself.
 
+For Advanced schemas, you need to provide the relative path from the root of your project where the schemas should be loaded from. See examples.
+
 ### How to? (Command-Line interface)
 
 ```
-usage: GenerateSchemas --generate <schemaName> --mode <mode>
+usage: java -jar ./<path-to-the-jar>/GenerateSchemas --generate <schemaName> --mode <mode>
 ```
 
 Example of a schema:
@@ -83,33 +85,47 @@ Note:
 - The schemaName argument is case-sensitive and must be a resource supported here: https://www.hl7.org/fhir/resourcelist.html
 - the mode argument is case-insensitive, but must be of value as described below.
 
-### How to ? (FhavroConverter)
+### How to ? (Code)
 
-The FhavroConverter is java class that can be accessed without instantiation. It exposes static method in order to play with the library itself.
+The Fhavro is java class that can be accessed without instantiation. It exposes static method in order to play with the library itself.
 
 ```
-usage: FhavroConverter.generateSchema(String schemaName, SchemaMode schemaMode);
+usage: Fhavro.generateSchema(String schemaName, SchemaMode schemaMode, (Optional) StructureDefinition profile, (Optional) StructureDefinition extension);
+
 returns: A String corresponding to the Schema (.avsc)
 ```
 e.g: 
 
 ```Java
-StructureDefiniton profile = FhavroConverter.loadProfile(<InputStream>);
+StructureDefiniton profile = Fhavro.loadProfile(<InputStream>); // The InputStream can be a file, stream, etc.
 List<StructureDefinition> extensions = List.of(
-        FhavroConverter.loadExtension(<InputStream>),
-        FhavroConverter.loadExtension(<InputStream>)
+        Fhavro.loadExtension(<InputStream>),
+        Fhavro.loadExtension(<InputStream>)
 );
 
-String advancedPatientSchema = FhavroConverter.generateSchema("Patient", SchemaMode.ADVANCED, profile, extensions);
+String advancedPatientSchema = Fhavro.generateSchema("Patient", SchemaMode.ADVANCED, profile, extensions);
 ```
 
 ### Mode
 
-Mode | Description | Extension 
---- | --- | ---
-DEFAULT | This is the default way to generate the schemas. All the fields are supported as defined in the FHIR v4.0.7 specification | Yes
-SIMPLE | Most fields are supported except for Extensions. Moreover, the cyclical definition between Reference & Identifier is not supported. | No
-ADVANCED | Similar to Default except that Extension definition contains only primitive values (e.g: Boolean, String, etc.). Further Extension values must be explicitly defined using a Profile. | Yes, and more if explicitly defined 
+Mode | Description | Extension | Packaged
+--- | --- | --- | ---
+DEFAULT | This is the default way to generate the schemas. All the fields are supported as defined in the FHIR v4.0.7 specification | Yes | Yes, in the library
+SIMPLE | Most fields are supported except for Extensions. Moreover, the cyclical definition between Reference & Identifier is not supported. | No | Yes, in the library
+ADVANCED | Similar to Default except that Extension definition contains only primitive values (e.g: Boolean, String, etc.). Further Extension values must be explicitly defined using a Profile. | Yes, and more if explicitly defined | No, you need to provide the relative path to each of your schema
+
+### Schema Caching
+
+So you have generated your schema yet ? Cool, now I assume that you'd like to cache it locally and simply load it from your filesystem directly right ?
+
+Normally, for SchemaMode.DEFAULT & SIMPLE, the schema itself would be loaded from the Resources directory of the library (packaged in the library). However for SchemaMode.ADVANCED, you need to provide the location of said schema.
+
+Let's say at the root of your project you have a directory called: "schema" (./schema) where you stored all your precious schema. Follow the example below to know how to use your Advanced schema:
+```Java
+
+Schema schema = Fhavro.loadSchema("./schema/<name of your schema>.avsc", SchemaMode.ADVANCED); // The SchemaMode will determine where to load the schema from.
+
+```
 
 ### Profile
 
@@ -156,15 +172,15 @@ Note: As of right now, you'd need to generate the schema and modify it manually.
 
 ```Java
 // Load the Schema for your FHIR resource.
-Schema schema = loadSchema(schemaName, schemaMode);
+Schema schema = Fhavro.loadSchema(schemaName, schemaMode);
 
 // Convert all your FHIR resource to GenericRecord
 List<GenericRecord> genericRecords = resources.stream()
-    .map(resource -> convertResourceToGenericRecord(resource, schema))
+    .map(resource -> Fhavro.convertResourceToGenericRecord(resource, schema))
     .collect(Collectors.toList());
 
 // Write your GenericRecords to an Avro file.
-serializeGenericRecords(schema, genericRecords, new FileOutputStream("Patient.avro"));
+Fhavro.serializeGenericRecords(schema, genericRecords, new FileOutputStream("Patient.avro"));
 ```
 
 ## Deserialization
@@ -172,13 +188,13 @@ serializeGenericRecords(schema, genericRecords, new FileOutputStream("Patient.av
 ```Java
 
 // Load the Schema for your FHIR resource
-Schema schema = loadSchema(schemaName, schemaMode);
+Schema schema = Fhavro.loadSchema(schemaName, schemaMode);
 
 // Read the List of GenericRecords from the file.
-List<GenericRecord> genericRecords = deserializeGenericRecords(schema, new File("Patient.avro"));
+List<GenericRecord> genericRecords = Fhavro.deserializeGenericRecords(schema, new File("Patient.avro"));
 
 // Convert all your GenericRecord to FHIR Resource (You will need to typecast it to what you expect to read)
 List<Patient> patients = genericRecords.stream()
-        .map(genericRecord -> (Patient) convertGenericRecordToResource(genericRecord, schema, "Patient"))
+        .map(genericRecord -> (Patient) Fhavro.convertGenericRecordToResource(genericRecord, schema, "Patient"))
         .collect(Collectors.toList());
 ```

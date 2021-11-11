@@ -3,7 +3,7 @@ import fixture.*;
 import org.hl7.fhir.r4.model.*;
 import org.junit.Test;
 
-public class FhavroConverterSimpleTest extends BaseFhavroConverter {
+public class FhavroSimpleTest extends BaseFhavro {
 
     @Test
     public void test_serialize_patient_with_simple_schema() {

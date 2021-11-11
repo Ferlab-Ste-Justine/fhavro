@@ -8,7 +8,7 @@ import org.junit.runners.JUnit4;
 import java.util.List;
 
 @RunWith(JUnit4.class)
-public class FhavroConverterDefaultTest extends BaseFhavroConverter {
+public class FhavroDefaultTest extends BaseFhavro {
 
     @Test
     public void test_serialize_patient() {

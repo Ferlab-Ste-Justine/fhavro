@@ -81,6 +81,10 @@ public class ConverterUtils {
             schemaName += ".avsc";
         }
 
+        if (schemaName.startsWith("./")) {
+            schemaName = schemaName.replace("./", "");
+        }
+
         return schemaName.toLowerCase();
     }
 
