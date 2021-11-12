@@ -1,6 +1,6 @@
 package bio.ferlab.fhir.schema.definition;
 
-import bio.ferlab.fhir.FhavroConverter;
+import bio.ferlab.fhir.Fhavro;
 import bio.ferlab.fhir.converter.exception.BadRequestException;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.StructureDefinition;
@@ -30,10 +30,10 @@ public class SchemaDefinition {
     public SchemaDefinition(String schemaName, String profileName, String[] extensionNames) {
         this(schemaName);
         if (StringUtils.isNotBlank(profileName)) {
-            setProfile(FhavroConverter.loadProfile(profileName));
+            setProfile(Fhavro.loadProfile(profileName));
             if (extensionNames != null && extensionNames.length > 0) {
                 for (String extensionName : extensionNames) {
-                    extensions.add(FhavroConverter.loadExtension(extensionName));
+                    extensions.add(Fhavro.loadExtension(extensionName));
                 }
             }
         }

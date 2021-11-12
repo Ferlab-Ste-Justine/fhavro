@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-public class FhavroConverterListTest extends BaseFhavroConverter {
+public class FhavroListTest extends BaseFhavro {
 
     @Test
     public void test_serialize_kfdrc_patient_examples_all() {
@@ -15,7 +15,7 @@ public class FhavroConverterListTest extends BaseFhavroConverter {
         for (String example : examples) {
             List<Patient> patients = loadExamplesFromFile(example, Patient.class);
             for (Patient patient : patients) {
-                assertBaseResource("kfdrc-patient", SchemaMode.ADVANCED, patient, Patient.class);
+                assertBaseResource("schema/kfdrc-patient", SchemaMode.ADVANCED, patient, Patient.class);
             }
         }
     }
@@ -26,7 +26,7 @@ public class FhavroConverterListTest extends BaseFhavroConverter {
         for (String example : examples) {
             List<ResearchSubject> researchSubjects = loadExamplesFromFile(example, ResearchSubject.class);
             for (ResearchSubject researchSubject : researchSubjects) {
-                assertBaseResource("kfdrc-researchsubject", SchemaMode.ADVANCED, researchSubject, ResearchSubject.class);
+                assertBaseResource("schema/kfdrc-researchsubject", SchemaMode.ADVANCED, researchSubject, ResearchSubject.class);
             }
         }
     }
@@ -37,7 +37,7 @@ public class FhavroConverterListTest extends BaseFhavroConverter {
         for (String example : examples) {
             List<DocumentReference> documentReferences = loadExamplesFromFile(example, DocumentReference.class);
             for (DocumentReference documentReference : documentReferences) {
-                assertBaseResource("drsdocumentreference", SchemaMode.ADVANCED, documentReference, DocumentReference.class);
+                assertBaseResource("schema/drsdocumentreference", SchemaMode.ADVANCED, documentReference, DocumentReference.class);
             }
         }
     }
@@ -48,7 +48,7 @@ public class FhavroConverterListTest extends BaseFhavroConverter {
         for (String example : examples) {
             List<ResearchStudy> researchStudies = loadExamplesFromFile(example, ResearchStudy.class);
             for (ResearchStudy researchStudy : researchStudies) {
-                assertBaseResource("kfdrc-researchstudy", SchemaMode.ADVANCED, researchStudy, ResearchStudy.class);
+                assertBaseResource("schema/kfdrc-researchstudy", SchemaMode.ADVANCED, researchStudy, ResearchStudy.class);
             }
         }
     }
