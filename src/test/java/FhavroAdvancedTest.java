@@ -1,4 +1,8 @@
+import bio.ferlab.fhir.Fhavro;
 import bio.ferlab.fhir.schema.repository.SchemaMode;
+import fixture.PatientFixture;
+import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericRecord;
 import org.hl7.fhir.r4.model.*;
 import org.junit.Test;
 
@@ -70,5 +74,46 @@ public class FhavroAdvancedTest extends BaseFhavro {
     public void test_serialize_ncpi_phenotype() {
         Condition condition = loadExampleFromFile("ncpi-Phenotype-example-1.json", Condition.class);
         assertBaseResource("schema/ncpi-phenotype", SchemaMode.ADVANCED, condition, Condition.class);
+    }
+
+
+    @Test
+    public void test_serialize_patient_with_extension_with_simple_schema() {
+        Patient patient = loadExampleFromFile("myext.json", Patient.class);
+//        patient.addExtension("http://hl7.org/myExtension", new StringType("test"));
+//        Extension complexExtension = new Extension("http://hl7.org/myComplexExtension");
+//        complexExtension.addExtension().setUrl("my_id").setValue(new StringType("my_id_1234"));
+////
+////        CodeableConcept a = new CodeableConcept();
+////        a.addCoding().setCode("A");
+////        complexExtension.addExtension().setUrl("my_name").setValue(a);
+////        simplePatient.addExtension(complexExtension);
+//        Extension maritalExtension = new Extension("http://hl7.org/maritalSimple");
+//        maritalExtension.addExtension().setUrl("marital").setValue(new StringType("married"));
+//        patient.getMaritalStatus().addExtension(maritalExtension);
+
+        Schema schema = Fhavro.loadSchema("patient_with_ext.avsc", SchemaMode.SIMPLE);
+        GenericRecord input = Fhavro.convertResourceToGenericRecord(patient, schema);
+        System.out.println(input);
+    }
+
+    @Test
+    public void test_serialize__cpi_document_references_with_ext() {
+        DocumentReference patient = loadExampleFromFile("ncpi-DocumentReference-example-1.json", DocumentReference.class);
+//        patient.addExtension("http://hl7.org/myExtension", new StringType("test"));
+//        Extension complexExtension = new Extension("http://hl7.org/myComplexExtension");
+//        complexExtension.addExtension().setUrl("my_id").setValue(new StringType("my_id_1234"));
+////
+////        CodeableConcept a = new CodeableConcept();
+////        a.addCoding().setCode("A");
+////        complexExtension.addExtension().setUrl("my_name").setValue(a);
+////        simplePatient.addExtension(complexExtension);
+//        Extension maritalExtension = new Extension("http://hl7.org/maritalSimple");
+//        maritalExtension.addExtension().setUrl("marital").setValue(new StringType("married"));
+//        patient.getMaritalStatus().addExtension(maritalExtension);
+
+        Schema schema = Fhavro.loadSchema("ncpi-documentreference.avsc", SchemaMode.SIMPLE);
+        GenericRecord input = Fhavro.convertResourceToGenericRecord(patient, schema);
+        System.out.println(input);
     }
 }

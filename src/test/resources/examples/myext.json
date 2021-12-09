@@ -1,0 +1,63 @@
+{
+  "resourceType": "Patient",
+  "id": "PA0017",
+  "meta": {
+    "versionId": "11",
+    "lastUpdated": "2021-06-28T19:33:41.980+00:00",
+    "source": "#760a21912177a4a3",
+    "profile": [
+      "http://fhir.cqgc.ferlab.bio/StructureDefinition/cqgc-patient"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><div class=\"hapiHeaderText\">Clara <b>NADEAU </b></div><table class=\"hapiPropertyTable\"><tbody><tr><td>Identifier</td><td>3265786</td></tr><tr><td>Date of birth</td><td><span>01 December 1982</span></td></tr></tbody></table></div>"
+  },
+  "extension": [
+    {
+      "url": "http://hl7.org/myExtension",
+      "valueString": "Hello"
+    },
+    {
+      "url": "http://hl7.org/myComplexExtension",
+      "extension": [
+        {
+          "url": "my_id",
+          "valueString": "1234"
+        }
+      ]
+    }
+  ],
+  "_maritalStatus": {
+    "extension": [
+      {
+        "url": "http://hl7.org/maritalSimple",
+        "valueString": "married"
+      },
+      {
+        "url": "http://hl7.org/maritalComplex",
+        "extension": [
+          {
+            "url": "since",
+            "valueInteger": 10
+          },
+          {
+            "url": "with",
+            "valueString": "Someone"
+          }
+        ]
+
+      }
+    ]
+  },
+  "active": true,
+  "name": [
+    {
+      "use": "official",
+      "family": "Nadeau",
+      "given": [
+        "Clara"
+      ]
+    }
+  ]
+}

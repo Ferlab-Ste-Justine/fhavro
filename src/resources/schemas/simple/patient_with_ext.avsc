@@ -1,0 +1,104 @@
+{
+  "type": "record",
+  "name": "Patient",
+  "doc": "Demographics and other administrative information about an individual or animal receiving care or other health-related services.",
+  "namespace": "bio.ferlab.fhir",
+  "fields": [
+    {
+      "name": "resourceType",
+      "type": "string"
+    },
+    {
+      "name": "id",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name" : "myExt",
+      "aliases": [
+        "ext:http://hl7.org/myExtension"
+      ],
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name" : "_maritalStatus",
+      "type": {
+        "type": "record",
+        "name": "maritalStatus",
+        "fields": [
+          {
+            "name": "maritalSimple",
+            "type": [
+              "null",
+              "string"
+            ],
+            "aliases": [
+              "ext:http://hl7.org/maritalSimple"
+            ],
+            "default": null
+          },
+          {
+            "name": "maritalComplex",
+            "type": {
+              "type": "record",
+              "name": "maritalComplex",
+              "fields": [
+                {
+                  "name": "since",
+                  "type": ["null", "int"],
+                  "default": null,
+                  "aliases": ["ext:since"]
+                },
+                {
+                  "name": "with",
+                  "type": ["null", "string"],
+                  "default": null,
+                  "aliases": ["ext:with"]
+                }
+              ]
+            },
+            "aliases": [
+              "ext:http://hl7.org/maritalComplex"
+            ],
+            "default": {}
+          }
+        ]
+      },
+      "default": {}
+    },
+
+    {
+      "name" : "myComplexExt",
+      "aliases": [
+        "ext:http://hl7.org/myComplexExtension"
+      ],
+      "type": {
+        "type": "record",
+        "name": "myComplexExt",
+        "fields": [
+          {
+            "name": "my_id",
+            "type": [
+              "null",
+              "string"
+            ],
+            "aliases": [
+              "ext:my_id"
+            ],
+            "default": null
+          }
+        ]
+      },
+      "default": {}
+    }
+
+  ],
+  "default": null
+}

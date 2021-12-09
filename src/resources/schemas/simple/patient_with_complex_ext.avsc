@@ -922,7 +922,49 @@
       "name": "managingOrganization",
       "default": {}
     },
-
+    {
+      "name" : "myExt",
+      "aliases": [
+        "ext:http://hl7.org/myExtension"
+      ],
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name" : "myComplexExt",
+      "aliases": [
+        "ext:http://hl7.org/myComplexExtension"
+      ],
+      "type": {
+        "type": "record",
+        "name": "myComplexExt",
+        "fields": [
+          {
+            "name": "my_id",
+            "type": [
+              "null",
+              "string"
+            ],
+            "aliases": [
+              "ext:my_id"
+            ],
+            "default": null
+          },
+          {
+            "name": "my_name",
+            "type": "bio.ferlab.fhir.CodeableConcept",
+            "aliases": [
+              "ext:my_name"
+            ],
+            "default": {}
+          }
+        ]
+      },
+      "default": {}
+    },
     {
       "name": "link",
       "type": {
