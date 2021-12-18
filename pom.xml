@@ -215,11 +215,6 @@
             </plugin>
         </plugins>
 
-        <resources>
-            <resource>
-                <directory>src/resources/schemas</directory>
-                <targetPath>schemas</targetPath>
-            </resource>
-        </resources>
+
     </build>
 </project>

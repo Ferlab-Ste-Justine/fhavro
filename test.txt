@@ -1,0 +1,19 @@
+[INFO] Scanning for projects...
+[INFO] Inspecting build with total of 1 modules...
+[INFO] Installing Nexus Staging features:
+[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin
+[INFO] 
+[INFO] -------------------------< bio.ferlab:fhavro >--------------------------
+[INFO] Building fhavro 0.0.9
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-help-plugin:2.1.1:evaluate (default-cli) @ fhavro ---
+[INFO] No artifact parameter specified, using 'bio.ferlab:fhavro:jar:0.0.9' as project.
+[INFO] 
+0.0.9
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.633 s
+[INFO] Finished at: 2021-11-10T13:12:53-05:00
+[INFO] ------------------------------------------------------------------------

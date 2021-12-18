@@ -80,40 +80,43 @@ public class FhavroAdvancedTest extends BaseFhavro {
     @Test
     public void test_serialize_patient_with_extension_with_simple_schema() {
         Patient patient = loadExampleFromFile("myext.json", Patient.class);
-//        patient.addExtension("http://hl7.org/myExtension", new StringType("test"));
-//        Extension complexExtension = new Extension("http://hl7.org/myComplexExtension");
-//        complexExtension.addExtension().setUrl("my_id").setValue(new StringType("my_id_1234"));
-////
-////        CodeableConcept a = new CodeableConcept();
-////        a.addCoding().setCode("A");
-////        complexExtension.addExtension().setUrl("my_name").setValue(a);
-////        simplePatient.addExtension(complexExtension);
-//        Extension maritalExtension = new Extension("http://hl7.org/maritalSimple");
-//        maritalExtension.addExtension().setUrl("marital").setValue(new StringType("married"));
-//        patient.getMaritalStatus().addExtension(maritalExtension);
+        /*
+         "_maritalStatus": {
+    "extension": [
+      {
+        "url": "http://hl7.org/maritalSimple",
+        "valueString": "married"
+      },
+      {
+        "url": "http://hl7.org/maritalComplex",
+        "extension": [
+          {
+            "url": "since",
+            "valueInteger": 10
+          },
+          {
+            "url": "with",
+            "valueString": "Someone"
+          }
+        ]
 
-        Schema schema = Fhavro.loadSchema("patient_with_ext.avsc", SchemaMode.SIMPLE);
+      }
+    ]
+  },
+         */
+
+        Schema schema = Fhavro.loadSchema("patient_with_ext2.avsc", SchemaMode.SIMPLE);
         GenericRecord input = Fhavro.convertResourceToGenericRecord(patient, schema);
+        Patient p = Fhavro.convertGenericRecordToResource(input, schema, "Patient" );
         System.out.println(input);
     }
 
     @Test
     public void test_serialize__cpi_document_references_with_ext() {
         DocumentReference patient = loadExampleFromFile("ncpi-DocumentReference-example-1.json", DocumentReference.class);
-//        patient.addExtension("http://hl7.org/myExtension", new StringType("test"));
-//        Extension complexExtension = new Extension("http://hl7.org/myComplexExtension");
-//        complexExtension.addExtension().setUrl("my_id").setValue(new StringType("my_id_1234"));
-////
-////        CodeableConcept a = new CodeableConcept();
-////        a.addCoding().setCode("A");
-////        complexExtension.addExtension().setUrl("my_name").setValue(a);
-////        simplePatient.addExtension(complexExtension);
-//        Extension maritalExtension = new Extension("http://hl7.org/maritalSimple");
-//        maritalExtension.addExtension().setUrl("marital").setValue(new StringType("married"));
-//        patient.getMaritalStatus().addExtension(maritalExtension);
-
         Schema schema = Fhavro.loadSchema("ncpi-documentreference.avsc", SchemaMode.SIMPLE);
         GenericRecord input = Fhavro.convertResourceToGenericRecord(patient, schema);
+        DocumentReference dr = Fhavro.convertGenericRecordToResource(input, schema, "DocumentReference" );
         System.out.println(input);
     }
 }

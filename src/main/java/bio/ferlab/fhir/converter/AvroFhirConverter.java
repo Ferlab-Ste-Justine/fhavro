@@ -1,7 +1,6 @@
 package bio.ferlab.fhir.converter;
 
 import bio.ferlab.fhir.converter.exception.AvroConversionException;
-import bio.ferlab.fhir.converter.exception.BadRequestException;
 import bio.ferlab.fhir.converter.exception.LogicException;
 import bio.ferlab.fhir.converter.exception.UnionTypeException;
 import bio.ferlab.fhir.schema.utils.Constant;
@@ -9,14 +8,18 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.util.TerserUtilHelper;
 import org.apache.avro.Schema;
+import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.generic.GenericRecordBuilder;
 import org.hl7.fhir.instance.model.api.IBase;
+import org.hl7.fhir.instance.model.api.IBaseHasExtensions;
 import org.hl7.fhir.r4.model.*;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static bio.ferlab.fhir.converter.ConverterUtils.navigatePath;
@@ -72,14 +75,78 @@ public class AvroFhirConverter {
         }
     }
 
+    protected static void readCustomExtension(ResourceContext context, IBaseHasExtensions resource, Schema.Field field, GenericRecord genericRecord) {
+        field.aliases().stream().filter(a -> a.startsWith("ext:")).findFirst().ifPresent(url -> {
+            Extension ext = (Extension) resource.addExtension();
+            ext.setUrl(url);
+            Object value = genericRecord.get(field.name());
+            if (!field.schema().getType().equals(Schema.Type.RECORD)) {
+                if (value != null) {
+                    ext.setValue(new StringType(value.toString())); //TODO
+                }
+            } else {
+                GenericRecord record = (GenericRecord) value;
+                for (Schema.Field innerField : field.schema().getFields()) {
+                    readCustomExtension(context, ext, innerField, record);
+                }
+            }
+        });
+    }
+
+    protected static reshapeExtension(GenericRecord genericRecord, Schema schema) {
+        for (Schema.Field innerField : schema.getFields()) {
+
+            if (innerField.aliases().stream().anyMatch(a -> a.startsWith("ext:"))) {
+                innerField.aliases().stream().filter(a -> a.startsWith("ext:")).findFirst().ifPresent(url -> {
+                    Schema extensionSchema = SchemaBuilder.record("extension").fields()
+                            .nullableString("url", "null")
+                            .nullableString("valueString", "null").endRecord();
+                    Schema extensionsSchema = SchemaBuilder.nullable().array().items().type(extensionSchema);
+                    Schema.Field extensionField = new Schema.Field("extension", extensionsSchema);
+
+                    List<Schema.Field> fields = new ArrayList<>();
+                    for (Schema.Field f : schema.getFields()) {
+                        if (!f.name().equals(innerField.name())) {
+                            Schema.Field ff = new Schema.Field(f.name(), f.schema(), f.doc(), f.defaultVal(), f.order());
+                            for (String a : f.aliases()) {
+                                ff.addAlias(a);
+                            }
+                            fields.add(ff);
+                        }
+                    }
+
+                    fields.add(extensionField);
+                    Schema s2 = Schema.createRecord(schema.getName(), schema.getDoc(), schema.getNamespace(), false);
+                    s2.setFields(fields);
+
+                    GenericRecordBuilder r2 = new GenericRecordBuilder(s2);
+                    for (Schema.Field f : schema.getFields()) {
+                        if (!f.name().equals(innerField.name())) {
+                            r2.set(f.name(), genericRecord.get(f.name()));
+                        }
+                    }
+                    if (innerField.name() != null) {
+                        GenericRecord extension = new GenericRecordBuilder(extensionSchema)
+                                .set("url", url.replace("ext:", ""))
+                                .set("valueString", genericRecord.get(innerField.name()))
+                                .build();
+
+                        r2.set("extension", Collections.singletonList(extension));
+                    } else {
+                        r2.set("extension", null);
+                    }
+
+
+
+                });
+
+            }
+        }
+    }
     protected static void readRecord(ResourceContext context, Schema schema, Object value) {
         GenericRecord genericRecord = (GenericRecord) value;
 
         for (Schema.Field innerField : schema.getFields()) {
-            if (Constant.RESOURCE_TYPE.equalsIgnoreCase(innerField.name())) {
-                continue;
-            }
-
             if (innerField.name().startsWith("_")) {
                 context.addLastToPath(innerField.name());
                 readUndeclaredExtensions(context, genericRecord.get(innerField.name()));
@@ -100,6 +167,7 @@ public class AvroFhirConverter {
         if (!context.getPath().isEmpty()) {
             context.getPath().removeLast();
         }
+
     }
 
     protected static void readArray(ResourceContext context, Schema.Field field, Schema schema, Object value) {

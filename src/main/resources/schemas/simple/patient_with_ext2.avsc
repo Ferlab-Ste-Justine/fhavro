@@ -1,0 +1,57 @@
+{
+  "type": "record",
+  "name": "Patient",
+  "doc": "Demographics and other administrative information about an individual or animal receiving care or other health-related services.",
+  "namespace": "bio.ferlab.fhir",
+  "fields": [
+    {
+      "name": "resourceType",
+      "type": "string"
+    },
+    {
+      "name": "id",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name" : "myExt",
+      "aliases": [
+        "ext:http://hl7.org/myExtension"
+      ],
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name" : "myComplexExt",
+      "aliases": [
+        "ext:http://hl7.org/myComplexExtension"
+      ],
+      "type": {
+        "type": "record",
+        "name": "myComplexExt",
+        "fields": [
+          {
+            "name": "my_id",
+            "type": [
+              "null",
+              "string"
+            ],
+            "aliases": [
+              "ext:my_id"
+            ],
+            "default": null
+          }
+        ]
+      },
+      "default": {}
+    }
+
+  ],
+  "default": null
+}

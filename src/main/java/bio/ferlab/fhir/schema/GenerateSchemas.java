@@ -48,7 +48,7 @@ public class GenerateSchemas {
         Operation<BaseDefinition> operation = DefinitionRepository.generateDefinition(schema);
         if (operation.isValid()) {
 
-            saveDefinition(operation.getResult(), DefinitionRepository.getSchemaMode(), schema.hasProfile() ? schema.getProfile().getName().toLowerCase() : schemaName.toLowerCase());
+           saveDefinition(operation.getResult(), DefinitionRepository.getSchemaMode(), schema.hasProfile() ? schema.getProfile().getName().toLowerCase() : schemaName.toLowerCase());
 
             if (schema.hasProfile())
                 LOGGER.info("Generated: {} with {} profile", schemaName, profileName);
@@ -113,7 +113,7 @@ public class GenerateSchemas {
 
     private static void saveDefinition(BaseDefinition baseDefinition, SchemaMode schemaMode, String filename) {
         if (baseDefinition.getDefinition().get("properties").has("resourceType")) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("./src/resources/schemas/" + schemaMode.toString().toLowerCase() + "/" + filename + ".avsc"))) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("/Users/jecos/workspace/fhavro/src/main/resources/schemas/" + schemaMode.toString().toLowerCase() + "/" + filename + ".avsc"))) {
                 writer.write(baseDefinition.getJsonObject().toString());
             } catch (IOException e) {
                 e.printStackTrace();

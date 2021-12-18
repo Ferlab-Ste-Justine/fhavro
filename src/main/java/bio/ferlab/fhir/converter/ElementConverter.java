@@ -31,7 +31,7 @@ public class ElementConverter {
         return (Extension) readRecord(genericRecord.getSchema(), genericRecord);
     }
 
-    private static Object read(Schema.Field field, Schema schema, Object value) {
+    public static Object read(Schema.Field field, Schema schema, Object value) {
         switch (schema.getType()) {
             case RECORD:
                 return readRecord(schema, (GenericRecord) value);
