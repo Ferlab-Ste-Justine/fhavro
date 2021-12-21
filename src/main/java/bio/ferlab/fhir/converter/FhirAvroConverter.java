@@ -13,6 +13,7 @@ import org.apache.avro.generic.GenericRecordBuilder;
 import org.apache.commons.text.WordUtils;
 import org.hl7.fhir.r4.model.Base;
 import org.hl7.fhir.r4.model.BaseResource;
+import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Property;
 
 import java.nio.ByteBuffer;
@@ -75,7 +76,8 @@ public class FhirAvroConverter {
         for (Base base : bases) {
             for (Schema.Field field : schema.getFields()) {
                 if (!readSpecificField(recordBuilder, base, field)) {
-                    getProperty(base, field).ifPresent(property -> recordBuilder.set(field.name(), read(field.schema(), property.getValues())));
+                    Optional<Property> optProperty = getProperty(base, field);
+                    optProperty.ifPresent(property -> recordBuilder.set(field.name(), read(field.schema(), property.getValues())));
                 }
             }
         }
@@ -140,11 +142,9 @@ public class FhirAvroConverter {
     }
 
     private static Optional<Property> getProperty(Base base, Schema.Field field) {
-        Property property;
-
         // Support value[x] notation.
         if (Pattern.compile("value[a-zA-Z].*").matcher(field.name()).matches()) {
-            property = base.getNamedProperty(Constant.VALUE);
+            Property property = base.getNamedProperty(Constant.VALUE);
             if (property != null && property.hasValues()) {
                 // Try to find the valid corresponding value[x] by comparing the FhirType and the field name.
                 String fhirType = property.getValues().get(0).fhirType().toLowerCase();
@@ -160,7 +160,7 @@ public class FhirAvroConverter {
         }
 
         if (field.name().startsWith("_")) {
-            property = base.getNamedProperty(field.name().replace("_", ""));
+            Property property = base.getNamedProperty(field.name().replace("_", ""));
             if (property != null && property.hasValues()) {
                 Optional<Base> innerBase = property.getValues()
                         .stream()
@@ -172,7 +172,38 @@ public class FhirAvroConverter {
             }
         }
 
-        property = base.getNamedProperty(WordUtils.uncapitalize(field.name()));
+        //Extensions defined in aliases
+        Optional<String> optExtension = field.aliases().stream().filter(f -> f.startsWith("ext:")).findFirst();
+        if (optExtension.isPresent()) {
+            String extensionUrl = optExtension.get().replace("ext:", "");
+            if (!base.fhirType().equalsIgnoreCase(Constant.EXTENSION)) {
+                Property property = base.getNamedProperty(Constant.EXTENSION);
+                Optional<Base> extension = property.getValues().stream().filter(b -> b.castToExtension(b).getUrl().equals(extensionUrl)).findFirst();
+                return extension
+                        .flatMap(f -> {
+                                    Optional<Property> value = f.children()
+                                            .stream()
+                                            .filter(v -> v.getName().equals("value[x]") && v.getValues().size() > 0)
+                                            .findFirst();
+                                    Optional<Property> nestedExtension = f.children()
+                                            .stream()
+                                            .filter(v -> v.getName().equals("extension") && v.getValues().size() > 0)
+                                            .findFirst();
+                                    // According Fhir specification an extension can be either a value or a nested extension, but it can't be both
+                                    return value.or(() -> nestedExtension);
+
+                                }
+
+                        );
+            } else {
+                Extension e = base.castToExtension(base);
+                if (e.getUrl().equals(extensionUrl)) {
+                    return Optional.of(base.getNamedProperty("value"));
+                }
+            }
+        }
+
+        Property property = base.getNamedProperty(WordUtils.uncapitalize(field.name()));
         if (property != null) {
             return Optional.of(property);
         }
