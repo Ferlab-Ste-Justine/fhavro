@@ -92,6 +92,20 @@ public class Fhavro {
     }
 
     /**
+     * Load the Schema from a given classpath resource.
+     *
+     * @param resource Classpath of the schema to load
+     * @return The Schema
+     */
+    public static Schema loadSchemaFromResources(String resource) {
+        try (InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(resource)) {
+            return new Schema.Parser().parse(inputStream);
+        } catch(IOException ex) {
+            throw new BadRequestException(String.format("The following schema is not found within our resources: %s", resource));
+        }
+    }
+
+    /**
      * Load an Extension from the Resource folder.
      *
      * @param filename The name of the extension
@@ -250,11 +264,7 @@ public class Fhavro {
 
     private static Schema loadSchemaFromResources(String schemaName, SchemaMode schemaMode) {
         String relativePath = String.format("schemas/%s/%s", schemaMode.toString().toLowerCase(), schemaName);
-        try (InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(relativePath)) {
-            return new Schema.Parser().parse(inputStream);
-        } catch(IOException ex) {
-            throw new BadRequestException(String.format("The following schema is not found within our resources: ./%s", schemaName));
-        }
+        return loadSchemaFromResources(relativePath);
     }
 
     private static Schema loadSchemaFromRelativePath(String schemaName) {
