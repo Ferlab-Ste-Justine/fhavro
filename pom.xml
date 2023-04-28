@@ -40,7 +40,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compiler-plugin.version>3.8.0</compiler-plugin.version>
         <java.version>11.0.12</java.version>
-        <avro.version>1.10.2</avro.version>
+        <avro.version>1.11.1</avro.version>
         <junit.version>5.4.0</junit.version>
         <fhir.version>5.5.1</fhir.version>
         <javax.version>1.1.4</javax.version>
