@@ -11,10 +11,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecordBuilder;
 import org.apache.commons.text.WordUtils;
-import org.hl7.fhir.r4.model.Base;
-import org.hl7.fhir.r4.model.BaseResource;
-import org.hl7.fhir.r4.model.Extension;
-import org.hl7.fhir.r4.model.Property;
+import org.hl7.fhir.r4.model.*;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -141,9 +138,13 @@ public class FhirAvroConverter {
         return ByteBuffer.wrap(string.getBytes(StandardCharsets.UTF_8));
     }
 
+    private static Boolean isRealValueXField(Base base, String fieldName) {
+        return !(base instanceof Device.DevicePropertyComponent) || (!fieldName.equals("valueQuantity") && !fieldName.equals("valueCode"));
+    }
+
     private static Optional<Property> getProperty(Base base, Schema.Field field) {
         // Support value[x] notation.
-        if (Pattern.compile("value[a-zA-Z].*").matcher(field.name()).matches()) {
+        if (Pattern.compile("value[a-zA-Z].*").matcher(field.name()).matches() && isRealValueXField(base, field.name())) {
             Property property = base.getNamedProperty(Constant.VALUE);
             if (property != null && property.hasValues()) {
                 // Try to find the valid corresponding value[x] by comparing the FhirType and the field name.
