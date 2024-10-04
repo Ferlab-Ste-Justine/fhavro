@@ -138,8 +138,9 @@ public class FhirAvroConverter {
         return ByteBuffer.wrap(string.getBytes(StandardCharsets.UTF_8));
     }
 
+    // valueQuantity and valueCode from DeviceProperty in FHIR R4 should not be treated as value[x] fields.
     private static Boolean isRealValueXField(Base base, String fieldName) {
-        return !(base instanceof Device.DevicePropertyComponent) || (!fieldName.equals("valueQuantity") && !fieldName.equals("valueCode"));
+        return !((base instanceof Device.DevicePropertyComponent) && (fieldName.equals("valueQuantity") || fieldName.equals("valueCode")));
     }
 
     private static Optional<Property> getProperty(Base base, Schema.Field field) {
