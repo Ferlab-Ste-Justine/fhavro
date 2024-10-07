@@ -1,13 +1,11 @@
 import bio.ferlab.fhir.schema.repository.SchemaMode;
 import fixture.*;
 import org.hl7.fhir.r4.model.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
+import org.junit.jupiter.api.Test;
 import java.util.List;
 
-@RunWith(JUnit4.class)
+
 public class FhavroDefaultTest extends BaseFhavro {
 
     @Test

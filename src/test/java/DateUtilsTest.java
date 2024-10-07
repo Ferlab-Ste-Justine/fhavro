@@ -1,11 +1,9 @@
 import bio.ferlab.fhir.converter.DateUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(JUnit4.class)
+
 public class DateUtilsTest {
 
     @Test

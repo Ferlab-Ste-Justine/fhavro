@@ -1,9 +1,10 @@
 import bio.ferlab.fhir.Fhavro;
 import bio.ferlab.fhir.converter.exception.BadRequestException;
 import bio.ferlab.fhir.schema.repository.SchemaMode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FhavroTest {
 
@@ -42,8 +43,8 @@ public class FhavroTest {
         assertNotNull(Fhavro.loadSchema("./schema/cqgc-patient.avsc", SchemaMode.ADVANCED));
     }
 
-    @Test(expected = BadRequestException.class)
+    @Test
     public void loadSchema_advanced_from_unknown_location() {
-        Fhavro.loadSchema("cqdg-patient", SchemaMode.ADVANCED);
+        assertThrows(BadRequestException.class, () -> Fhavro.loadSchema("cqdg-patient", SchemaMode.ADVANCED));
     }
 }

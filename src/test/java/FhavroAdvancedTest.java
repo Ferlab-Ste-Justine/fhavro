@@ -1,6 +1,6 @@
 import bio.ferlab.fhir.schema.repository.SchemaMode;
 import org.hl7.fhir.r4.model.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
