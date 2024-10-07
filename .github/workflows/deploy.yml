@@ -24,12 +24,12 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
           server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
-          server-username: OSSRH_USERNAME
-          server-password: OSSRH_PASSWORD
-          gpg-private-key: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
+          server-username: SONATYPE_USERNAME
+          server-password: SONATYPE_PASSWORD
+          gpg-private-key: ${{ secrets.OSS_SONATYPE_GPG_PRIVATE_KEY }}
       - id: publish-to-central
         name: Publish to Central Repository
-        run: mvn clean -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }} deploy
+        run: mvn clean -Dgpg.passphrase=${{ secrets.OSS_SONATYPE_GPG_PASSPHRASE }} deploy
         env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          OSSRH_USERNAME: ${{ secrets.OSS_SONATYPE_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}

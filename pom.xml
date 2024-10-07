@@ -4,7 +4,7 @@
     <groupId>bio.ferlab</groupId>
     <artifactId>fhavro</artifactId>
     <packaging>jar</packaging>
-    <version>0.0.10-SNAPSHOT</version>
+    <version>0.0.10</version>
     <name>fhavro</name>
     <description>The fhavro project is to serialize FHIR v4.0.7 resources in Avro, and vice-versa.</description>
     <url>https://github.com/Ferlab-Ste-Justine/fhavro</url>
@@ -118,6 +118,10 @@
             <id>ossrh</id>
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
     </distributionManagement>
     <build>
         <plugins>
