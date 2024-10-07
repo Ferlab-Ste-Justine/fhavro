@@ -3,7 +3,7 @@ import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.ResearchStudy;
 import org.hl7.fhir.r4.model.ResearchSubject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 

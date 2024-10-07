@@ -1,16 +1,15 @@
 import bio.ferlab.fhir.converter.exception.BadRequestException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 
 import static bio.ferlab.fhir.converter.ConverterUtils.formatSchemaName;
 import static bio.ferlab.fhir.converter.ConverterUtils.navigatePath;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@RunWith(JUnit4.class)
+
 public class ConverterUtilsTest {
 
     @Test
@@ -28,19 +27,19 @@ public class ConverterUtilsTest {
         assertEquals("identifier", navigatePath(getDeque(), 1));
     }
 
-    @Test(expected = BadRequestException.class)
+    @Test
     public void test_navigatePath_with_null_path() {
-        navigatePath(null);
+        assertThrows(BadRequestException.class, () -> navigatePath(null));
     }
 
-    @Test(expected = BadRequestException.class)
+    @Test
     public void test_navigatePath_with_null_path_and_zero_depth() {
-        navigatePath(null, 0);
+        assertThrows(BadRequestException.class, () -> navigatePath(null, 0));
     }
 
-    @Test(expected = BadRequestException.class)
+    @Test
     public void test_navigatePath_with_less_than_zero_depth() {
-        navigatePath(new ArrayDeque<>(), -1);
+        assertThrows(BadRequestException.class, () -> navigatePath(new ArrayDeque<>(), -1));
     }
 
     @Test
@@ -83,14 +82,14 @@ public class ConverterUtilsTest {
         assertEquals("patient.avsc", formatSchemaName("Patient.avsc"));
     }
 
-    @Test(expected = BadRequestException.class)
+    @Test
     public void test_formatSchemaName_null() {
-        formatSchemaName(null);
+        assertThrows(BadRequestException.class, () -> formatSchemaName(null));
     }
 
-    @Test(expected = BadRequestException.class)
+    @Test
     public void test_formatSchemaName_blank() {
-        formatSchemaName("");
+        assertThrows(BadRequestException.class, () -> formatSchemaName(""));
     }
 
     private Deque<String> getDeque() {
